@@ -469,8 +469,7 @@
                                 },
                                 "auth": {
                                     "type": "OAuth2",
-                                    "IsClientSecretInHeader": "true",
-                                    "IsCredentialsInHeaders": "true",
+                                    "IsClientSecretInHeader": "false",
                                     "ClientSecret": "[[parameters('clientSecret')]",
                                     "ClientId": "[[parameters('clientId')]",
                                     "AuthorizationCode": "[[parameters('authorizationCode')]",
@@ -481,6 +480,10 @@
                                         "Content-Type": "application/x-www-form-urlencoded"
                                     },
                                     "authorizationEndpoint": "[parameters('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
                                     "redirectUri": "[parameters('redirectUri')]",
                                     "scope": "https://www.googleapis.com/auth/cloud-platform"
                                 },
