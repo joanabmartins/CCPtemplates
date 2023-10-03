@@ -494,7 +494,7 @@
                                     "queryWindowInMin": 5,
                                     "httpMethod": "POST",
                                     "retryCount": 3,
-                                    "timeoutInSeconds": 60,
+                                    "timeoutInSeconds": 180,
                                     "headers": {
                                         "Accept": "application/json"
                                     },
