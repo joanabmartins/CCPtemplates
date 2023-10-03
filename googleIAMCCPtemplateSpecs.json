@@ -87,7 +87,7 @@
             }
         },
         "apiEndpoint": {
-            "defaultValue": "https://logging.googleapis.com/v2/entries:list",
+            "defaultValue": "https://logging.googleapis.com/v2/entries:list/",
             "type": "string",
             "metadata": {
                 "description": "GCP IAM logs."
@@ -469,7 +469,8 @@
                                 },
                                 "auth": {
                                     "type": "OAuth2",
-                                    "IsClientSecretInHeader": "false",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
                                     "ClientSecret": "[[parameters('clientSecret')]",
                                     "ClientId": "[[parameters('clientId')]",
                                     "AuthorizationCode": "[[parameters('authorizationCode')]",
@@ -499,17 +500,12 @@
                                     },
                                     "queryParameters": {
                                         "orderBy": "timestamp desc",
+                                        "pageSize": 1000, 
                                         "resourceNames": [
                                             "projects/emerald-cumulus-400116"
                                         ],
-                                        "filter": "protoPayload.serviceName:  iam.googleapis.com OR protoPayload.serviceName: iamcredentials.googleapis.com OR protoPayload.serviceName: sts.googleapis.com"
+                                        "filter": "protoPayload.serviceName: iam.googleapis.com OR protoPayload.serviceName: iamcredentials.googleapis.com OR protoPayload.serviceName: sts.googleapis.com"
                                     }
-                                },
-                                "paging": {
-                                    "pagingType": "Offset",
-                                    "pageSize": 1000,
-                                    "PageSizeParaName": "limit",
-                                    "OffsetParaName": "offset"
                                 },
                                 "response": {
                                     "eventsJsonPaths": [
