@@ -495,6 +495,7 @@
                                     "httpMethod": "POST",
                                     "retryCount": 3,
                                     "timeoutInSeconds": 180,
+                                    "QueryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
                                     "headers": {
                                         "Accept": "application/json"
                                     },
@@ -504,9 +505,14 @@
                                         "resourceNames": [
                                             "projects/emerald-cumulus-400116"
                                         ],
-                                        "filter": "protoPayload.serviceName: iam.googleapis.com OR protoPayload.serviceName: iamcredentials.googleapis.com OR protoPayload.serviceName: sts.googleapis.com"
+                                        "filter": "protoPayload.serviceName: iam.googleapis.com OR protoPayload.serviceName: iamcredentials.googleapis.com OR protoPayload.serviceName: sts.googleapis.com AND timestamp >= \"{_QueryWindowStartTime}\" AND timestamp <=\"{_QueryWindowEndTime}\""
                                     }
                                 },
+                                "paging": {
+                                    "pagingType" : "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                    },
                                 "response": {
                                     "eventsJsonPaths": [
                                         "$.entries"
