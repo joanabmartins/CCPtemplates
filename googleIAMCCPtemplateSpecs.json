@@ -440,7 +440,7 @@
                             "type": "string"
                         },
                         "dceURL": {
-                            "defaultValue": "[parameters('logAnalyticsTableId1')]",
+                            "defaultValue": "[parameters('dceURL')]",
                             "type": "string"
                         },
                         "dcrID": {
@@ -491,7 +491,7 @@
                                 "request": {
                                     "apiEndpoint": "[parameters('apiEndpoint')]",
                                     "rateLimitQPS": 10,
-                                    "queryWindowInMin": 5,
+                                    "queryWindowInMin": 10,
                                     "httpMethod": "POST",
                                     "retryCount": 3,
                                     "timeoutInSeconds": 180,
@@ -501,11 +501,11 @@
                                     },
                                     "queryParameters": {
                                         "orderBy": "timestamp desc",
-                                        "pageSize": 1000, 
+                                        "pageSize": 10, 
                                         "resourceNames": [
                                             "projects/emerald-cumulus-400116"
                                         ],
-                                        "filter": "protoPayload.serviceName: iam.googleapis.com OR protoPayload.serviceName: iamcredentials.googleapis.com OR protoPayload.serviceName: sts.googleapis.com AND timestamp >= \"{_QueryWindowStartTime}\" AND timestamp <=\"{_QueryWindowEndTime}\""
+                                        "filter": "protoPayload.methodName: (\"CreateRole\" OR \"DeleteRole\" OR \"UndeleteRole\" OR \"UpdateRole\" OR \"CreateServiceAccount\" OR \"DeleteServiceAccount\" OR \"DisableServiceAccount\" OR \"EnableServiceAccount\" OR \"GetServiceAccount\" OR \"PatchServiceAccount\" OR \"SetIAMPolicy\" OR \"UndeleteServiceAccount\" OR \"UpdateServiceAccount\" OR \"CreateServiceAccountKey\" OR \"DeleteServiceAccountKey\" OR \"UploadServiceAccountKey\" OR \"CreateWorkloadIdentityPool\" OR \"DeleteWorkloadIdentityPool\" OR \"UndeleteWorkloadIdentityPool\" OR \"UpdateWorkloadIdentityPool\" OR \"CreateWorkloadIdentityPoolProvider\" OR \"DeleteWorkloadIdentityPoolProvider\" OR \"UndeleteWorkloadIdentityPoolProvider\" OR \"UpdateWorkloadIdentityPoolProvider\" OR \"ExchangeToken\" OR \"GetRole\" OR \"ListRoles\" OR \"QueryGrantableRoles\" OR \"GetEffectivePolicy\" OR \"GenerateAccessToken\" OR \"GenerateIdToken\" OR \"ListServiceAccounts\" OR \"SignBlob\" OR \"SignJwt\" OR \"GetServiceAccountKey\" OR \"ListServiceAccountKeys\" OR \"GetWorkloadIdentityPool\" OR \"ListWorkloadIdentityPools\" OR \"GetWorkloadIdentityPoolProvider\" OR \"ListWorkloadIdentityPoolProviders\") OR protoPayload.serviceName: (iam.googleapis.com OR iamcredentials.googleapis.com OR sts.googleapis.com) AND  timestamp >= \"{_QueryWindowStartTime}\" AND timestamp <=\"{_QueryWindowEndTime}\""
                                     }
                                 },
                                 "paging": {
@@ -527,3 +527,4 @@
     ],
     "outputs": {}
 }
+
