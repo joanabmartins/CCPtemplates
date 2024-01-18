@@ -54,7 +54,7 @@
         "_dataConnectorContentIdConnections": "JIRATemplateConnections", //Enter the _dataConnectorContentIdConnections (??? What is this?) 
         "dataConnectorTemplateNameConnections": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnections')))]",
         "_logAnalyticsTableId1": "AtlassianJiraNativePollerV2_CL" //Enter the custom table name (Not needed if you are ingesting data into standard tables)
-		//Enter more variables as needed"":""
+        //Enter more variables as needed"":""
     },
     "resources": [
         {
@@ -72,9 +72,9 @@
                 "mainTemplate": {
                     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                     "contentVersion": "[variables('dataConnectorVersionConnectorDefinition')]",
-                    "parameters": {                       
+                    "parameters": {
                     },
-                    "variables": {                    
+                    "variables": {
                     },
                     "resources": [
                         {
@@ -117,73 +117,66 @@
                             "kind": "Customizable",
                             "properties": {
                                 //Enter your data connector definition properties here
-								//For example
-								"connectorUiConfig": {
-								    "title": " Atlassian Jira (Preview)",
-								    "publisher": "Microsoft",
-									"descriptionMarkdown": "The Atlassian Jira data connector provides the capability to ingest [Atlassian Jira audit logs](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-audit-records/) into Microsoft Sentinel.",
-									"graphQueriesTableName": "[variables('_logAnalyticsTableId1')]",
-								   "graphQueries": [
-								        {
-								            "metricName": "Total data received",
-								            "legend": "My Events",
-								           "baseQuery": "{{graphQueriesTableName}}"
-								        }
-								    ],
-								    "sampleQueries": [
-								        {
-								           "description": "All Atlassian Jira audit logs",
+                                //For example
+                                "connectorUiConfig": {
+                                    "title": " Atlassian Jira (Preview)",
+                                    "publisher": "Microsoft",
+                                    "descriptionMarkdown": "The Atlassian Jira data connector provides the capability to ingest [Atlassian Jira audit logs](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-audit-records/) into Microsoft Sentinel.",
+                                    "graphQueriesTableName": "[variables('_logAnalyticsTableId1')]",
+                                    "graphQueries": [
+                                        {
+                                            "metricName": "Total data received",
+                                            "legend": "Jira Audit Events",
+                                            "baseQuery": "{{graphQueriesTableName}}"
+                                        }
+                                    ],
+                                    "sampleQueries": [
+                                        {
+                                            "description": "All Atlassian Jira audit logs",
                                             "query": "{{graphQueriesTableName}}\n| sort by TimeGenerated desc"
-								        },
-								        {
-								            "description": "Total Events",
-								            "query": "{{graphQueriesTableName}}\n | summarize count() by OriginalEventUid"
-								        }
-								    ],
-								    "dataTypes": [
-								        {
-								            "name": "{{graphQueriesTableName}}",
-								            "lastDataReceivedQuery": "{{graphQueriesTableName}}|summarize Time = max  (TimeGenerated)\n|where isnotempty(Time)"
-								        }
-								    ],
-								    "connectivityCriteria": [
-								        {
-								            "type": "HasDataConnectors"
-								        }
-								    ],
-								    "availability": {
-								        "isPreview": false
-								    },
-								    "permissions": {
-								        "resourceProvider": [
-								            {
-								                "provider": "Microsoft.OperationalInsights/workspaces",
-								                "permissionsDisplayText": "Read and Write permissions are required.",
-								                "providerDisplayName": "Workspace",
-								                "scope": "Workspace",
-								                "requiredPermissions": {
-								                    "write": true,
-								                    "read": true,
-								                    "delete": true
-								                }
-								            }
-								        ],
+                                        },
+                                        {
+                                            "description": "Total Events",
+                                            "query": "{{graphQueriesTableName}}\n | summarize count() by OriginalEventUid"
+                                        }
+                                    ],
+                                    "dataTypes": [
+                                        {
+                                            "name": "{{graphQueriesTableName}}",
+                                            "lastDataReceivedQuery": "{{graphQueriesTableName}}|summarize Time = max  (TimeGenerated)\n|where isnotempty(Time)"
+                                        }
+                                    ],
+                                    "connectivityCriteria": [
+                                        {
+                                            "type": "HasDataConnectors"
+                                        }
+                                    ],
+                                    "availability": {
+                                        "isPreview": false
+                                    },
+                                    "permissions": {
+                                        "resourceProvider": [
+                                            {
+                                                "provider": "Microsoft.OperationalInsights/workspaces",
+                                                "permissionsDisplayText": "Read and Write permissions are required.",
+                                                "providerDisplayName": "Workspace",
+                                                "scope": "Workspace",
+                                                "requiredPermissions": {
+                                                    "write": true,
+                                                    "read": true,
+                                                    "delete": true
+                                                }
+                                            }
+                                        ],
                                         "customs": [
                                             {
                                                 "name": "Atlassian Jira API Token",
                                                 "description": "An Atlassian Jira username and API token. [Follow the following instructions to create an API token](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/).[See the documentation to learn more about Authentication in Atlassian Jira](https://developer.okta.com/docs/reference/api/system-log/)."
                                             }
                                         ]
-                            
-								    },
-								    "instructionSteps": 
-									[
-								        {
-								        }            
-								    ]   
-                            }
-                        },
-                             "instructionSteps": [
+
+                                    },
+                                    "instructionSteps": [
                                         {
                                             "description": "To enable the Atlassian Jira connector for Microsoft Sentinel, provide the required information below and click on Connect.\n>",
                                             "instructions": [
@@ -238,20 +231,20 @@
                                             ]
                                         }
                                     ]
-                },           
- 
+                                }
+                            }
+                        },
                         {
                             "name": "AtlassianJiraAuditLogs", //Enter your DCR name
                             "apiVersion": "2021-09-01-preview",
                             "type": "Microsoft.Insights/dataCollectionRules",
                             "location": "[parameters('workspace-location')]",
                             "kind": null,
-                            "properties": 
-							{
-								//Enter your DCR properties here
-								//For example
-								"streamDeclarations": {
-                                    "Custom-AtlassianJIRAStream_CL": { 
+                            "properties": {
+                                //Enter your DCR properties here
+                                //For example
+                                "streamDeclarations": {
+                                    "Custom-AtlassianJIRAStream_CL": {
                                         "columns": [
                                             {
                                                 "name": "uuid",
@@ -259,25 +252,25 @@
                                             },
                                             {
                                                 "name": "date",
-                           	                     "type": "datetime"
+                                                "type": "datetime"
                                             },
-                                               {
+                                            {
                                                 "name": "location",
-                           	                     "type": "string"
+                                                "type": "string"
                                             },
-                                               {
+                                            {
                                                 "name": "actor",
-                           	                     "type": "string"
+                                                "type": "string"
                                             },
-                                               {
+                                            {
                                                 "name": "activity",
-                           	                     "type": "datetime"
+                                                "type": "datetime"
                                             }
-                                         ]
+                                        ]
                                     }
                                 },
                                 "dataSources": {
-                                    
+
                                 },
                                 "destinations": {
                                     "logAnalytics": [
@@ -301,8 +294,8 @@
                                     }
                                 ],
                                 "provisioningState": "Succeeded",
-                                //"dataCollectionEndpointId": "[concat('/subscriptions/',parameters('subscription'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Insights/dataCollectionEndpoints/',parameters('workspace'))]"
-							}
+                                "dataCollectionEndpointId": "[concat('/subscriptions/',parameters('subscription'),'/resourceGroups/',parameters('resourceGroupName'),'/providers/Microsoft.Insights/dataCollectionEndpoints/',parameters('workspace'))]"
+                            }
                         },
                         {
                             "name": "[variables('_logAnalyticsTableId1')]",
@@ -310,10 +303,9 @@
                             "type": "Microsoft.OperationalInsights/workspaces/tables",
                             "location": "[parameters('workspace-location')]",
                             "kind": null,
-                            "properties": 
-							{
-								//Enter your log anlytics table properties here
-								"totalRetentionInDays": 30,
+                            "properties": {
+                                //Enter your log anlytics table properties here
+                                "totalRetentionInDays": 30,
                                 "archiveRetentionInDays": 0,
                                 "plan": "Analytics",
                                 "lastPlanModifiedDate": "2023-06-08T15:01:07.6198976Z",
@@ -324,7 +316,7 @@
                                     "name": "[variables('_logAnalyticsTableId1')]",
                                     "tableType": "CustomLog",
                                     "columns": [
-                                         {
+                                        {
                                             "name": "Date",
                                             "type": "string",
                                             "isDefaultDisplay": false,
@@ -361,10 +353,12 @@
                                         "LogManagement"
                                     ],
                                     "isTroubleshootingAllowed": true
-                                }
-							}			
+                                },
+                                "provisioningState": "Succeeded",
+                                "retentionInDays": 30
+                            }
                         }
-						//Enter more tables if needed
+                        //Enter more tables if needed
                     ]
                 },
                 "packageKind": "Solution",
@@ -376,283 +370,335 @@
                 "version": "[variables('_solutionVersion')]"
             }
         },
-        {
+        { //This is mandatory
             "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',variables('_dataConnectorContentIdConnectorDefinition'))]",
             "apiVersion": "2022-09-01-preview",
             "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions",
             "location": "[parameters('workspace-location')]",
             "kind": "Customizable",
-            "properties": 
-			{
-				//Enter your data connector definition properties here
-				//For example
-				//"connectorUiConfig": {
-                //    "title": " Title (Preview)",
-                //    "publisher": "Publisher",
-				//	"descriptionMarkdown": "..."
-				//	"graphQueriesTableName": "[variables('_logAnalyticsTableId1')]",
-                //   "graphQueries": [
-                //        {
-                //            "metricName": "Total data received",
-                //            "legend": "My product Events",
-                //           "baseQuery": "{{graphQueriesTableName}}"
-                //        }
-                //    ],
-                //    "sampleQueries": [
-                //        {
-                //            "description": "Get Sample of events",
-                //            "query": "{{graphQueriesTableName}}\n | take 10"
-                //        },
-                //        {
-                //            "description": "Total Events by uuid",
-                //            "query": "{{graphQueriesTableName}}\n | summarize count() by OriginalEventUid"
-                //        }
-                //    ],
-                //    "dataTypes": [
-                //        {
-                //            "name": "{{graphQueriesTableName}}",
-                //            "lastDataReceivedQuery": "{{graphQueriesTableName}}|summarize Time = max  (TimeGenerated)\n|where isnotempty(Time)"
-                //        }
-                //    ],
-                //    "connectivityCriteria": [
-                //        {
-                //            "type": "HasDataConnectors"
-                //        }
-                //    ],
-                //    "availability": {
-                //        "isPreview": false
-                //    },
-                //    "permissions": {
-                //        "resourceProvider": [
-                //            {
-                //                "provider": "Microsoft.OperationalInsights/workspaces",
-                //                "permissionsDisplayText": "Read and Write permissions are required.",
-                //                "providerDisplayName": "Workspace",
-                //                "scope": "Workspace",
-                //                "requiredPermissions": {
-                //                    "write": true,
-                //                    "read": true,
-                //                    "delete": true
-                //                }
-                //            }
-                //        ],
-                //    },
-                //    "instructionSteps": 
-				//	[
-                //        {
-                //        }            
-				//    ]   
-			}
-        },
-        {
-            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnectorDefinition')))]",
-            "apiVersion": "2022-01-01-preview",
-            "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
             "properties": {
-                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentIdConnectorDefinition'))]",
-                "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
-                "kind": "DataConnector",
-                "version": "[variables('dataConnectorVersionConnectorDefinition')]",
-                "source": {
-                    "sourceId": "[variables('_solutionId')]",
-                    "name": "[variables('_solutionName')]",
-                    "kind": "Solution"
-                },
-                "author": {
-                    "name": "[variables('_solutionAuthor')]"
-                },
-                "support": {
-                    "name": "[variables('_solutionAuthor')]",
-                    "tier": "[variables('_solutionTier')]"
-                },
-                "dependencies": {
-                    "criteria": [
+                //Enter your data connector definition properties here
+                //For example
+                "connectorUiConfig": {
+                    "title": " Atlassian Jira (Preview)",
+                    "publisher": "Microsoft",
+                    "descriptionMarkdown": "The Atlassian Jira data connector provides the capability to ingest [Atlassian Jira audit logs](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-audit-records/) into Microsoft Sentinel.",
+                    "graphQueriesTableName": "[variables('_logAnalyticsTableId1')]",
+                    "graphQueries": [
                         {
-                            "version": "[variables('dataConnectorVersionConnections')]",
-                            "contentId": "[variables('_dataConnectorContentIdConnections')]",
-                            "kind": "ResourcesDataConnector"
+                            "metricName": "Total data received",
+                            "legend": "Jira Audit Events",
+                            "baseQuery": "{{graphQueriesTableName}}"
+                        }
+                    ],
+                    "sampleQueries": [
+                        {
+                            "description": "All Atlassian Jira audit logs",
+                            "query": "{{graphQueriesTableName}}\n| sort by TimeGenerated desc"
+                        },
+                        {
+                            "description": "Total Events",
+                            "query": "{{graphQueriesTableName}}\n | summarize count() by OriginalEventUid"
+                        }
+                    ],
+                    "dataTypes": [
+                        {
+                            "name": "{{graphQueriesTableName}}",
+                            "lastDataReceivedQuery": "{{graphQueriesTableName}}|summarize Time = max  (TimeGenerated)\n|where isnotempty(Time)"
+                        }
+                    ],
+                    "connectivityCriteria": [
+                        {
+                            "type": "HasDataConnectors"
+                        }
+                    ],
+                    "availability": {
+                        "isPreview": false
+                    },
+                    "permissions": {
+                        "resourceProvider": [
+                            {
+                                "provider": "Microsoft.OperationalInsights/workspaces",
+                                "permissionsDisplayText": "Read and Write permissions are required.",
+                                "providerDisplayName": "Workspace",
+                                "scope": "Workspace",
+                                "requiredPermissions": {
+                                    "write": true,
+                                    "read": true,
+                                    "delete": true
+                                }
+                            }
+                        ],
+                        "customs": [
+                            {
+                                "name": "Atlassian Jira API Token",
+                                "description": "An Atlassian Jira username and API token. [Follow the following instructions to create an API token](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/).[See the documentation to learn more about Authentication in Atlassian Jira](https://developer.okta.com/docs/reference/api/system-log/)."
+                            }
+                        ]
+
+                    },
+                    "instructionSteps": [
+                        {
+                            "description": "To enable the Atlassian Jira connector for Microsoft Sentinel, provide the required information below and click on Connect.\n>",
+                            "instructions": [
+                                {
+                                    "type": "DataConnectorsGrid",
+                                    "parameters": {
+                                        "mapping": [
+                                            {
+                                                "columnName": "Atlassian JIRa Organisation URL",
+                                                "columnValue": "properties.request.apiEndpoint"
+                                            }
+                                        ],
+                                        "menuItems": [
+                                            "DeleteConnector"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "type": "ContextPane",
+                                    "parameters": {
+                                        "isPrimary": true,
+                                        "label": "Add domain",
+                                        "title": "Add domain",
+                                        "subtitle": "Add domain",
+                                        "contextPaneType": "DataConnectorsContextPane",
+                                        "instructionSteps": [
+                                            {
+                                                "instructions": [
+                                                    {
+                                                        "type": "Textbox",
+                                                        "parameters": {
+                                                            "label": "JIRA user name",
+                                                            "placeholder": "JIRA user name (e.g., user@example.com)",
+                                                            "type": "text",
+                                                            "name": "domainname"
+                                                        }
+                                                    },
+                                                    {
+                                                        "type": "Textbox",
+                                                        "parameters": {
+                                                            "label": "API Key",
+                                                            "placeholder": "API Key",
+                                                            "type": "password",
+                                                            "name": "apikey"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
                         }
                     ]
                 }
             }
-        },
+        }, 
         {
-            "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
-            "apiVersion": "2023-04-01-preview",
-            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('dataConnectorTemplateNameConnections'), variables('dataConnectorVersionConnections'))]",
-            "location": "[parameters('workspace-location')]",
-            "dependsOn": [
-                "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
-            ],
-            "properties": {
-                "contentId": "[variables('_dataConnectorContentIdConnections')]",
-                "displayName": "[concat(variables('_solutionName'), variables('dataConnectorTemplateNameConnections'))]",
-                "contentKind": "ResourcesDataConnector",
-                "mainTemplate": {
-                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                    "contentVersion": "[variables('dataConnectorVersionConnections')]",
-                    "parameters": 
-					{
-                        "connectorDefinitionName": {
-                            "defaultValue": "connectorDefinitionName",
-                            "type": "string",
-                            "minLength": 1
-                        },
-                        "workspace": {
-                            "defaultValue": "[parameters('workspace')]",
-                            "type": "string"
-                        },
-                        "dcrConfig": {
-                            "defaultValue": {
-                                "dataCollectionEndpoint": "data collection Endpoint",
-                                "dataCollectionRuleImmutableId": "data collection rule immutableId"
-                            },
-                            "type": "object"
-                        }
-						//Enter additional parameters that are used by the data connector (there parameters are mainly properties that the user enters in the UI when configuring the connector
-						//For example:
-						//"domainname": {
-                        //    "defaultValue": "domain name",
-                        //    "type": "string",
-                        //    "minLength": 1
-                        //},
-                        //"apikey": {
-                        //    "defaultValue": "API Key",
-                        //    "type": "string",
-                        //    "minLength": 1
-                        //}
-                    },
-                    "variables": {
-                        "_dataConnectorContentIdConnections": "[variables('_dataConnectorContentIdConnections')]"
-                    },
-                    "resources": [
-                        {
-                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnections')))]",
-                            "apiVersion": "2022-01-01-preview",
-                            "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
-                            "properties": {
-                                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectors', variables('_dataConnectorContentIdConnections'))]",
-                                "contentId": "[variables('_dataConnectorContentIdConnections')]",
-                                "kind": "ResourcesDataConnector",
-                                "version": "[variables('dataConnectorVersionConnections')]",
-                                "source": {
-                                    "sourceId": "[variables('_solutionId')]",
-                                    "name": "[variables('_solutionName')]",
-                                    "kind": "Solution"
-                                },
-                                "author": {
-                                    "name": "[variables('_solutionAuthor')]"
-                                },
-                                "support": {
-                                    "name": "[variables('_solutionAuthor')]",
-                                    "tier": "[variables('_solutionTier')]"
-                                }
-                            }
-                        },
-                        {
-                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'MyDataConnector')]", //Replace the last part of the name with your data connector name (if you want to be able to create several connection using this template you need to make this name dynamic (e.g., by concatentanating GUID)
-                            "apiVersion": "2022-12-01-preview",
-                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
-                            "location": "[parameters('workspace-location')]",
-                            "kind": "RestApiPoller",
-                            "properties": 
-							{
-								// Enter your data connector properties here. If you want to use UI parameter use them in the following format "[[[paramters('paramName')]" (see example below)
-								//Use parameters as needed. For example
-								//For example:	
-                                //"dataType": "My product security event API",
-                                //"response": {
-                                //   "eventsJsonPaths": [
-                                //        "$"
-                                //    ],
-                                //    "format": "json"
-                                //},
-                                //"paging": {
-                                //    "pagingType": "LinkHeader"
-                                //},
-                                //"connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
-                                //"auth": {
-                                //   "apiKeyName": "Authorization",
-                                //    "ApiKey": "[[parameters('apikey')]",
-                                //    "apiKeyIdentifier": "SSWS",
-                                //    "type": "APIKey"
-                                //},
-                                "request": {
-                                //   "apiEndpoint": "[[concat('https://',parameters('domainname'),'/api/v1/logs')]",
-                                //    "rateLimitQPS": 10,
-                                //   "queryWindowInMin": 5,
-                                //   "httpMethod": "GET",
-                                //    "retryCount": 3,
-                                //    "timeoutInSeconds": 60,
-                                //    "headers": {
-                                //        "Accept": "application/json",
-                                //        "User-Agent": "Scuba"
-                                //    },
-                                //    "startTimeAttributeName": "since",
-								//    "endTimeAttributeName": "until"		     
-                                //},
-                                //"dcrConfig": {
-                                //    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
-                                //    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
-                                //    "streamName": "Custom-InputStream_CL" //This input stream should be the same as the inputStream property configured for the DataCollectionRule 
-                                //},
-                                //"isActive": true
-                            }
-                        }
-                    ]
-                },
-                "packageKind": "Solution",
-                "packageVersion": "[variables('_solutionVersion')]",
-                "packageName": "[variables('_solutionName')]",
-                "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','rdc','-', uniqueString(concat(variables('_solutionId'),'-','ResourcesDataConnector','-',variables('_dataConnectorContentIdConnections'),'-', variables('dataConnectorVersionConnections'))))]",
-                "packageId": "[variables('_solutionId')]",
-                "contentSchemaVersion": "3.0.0",
-                "version": "[variables('_solutionVersion')]"
-            }
+            
+    "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnectorDefinition')))]",
+    "apiVersion": "2022-01-01-preview",
+    "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+    "properties": {
+        "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentIdConnectorDefinition'))]",
+        "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
+        "kind": "DataConnector",
+        "version": "[variables('dataConnectorVersionConnectorDefinition')]",
+        "source": {
+            "sourceId": "[variables('_solutionId')]",
+            "name": "[variables('_solutionName')]",
+            "kind": "Solution"
         },
-        {
-            "type": "Microsoft.OperationalInsights/workspaces/providers/contentPackages",
-            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('_solutionId'))]",
-            "location": "[parameters('workspace-location')]",
-            "apiVersion": "2023-04-01-preview",
-            "properties": {
-                "version": "[variables('_solutionVersion')]",
-                "kind": "Solution",
-                "contentSchemaVersion": "3.0.0",
-                "contentId": "[variables('_solutionId')]",
-                "source": {
-                    "kind": "Solution",
-                    "name": "[variables('_solutionName')]",
-                    "sourceId": "[variables('_solutionId')]"
-                },
-                "author": {
-                    "name": "[variables('_solutionAuthor')]"
-                },
-                "support": {
-                    "name": "[variables('_solutionAuthor')]"
-                },
-                "dependencies": {
-                    "operator": "AND",
-                    "criteria": [
-                        {
-                            "kind": "DataConnector",
-                            "contentId": "[variables('dataConnectorVersionConnectorDefinition')]",
-                            "version": "[variables('_dataConnectorContentIdConnectorDefinition')]"
-                        }
-                    ]
-                },
-                "firstPublishDate": "2022-06-24",
-                "providers": [
-                    "[variables('_solutionAuthor')]"
-                ],
-                "contentKind": "Solution",
-                "packageId": "[variables('_solutionId')]",
-                "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]",
-                "displayName": "[variables('_solutionName')]",
-                "publisherDisplayName": "[variables('_solutionId')]",
-                "descriptionHtml": "test",
-                "icon": "[variables('_packageIcon')]"
-            }
+        "author": {
+            "name": "[variables('_solutionAuthor')]"
+        },
+        "support": {
+            "name": "[variables('_solutionAuthor')]",
+            "tier": "[variables('_solutionTier')]"
+        },
+        "dependencies": {
+            "criteria": [
+                {
+                    "version": "[variables('dataConnectorVersionConnections')]",
+                    "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                    "kind": "ResourcesDataConnector"
+                }
+            ]
         }
-    ]
-}
+    }
+}, {
+    "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+    "apiVersion": "2023-04-01-preview",
+    "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('dataConnectorTemplateNameConnections'), variables('dataConnectorVersionConnections'))]",
+    "location": "[parameters('workspace-location')]",
+    "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+    ],
+    "properties": {
+        "contentId": "[variables('_dataConnectorContentIdConnections')]",
+        "displayName": "[concat(variables('_solutionName'), variables('dataConnectorTemplateNameConnections'))]",
+        "contentKind": "ResourcesDataConnector",
+        "mainTemplate": {
+            "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+            "contentVersion": "[variables('dataConnectorVersionConnections')]",
+            "parameters": {
+                "connectorDefinitionName": {
+                    "defaultValue": "connectorDefinitionName",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "workspace": {
+                    "defaultValue": "[parameters('workspace')]",
+                    "type": "string"
+                },
+                "dcrConfig": {
+                    "defaultValue": {
+                        "dataCollectionEndpoint": "data collection Endpoint",
+                        "dataCollectionRuleImmutableId": "data collection rule immutableId"
+                    },
+                    "type": "object"
+                },
+                //Enter additional parameters that are used by the data connector (there parameters are mainly properties that the user enters in the UI when configuring the connector
+                //For example:
+                "domainname": {
+                    "defaultValue": "domain name",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "apikey": {
+                    "defaultValue": "API Key",
+                    "type": "string",
+                    "minLength": 1
+                }
+            },
+            "variables": {
+                "_dataConnectorContentIdConnections": "[variables('_dataConnectorContentIdConnections')]"
+            },
+            "resources": [
+                {
+                    "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnections')))]",
+                    "apiVersion": "2022-01-01-preview",
+                    "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+                    "properties": {
+                        "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectors', variables('_dataConnectorContentIdConnections'))]",
+                        "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                        "kind": "ResourcesDataConnector",
+                        "version": "[variables('dataConnectorVersionConnections')]",
+                        "source": {
+                            "sourceId": "[variables('_solutionId')]",
+                            "name": "[variables('_solutionName')]",
+                            "kind": "Solution"
+                        },
+                        "author": {
+                            "name": "[variables('_solutionAuthor')]"
+                        },
+                        "support": {
+                            "name": "[variables('_solutionAuthor')]",
+                            "tier": "[variables('_solutionTier')]"
+                        }
+                    }
+                },
+                {
+                    "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'AtlassianJira')]", //Replace the last part of the name with your data connector name (if you want to be able to create several connection using this template you need to make this name dynamic (e.g., by concatentanating GUID)
+                    "apiVersion": "2022-12-01-preview",
+                    "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                    "location": "[parameters('workspace-location')]",
+                    "kind": "RestApiPoller",
+                    "properties": {
+                        // Enter your data connector properties here. If you want to use UI parameter use them in the following format "[[[paramters('paramName')]" (see example below)
+                        //Use parameters as needed. For example
+                        //For example:	
+                        "dataType": "Atlassian JIRA Audit API",
+                        "response": {
+                           "eventsJsonPaths": [
+                                "$"
+                            ],
+                            "format": "json"
+                        },
+                        "paging": {
+                            "pagingType": "LinkHeader"
+                        },
+                        "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                        "auth": {
+                           "apiKeyName": "Authorization",
+                            "ApiKey": "[[parameters('apikey')]",
+                            "apiKeyIdentifier": "SSWS",
+                            "type": "APIKey"
+                        },
+                        "request": {
+                            //   "apiEndpoint": "[[concat('https://',parameters('domainname'),'/api/v1/logs')]",
+                            //    "rateLimitQPS": 10,
+                            //   "queryWindowInMin": 5,
+                            //   "httpMethod": "GET",
+                            //    "retryCount": 3,
+                            //    "timeoutInSeconds": 60,
+                            //    "headers": {
+                            //        "Accept": "application/json",
+                            //        "User-Agent": "Scuba"
+                            //    },
+                            //    "startTimeAttributeName": "since",
+                            //    "endTimeAttributeName": "until"		     
+                            //},
+                            //"dcrConfig": {
+                            //    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                            //    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                            //    "streamName": "Custom-InputStream_CL" //This input stream should be the same as the inputStream property configured for the DataCollectionRule 
+                            //},
+                            //"isActive": true
+                        }
+                    }
+            ]
+        },
+        "packageKind": "Solution",
+        "packageVersion": "[variables('_solutionVersion')]",
+        "packageName": "[variables('_solutionName')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','rdc','-', uniqueString(concat(variables('_solutionId'),'-','ResourcesDataConnector','-',variables('_dataConnectorContentIdConnections'),'-', variables('dataConnectorVersionConnections'))))]",
+        "packageId": "[variables('_solutionId')]",
+        "contentSchemaVersion": "3.0.0",
+        "version": "[variables('_solutionVersion')]"
+    }
+}, {
+    "type": "Microsoft.OperationalInsights/workspaces/providers/contentPackages",
+    "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('_solutionId'))]",
+    "location": "[parameters('workspace-location')]",
+    "apiVersion": "2023-04-01-preview",
+    "properties": {
+        "version": "[variables('_solutionVersion')]",
+        "kind": "Solution",
+        "contentSchemaVersion": "3.0.0",
+        "contentId": "[variables('_solutionId')]",
+        "source": {
+            "kind": "Solution",
+            "name": "[variables('_solutionName')]",
+            "sourceId": "[variables('_solutionId')]"
+        },
+        "author": {
+            "name": "[variables('_solutionAuthor')]"
+        },
+        "support": {
+            "name": "[variables('_solutionAuthor')]"
+        },
+        "dependencies": {
+            "operator": "AND",
+            "criteria": [
+                {
+                    "kind": "DataConnector",
+                    "contentId": "[variables('dataConnectorVersionConnectorDefinition')]",
+                    "version": "[variables('_dataConnectorContentIdConnectorDefinition')]"
+                }
+            ]
+        },
+        "firstPublishDate": "2022-06-24",
+        "providers": [
+            "[variables('_solutionAuthor')]"
+        ],
+        "contentKind": "Solution",
+        "packageId": "[variables('_solutionId')]",
+        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]",
+        "displayName": "[variables('_solutionName')]",
+        "publisherDisplayName": "[variables('_solutionId')]",
+        "descriptionHtml": "test",
+        "icon": "[variables('_packageIcon')]"
+    }
+} ] }
