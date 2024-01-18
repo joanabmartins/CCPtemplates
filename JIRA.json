@@ -258,9 +258,21 @@
                                                 "type": "string"
                                             },
                                             {
-                                                "name": "published",
+                                                "name": "date",
                            	                     "type": "datetime"
                                             },
+                                               {
+                                                "name": "location",
+                           	                     "type": "string"
+                                            },
+                                               {
+                                                "name": "actor",
+                           	                     "type": "string"
+                                            },
+                                               {
+                                                "name": "activity",
+                           	                     "type": "datetime"
+                                            }
                                          ]
                                     }
                                 },
@@ -279,7 +291,7 @@
                                 "dataFlows": [
                                     {
                                         "streams": [
-                                            "Custom-InputStream_CL" //Note this should be the same as the streamDeclarations property value
+                                            "Custom-AtlassianJIRAStream_CL" //Note this should be the same as the streamDeclarations property value
                                         ],
                                         "destinations": [
                                             "clv2ws1"
@@ -312,14 +324,26 @@
                                     "name": "[variables('_logAnalyticsTableId1')]",
                                     "tableType": "CustomLog",
                                     "columns": [
-                                        {
-                                            "name": "Field1",
+                                         {
+                                            "name": "Date",
                                             "type": "string",
                                             "isDefaultDisplay": false,
                                             "isHidden": false
                                         },
                                         {
-                                            "name": "Field2",
+                                            "name": "Location",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "Actor",
+                                            "type": "dynamic",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "Activity",
                                             "type": "string",
                                             "isDefaultDisplay": false,
                                             "isHidden": false
