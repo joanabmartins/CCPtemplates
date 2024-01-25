@@ -8,44 +8,10 @@
             "metadata": {
                 "description": "Workspace name for Log Analytics where Microsoft Sentinel is setup"
             }
-        },
-        "dataCollectionEndpointName": {
-            "defaultValue": "",
-            "type": "string",
-            "metadata": {
-                "description": "DCE name"
-            }
-        },
-        "tokenEndpoint": {
-            "defaultValue": "https://wd3-impl-services1.workday.com/ccx/oauth2/<tenant>/token",
-            "type": "string",
-            "metadata": {
-                "description": "Token endpoint required for Workday authentication through Oauth 2.0 code flow."
-            }
-        },
-        "authorizationEndpoint": {
-            "defaultValue": "https://wd3-impl.workday.com/<tenant>/authorize",
-            "type": "string",
-            "metadata": {
-                "description": "Authorzation endpoint required for Workday authentication through Oauth 2.0 code flow."
-            }
-        },
-        "apiEndpoint": {
-            "defaultValue": "https://wd3-impl-services1.workday.com/ccx/api/privacy/v1/<tenant>/activityLogging",
-            "type": "string",
-            "metadata": {
-                "description": "Workday user activity Logs Rest Api endpoint."
-            }
-        },
-        "DCRName": {
-            "defaultValue": "workdayDCR",
-            "type": "string",
-            "metadata": {
-                "description": "Data Collection Rule Name"
-            }
         }
     },
     "variables": {
+        "DCRName": "WorkdayDCR",
         "workspaceResourceId": "[resourceId('microsoft.OperationalInsights/Workspaces', parameters('workspace'))]",
         "_solutionName": "Workday User Activity solution",
         "_solutionVersion": "1.0.0",
@@ -115,92 +81,12 @@
                             }
                         },
                         {
-                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',variables('_dataConnectorContentIdConnectorDefinition'))]",
-                            "apiVersion": "2022-09-01-preview",
-                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions",
-                            "location": "[variables('location')]",
-                            "kind": "Customizable",
-                            "properties": {
-                                "connectorUiConfig": {
-                                    "title": "Workday User Activity Logs",
-                                    "publisher": "Microsoft",
-                                    "descriptionMarkdown": "The Workday data connector provides the capability to ingest User Activity Logs from [Workday API](https://community.workday.com/sites/default/files/file-hosting/restapi/index.html#privacy/v1/get-/activityLogging) into Microsoft Sentinel.",
-                                    "graphQueriesTableName": "[variables('asimTableName')]",
-                                    "graphQueries": [
-                                        {
-                                            "metricName": "Total events received",
-                                            "legend": "Workday Activity Logs",
-                                            "baseQuery": "{{graphQueriesTableName}}\n| where EventProduct == \"Workday\""
-                                        }
-                                    ],
-                                    "sampleQueries": [
-                                        {
-                                            "description": "Get Sample of Workday Activity Logs",
-                                            "query": "{{graphQueriesTableName}}\n | where EventProduct == \"Workday\" | take 10"
-                                        }
-                                    ],
-                                    "dataTypes": [
-                                        {
-                                            "name": "{{graphQueriesTableName}}",
-                                            "lastDataReceivedQuery": "{{graphQueriesTableName}}\n | where EventProduct == \"Workday\"\n      | where TimeGenerated > ago(12h)    | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
-                                        }
-                                    ],
-                                    "connectivityCriteria": [
-                                        {
-                                            "type": "HasDataConnectors"
-                                        }
-                                    ],
-                                    "availability": {
-                                        "isPreview": false
-                                    },
-                                    "permissions": {
-                                        "resourceProvider": [
-                                            {
-                                                "provider": "Microsoft.OperationalInsights/workspaces",
-                                                "permissionsDisplayText": "Read and Write permissions are required.",
-                                                "providerDisplayName": "Workspace",
-                                                "scope": "Workspace",
-                                                "requiredPermissions": {
-                                                    "write": true,
-                                                    "read": true,
-                                                    "delete": true
-                                                }
-                                            }
-                                        ],
-                                        "customs": [
-                                            {
-                                                "name": "Workday API",
-                                                "description": "Permissions to access workday API to collect user activity logs are required. Secured by: System auditing; Scope: System."
-                                            }
-                                        ]
-                                    },
-                                    "instructionSteps": [
-                                        {
-                                            "description": "To enable the Workday connector to Microsoft Sentinel, provide the required information below and click on Connect.\n",
-                                            "instructions": [
-                                                {
-                                                    "type": "OAuthForm",
-                                                    "parameters": {
-                                                        "clientIdLabel": "Client ID",
-                                                        "clientSecretLabel": "Client Secret",
-                                                        "connectButtonLabel": "Connect",
-                                                        "disconnectButtonLabel": "Disconnect"
-                                                    }
-                                                }
-                                            ],
-                                            "title": "Connect to Workday to start collecting user activity logs to Microsoft Sentinel"
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            "name": "[parameters('DCRName')]",
+                            "name": "[variables('DCRName')]",
                             "apiVersion": "2021-09-01-preview",
                             "type": "Microsoft.Insights/dataCollectionRules",
                             "location": "[variables('location')]",
                             "properties": {
-                                "dataCollectionEndpointId": "[concat('/subscriptions/',variables('subscriptionID'),'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Insights/dataCollectionEndpoints/',parameters('dataCollectionEndpointName'))]",
+                                "dataCollectionEndpointId": "[concat('/subscriptions/',variables('subscriptionID'),'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Insights/dataCollectionEndpoints/',parameters('workspace'))]",
                                 "streamDeclarations": {
                                     "[concat('Custom-', variables('asimTableName'))]": {
                                         "columns": [
@@ -263,7 +149,7 @@
                                         "destinations": [
                                             "clv2ws1"
                                         ],
-                                        "transformKql": "source\n| extend TimeGenerated= requestTime, EventStartTime= requestTime, EventEndTime= requestTime\n | project-rename EventType= activityAction,  DvcIpAddr=ipAddress, DvcDescription=deviceType, EventOriginalUid= taskId, Operation= taskDisplayName, ActorUsername= systemAccount, ActorSessionId=sessionId, HttpUserAgent= userAgent\n | extend Object= tostring(target.descriptor), TargetAppId= tostring(target.id), TargetUrl= tostring(target.href), TargetAppName= tostring(target.descriptor), EventCount= toint(1), EventSchema= \"AuditEvent\", EventResult= \"NA\", EventProduct=\"Workday\", EventVendor=\"Workday\", EventSchemaVersion=\"0.1\",ObjectType=\"Other\", Dvc=DvcIpAddr ",
+                                        "transformKql": "source\n| extend TimeGenerated= requestTime, EventStartTime= requestTime, EventEndTime= requestTime\n | project-rename EventType= activityAction,  DvcIpAddr=ipAddress, DvcDescription=deviceType, EventOriginalUid= taskId, Operation= taskDisplayName, ActorUsername= systemAccount, ActorSessionId=sessionId, HttpUserAgent= userAgent\n | extend Object= tostring(target.descriptor), TargetAppId= tostring(target.id), TargetUrl= tostring(target.href), TargetDescription= tostring(target.descriptor), EventCount= toint(1), EventSchema= \"AuditEvent\", EventResult= \"NA\", EventProduct=\"Workday\", EventVendor=\"Workday\", EventSchemaVersion=\"0.1\",ObjectType=\"Other\", Dvc=DvcIpAddr | extend EventType = case(EventType == \"READ\",\"Read\", EventType == \"WRITE\",\"Set\", \"Other\") ",
                                         "outputStream": "[concat('Microsoft-', variables('asimTableName'))]"
                                     }
                                 ]
@@ -288,27 +174,27 @@
             "kind": "Customizable",
             "properties": {
                 "connectorUiConfig": {
-                    "title": "Workday User Activity Logs",
+                    "title": "Workday User Activity (Preview)",
                     "publisher": "Microsoft",
-                    "descriptionMarkdown": "The Workday data connector provides the capability to ingest User Activity Logs from [Workday API](https://community.workday.com/sites/default/files/file-hosting/restapi/index.html#privacy/v1/get-/activityLogging) into Microsoft Sentinel.",
-                    "graphQueriesTableName": "[variables('asimTableName')]",
+                    "descriptionMarkdown": "The [Workday](https://www.workday.com/) User Activity data connector provides the capability to ingest User Activity Logs from [Workday API](https://community.workday.com/sites/default/files/file-hosting/restapi/index.html#privacy/v1/get-/activityLogging) into Microsoft Sentinel.",
+                    "graphQueriesTableName": "ASimAuditEventLogs",
                     "graphQueries": [
                         {
-                            "metricName": "Total events received",
-                            "legend": "Workday Activity Logs",
+                            "metricName": "Total data received",
+                            "legend": "Workday User Activity logs",
                             "baseQuery": "{{graphQueriesTableName}}\n| where EventProduct == \"Workday\""
                         }
                     ],
                     "sampleQueries": [
                         {
-                            "description": "Get Sample of Workday Activity Logs",
+                            "description": "Get a sample of Workday User Activity logs",
                             "query": "{{graphQueriesTableName}}\n | where EventProduct == \"Workday\" | take 10"
                         }
                     ],
                     "dataTypes": [
                         {
                             "name": "{{graphQueriesTableName}}",
-                            "lastDataReceivedQuery": "{{graphQueriesTableName}}\n | where EventProduct == \"Workday\"\n      | where TimeGenerated > ago(12h)    | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
+                            "lastDataReceivedQuery": "{{graphQueriesTableName}}\n | where EventProduct == \"Workday\" |summarize Time = max  (TimeGenerated)\n|where isnotempty(Time)"
                         }
                     ],
                     "connectivityCriteria": [
@@ -335,15 +221,42 @@
                         ],
                         "customs": [
                             {
-                                "name": "Workday API",
-                                "description": "Permissions to access workday API to collect user activity logs are required. Secured by: System auditing; Scope: System."
+                                "name": "Workday User Activity API access",
+                                "description": "Access to the Workday user activity API through Oauth are required. The API Client need to have the scope: System and it needs to be authorized by an account with System Auditing permissions."
                             }
                         ]
                     },
                     "instructionSteps": [
                         {
-                            "description": "To enable the Workday connector to Microsoft Sentinel, provide the required information below and click on Connect.\n",
+                            "description": "In Workday, register an API Client with grant type Authorization Code. The scope needs to be System and the redirection URI is https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights. It needs to be authorized by an account with System Auditing permissions. \n Then, provide the required information below and click on Connect.\n>",
                             "instructions": [
+                                {
+                                    "type": "Textbox",
+                                    "parameters": {
+                                        "label": "Token Endpoint",
+                                        "placeholder": "https://wd2-impl-services1.workday.com/ccx/oauth2/{tenantName}/token",
+                                        "type": "text",
+                                        "name": "tokenEndpoint"
+                                    }
+                                },
+                                {
+                                    "type": "Textbox",
+                                    "parameters": {
+                                        "label": "Authorization Endpoint",
+                                        "placeholder": "https://impl.workday.com/{tenantName}/authorize",
+                                        "type": "text",
+                                        "name": "authorizationEndpoint"
+                                    }
+                                },
+                                {
+                                    "type": "Textbox",
+                                    "parameters": {
+                                        "label": "User Activity Logs Endpoint",
+                                        "placeholder": "https://wd2-impl-services1.workday.com/ccx/api/privacy/v1/{tenantName}/activityLogging",
+                                        "type": "text",
+                                        "name": "apiEndpoint"
+                                    }
+                                },
                                 {
                                     "type": "OAuthForm",
                                     "parameters": {
@@ -354,7 +267,7 @@
                                     }
                                 }
                             ],
-                            "title": "Connect to Workday to start collecting user activity logs to Microsoft Sentinel"
+                            "title": "Connect to Workday to start collecting user activity logs in Microsoft Sentinel"
                         }
                     ]
                 }
@@ -432,6 +345,27 @@
                                 "description": "authorization code"
                             }
                         },
+                        "tokenEndpoint": {
+                            "defaultValue": "",
+                            "type": "string",
+                            "metadata": {
+                                "description": "Token endpoint required for Workday authentication through Oauth 2.0. It could be something like this https://wd2-impl-services1.workday.com/ccx/oauth2/{tenant}/token, but you should check the endpoint urls by using \"View API Clients\" report in your Workday tenant."
+                            }
+                        },
+                        "authorizationEndpoint": {
+                            "defaultValue": "",
+                            "type": "string",
+                            "metadata": {
+                                "description": "Authorzation endpoint required for Workday authentication through Oauth 2.0 It could be something like this https://impl.workday.com/{tenant}/authorize, but you should check the endpoint urls by using \"View API Clients\" report in your Workday tenant."
+                            }
+                        },
+                        "apiEndpoint": {
+                            "defaultValue": "https://{wd2-impl-services1 or services1}.{workday or myworkday}.com/ccx/api/privacy/v1/{tenant}/activityLogging",
+                            "type": "string",
+                            "metadata": {
+                                "description": "Workday user activity logs Rest Api endpoint. The initial part of the url depends on the environment that you are using (production or non production). You can confirm if the initial part matches the token endpoint."
+                            }
+                        },
                         "connectorDefinitionName": {
                             "defaultValue": "",
                             "type": "string",
@@ -442,18 +376,6 @@
                         },
                         "workspace": {
                             "defaultValue": "[parameters('workspace')]",
-                            "type": "string"
-                        },
-                        "tokenEndpoint": {
-                            "defaultValue": "[parameters('tokenEndpoint')]",
-                            "type": "string"
-                        },
-                        "authorizationEndpoint": {
-                            "defaultValue": "[parameters('authorizationEndpoint')]",
-                            "type": "string"
-                        },
-                        "apiEndpoint": {
-                            "defaultValue": "[parameters('apiEndpoint')]",
                             "type": "string"
                         },
                         "dcrConfig": {
@@ -507,25 +429,20 @@
                                 },
                                 "auth": {
                                     "type": "OAuth2",
-                                    "IsClientSecretInHeader": "true",
-                                    "IsCredentialsInHeaders": "true",
                                     "ClientSecret": "[[parameters('clientSecret')]",
                                     "ClientId": "[[parameters('clientId')]",
                                     "AuthorizationCode": "[[parameters('authorizationCode')]",
                                     "GrantType": "authorization_code",
-                                    "TokenEndpoint": "[parameters('tokenEndpoint')]",
+                                    "TokenEndpoint": "[[parameters('tokenEndpoint')]",
                                     "tokenEndpointHeaders": {
                                         "Accept": "application/json",
                                         "Content-Type": "application/x-www-form-urlencoded"
                                     },
-                                    "authorizationEndpoint": "[parameters('authorizationEndpoint')]",
-                                    "authorizationEndpointQueryParameters": {
-                                        "redirect": "n"
-                                    },
+                                    "authorizationEndpoint": "[[parameters('authorizationEndpoint')]",
                                     "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
                                 },
                                 "request": {
-                                    "apiEndpoint": "[parameters('apiEndpoint')]",
+                                    "apiEndpoint": "[[parameters('apiEndpoint')]",
                                     "rateLimitQPS": 10,
                                     "queryWindowInMin": 5,
                                     "httpMethod": "GET",
@@ -553,8 +470,7 @@
                                     "eventsJsonPaths": [
                                         "$.data"
                                     ]
-                                },
-                                "isActive": true
+                                }
                             }
                         }
                     ]
