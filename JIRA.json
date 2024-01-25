@@ -208,10 +208,19 @@
                                                                     {
                                                                         "type": "Textbox",
                                                                         "parameters": {
+                                                                            "label": "Atlassian JIRA Organisation URL",
+                                                                            "placeholder": "Atlassian JIRA Organisation URL",
+                                                                            "type": "text",
+                                                                            "name": "jiraorganisationurl"
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "type": "Textbox",
+                                                                        "parameters": {
                                                                             "label": "JIRA user name",
                                                                             "placeholder": "JIRA user name (e.g., user@example.com)",
                                                                             "type": "text",
-                                                                            "name": "domainname"
+                                                                            "name": "jiraemailid"
                                                                         }
                                                                     },
                                                                     {
@@ -235,7 +244,7 @@
                             }
                         },
                         {
-                            "name": "AtlassianJiraAuditLogs", //Enter your DCR name
+                            "name": "AtlassianJIRADCR", //Enter your DCR name
                             "apiVersion": "2021-09-01-preview",
                             "type": "Microsoft.Insights/dataCollectionRules",
                             "location": "[parameters('workspace-location')]",
@@ -244,28 +253,52 @@
                                 //Enter your DCR properties here
                                 //For example
                                 "streamDeclarations": {
-                                    "Custom-AtlassianJIRAStream_CL": {
+                                    "Custom-JIRALogs_CL": {
                                         "columns": [
-                                            {
-                                                "name": "uuid",
-                                                "type": "string"
-                                            },
-                                            {
-                                                "name": "date",
-                                                "type": "datetime"
-                                            },
-                                            {
-                                                "name": "location",
-                                                "type": "string"
-                                            },
-                                            {
-                                                "name": "actor",
-                                                "type": "string"
-                                            },
-                                            {
-                                                "name": "activity",
-                                                "type": "datetime"
-                                            }
+                                    {
+                                        "name": "id",
+                                        "type": "int"
+                                    },
+                                    {
+                                        "name": "summary",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "created",
+                                        "type": "datetime"
+                                    },
+                                    {
+                                        "name": "category",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "eventSource",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "objectItem",
+                                        "type": "dynamic"
+                                    },
+                                    {
+                                        "name": "changedValues",
+                                        "type": "dynamic"
+                                    },
+                                    {
+                                        "name": "associatedItems",
+                                        "type": "dynamic"
+                                    },
+                                    {
+                                        "name": "remoteAddress",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "authorKey",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "authorAccountId",
+                                        "type": "string"
+                                    }
                                         ]
                                     }
                                 },
@@ -284,13 +317,13 @@
                                 "dataFlows": [
                                     {
                                         "streams": [
-                                            "Custom-AtlassianJIRAStream_CL" //Note this should be the same as the streamDeclarations property value
+                                            "Custom-JIRALogs_CL" //Note this should be the same as the streamDeclarations property value
                                         ],
                                         "destinations": [
                                             "clv2ws1"
                                         ],
-                                        "transformKql": "source | where ... | project ...",
-                                        "outputStream": "Custom-TableName_CL"
+                                        "transformKql": "source\n| project-rename  TimeGenerated = created, jiraid = id\n\n",
+                                        "outputStream": "Custom-JIRALogs_CL"
                                     }
                                 ],
                                 "provisioningState": "Succeeded",
@@ -317,28 +350,48 @@
                                     "tableType": "CustomLog",
                                     "columns": [
                                         {
-                                            "name": "Date",
-                                            "type": "string",
-                                            "isDefaultDisplay": false,
-                                            "isHidden": false
+                                            "name": "jiraid",
+                                            "type": "int"
                                         },
                                         {
-                                            "name": "Location",
-                                            "type": "string",
-                                            "isDefaultDisplay": false,
-                                            "isHidden": false
+                                            "name": "summary",
+                                            "type": "string"
                                         },
                                         {
-                                            "name": "Actor",
-                                            "type": "dynamic",
-                                            "isDefaultDisplay": false,
-                                            "isHidden": false
+                                            "name": "TimeGenerated",
+                                            "type": "datetime"
                                         },
                                         {
-                                            "name": "Activity",
-                                            "type": "string",
-                                            "isDefaultDisplay": false,
-                                            "isHidden": false
+                                            "name": "category",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "eventSource",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "objectItem",
+                                            "type": "dynamic"
+                                        },
+                                        {
+                                            "name": "changedValues",
+                                            "type": "dynamic"
+                                        },
+                                        {
+                                            "name": "associatedItems",
+                                            "type": "dynamic"
+                                        },
+                                        {
+                                            "name": "remoteAddress",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "authorKey",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "authorAccountId",
+                                            "type": "string"
                                         }
                                     ],
                                     "standardColumns": [
@@ -494,211 +547,222 @@
                     ]
                 }
             }
-        }, 
+        },
         {
-            
-    "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnectorDefinition')))]",
-    "apiVersion": "2022-01-01-preview",
-    "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
-    "properties": {
-        "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentIdConnectorDefinition'))]",
-        "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
-        "kind": "DataConnector",
-        "version": "[variables('dataConnectorVersionConnectorDefinition')]",
-        "source": {
-            "sourceId": "[variables('_solutionId')]",
-            "name": "[variables('_solutionName')]",
-            "kind": "Solution"
-        },
-        "author": {
-            "name": "[variables('_solutionAuthor')]"
-        },
-        "support": {
-            "name": "[variables('_solutionAuthor')]",
-            "tier": "[variables('_solutionTier')]"
-        },
-        "dependencies": {
-            "criteria": [
-                {
-                    "version": "[variables('dataConnectorVersionConnections')]",
-                    "contentId": "[variables('_dataConnectorContentIdConnections')]",
-                    "kind": "ResourcesDataConnector"
+
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnectorDefinition')))]",
+            "apiVersion": "2022-01-01-preview",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+            "properties": {
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentIdConnectorDefinition'))]",
+                "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
+                "kind": "DataConnector",
+                "version": "[variables('dataConnectorVersionConnectorDefinition')]",
+                "source": {
+                    "sourceId": "[variables('_solutionId')]",
+                    "name": "[variables('_solutionName')]",
+                    "kind": "Solution"
+                },
+                "author": {
+                    "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                    "name": "[variables('_solutionAuthor')]",
+                    "tier": "[variables('_solutionTier')]"
+                },
+                "dependencies": {
+                    "criteria": [
+                        {
+                            "version": "[variables('dataConnectorVersionConnections')]",
+                            "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                            "kind": "ResourcesDataConnector"
+                        }
+                    ]
                 }
-            ]
-        }
-    }
-}, {
-    "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
-    "apiVersion": "2023-04-01-preview",
-    "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('dataConnectorTemplateNameConnections'), variables('dataConnectorVersionConnections'))]",
-    "location": "[parameters('workspace-location')]",
-    "dependsOn": [
-        "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
-    ],
-    "properties": {
-        "contentId": "[variables('_dataConnectorContentIdConnections')]",
-        "displayName": "[concat(variables('_solutionName'), variables('dataConnectorTemplateNameConnections'))]",
-        "contentKind": "ResourcesDataConnector",
-        "mainTemplate": {
-            "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-            "contentVersion": "[variables('dataConnectorVersionConnections')]",
-            "parameters": {
-                "connectorDefinitionName": {
-                    "defaultValue": "connectorDefinitionName",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "workspace": {
-                    "defaultValue": "[parameters('workspace')]",
-                    "type": "string"
-                },
-                "dcrConfig": {
-                    "defaultValue": {
-                        "dataCollectionEndpoint": "data collection Endpoint",
-                        "dataCollectionRuleImmutableId": "data collection rule immutableId"
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+            "apiVersion": "2023-04-01-preview",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('dataConnectorTemplateNameConnections'), variables('dataConnectorVersionConnections'))]",
+            "location": "[parameters('workspace-location')]",
+            "dependsOn": [
+                "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+            ],
+            "properties": {
+                "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                "displayName": "[concat(variables('_solutionName'), variables('dataConnectorTemplateNameConnections'))]",
+                "contentKind": "ResourcesDataConnector",
+                "mainTemplate": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "[variables('dataConnectorVersionConnections')]",
+                    "parameters": {
+                        "connectorDefinitionName": {
+                            "defaultValue": "connectorDefinitionName",
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "workspace": {
+                            "defaultValue": "[parameters('workspace')]",
+                            "type": "string"
+                        },
+                        "dcrConfig": {
+                            "defaultValue": {
+                                "dataCollectionEndpoint": "data collection Endpoint",
+                                "dataCollectionRuleImmutableId": "data collection rule immutableId"
+                            },
+                            "type": "object"
+                        },
+                        //Enter additional parameters that are used by the data connector (there parameters are mainly properties that the user enters in the UI when configuring the connector
+                        //For example:
+                        "domainname": {
+                            "defaultValue": "domain name",
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "userid": {
+                            "defaultValue": "JIRA email",
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "apikey": {
+                            "defaultValue": "API Key",
+                            "type": "password",
+                            "minLength": 1
+                        }
+
                     },
-                    "type": "object"
-                },
-                //Enter additional parameters that are used by the data connector (there parameters are mainly properties that the user enters in the UI when configuring the connector
-                //For example:
-                "domainname": {
-                    "defaultValue": "domain name",
-                    "type": "string",
-                    "minLength": 1
-                },
-                "apikey": {
-                    "defaultValue": "API Key",
-                    "type": "string",
-                    "minLength": 1
-                }
-            },
-            "variables": {
-                "_dataConnectorContentIdConnections": "[variables('_dataConnectorContentIdConnections')]"
-            },
-            "resources": [
-                {
-                    "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnections')))]",
-                    "apiVersion": "2022-01-01-preview",
-                    "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
-                    "properties": {
-                        "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectors', variables('_dataConnectorContentIdConnections'))]",
-                        "contentId": "[variables('_dataConnectorContentIdConnections')]",
-                        "kind": "ResourcesDataConnector",
-                        "version": "[variables('dataConnectorVersionConnections')]",
-                        "source": {
-                            "sourceId": "[variables('_solutionId')]",
-                            "name": "[variables('_solutionName')]",
-                            "kind": "Solution"
+                    "variables": {
+                        "_dataConnectorContentIdConnections": "[variables('_dataConnectorContentIdConnections')]"
+                    },
+                    "resources": [
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnections')))]",
+                            "apiVersion": "2022-01-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+                            "properties": {
+                                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectors', variables('_dataConnectorContentIdConnections'))]",
+                                "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                                "kind": "ResourcesDataConnector",
+                                "version": "[variables('dataConnectorVersionConnections')]",
+                                "source": {
+                                    "sourceId": "[variables('_solutionId')]",
+                                    "name": "[variables('_solutionName')]",
+                                    "kind": "Solution"
+                                },
+                                "author": {
+                                    "name": "[variables('_solutionAuthor')]"
+                                },
+                                "support": {
+                                    "name": "[variables('_solutionAuthor')]",
+                                    "tier": "[variables('_solutionTier')]"
+                                }
+                            }
                         },
-                        "author": {
-                            "name": "[variables('_solutionAuthor')]"
-                        },
-                        "support": {
-                            "name": "[variables('_solutionAuthor')]",
-                            "tier": "[variables('_solutionTier')]"
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'AtlassianJira')]", //Replace the last part of the name with your data connector name (if you want to be able to create several connection using this template you need to make this name dynamic (e.g., by concatentanating GUID)
+                            "apiVersion": "2022-12-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[parameters('workspace-location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                // Enter your data connector properties here. If you want to use UI parameter use them in the following format "[[[paramters('paramName')]" (see example below)
+                                //Use parameters as needed. For example
+                                //For example:	
+                                "dataType": "Atlassian JIRA Audit API",
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.records"
+                                    ],
+                                    "format": "json"
+                                },
+                                "paging": {
+                                    "pagingType": "LinkHeader"
+                                },
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "auth": {
+                                    "type": "Basic",
+                                    "UserName": "[[parameters('username')]",
+                                    "Password": "[[parameters('password')]"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[[concat('https://',parameters('domainname'),'/rest/api/3/auditing/record')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
+                                    "headers": {
+                                        "Accept": "application/json",
+                                        "User-Agent": "Scuba"
+                                    },
+                                    "startTimeAttributeName": "from",
+                                    "endTimeAttributeName": "to"
+                                },
+
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "Custom-JiraLogs_CL" //This input stream should be the same as the inputStream property configured for the DataCollectionRule 
+                                },
+                                "isActive": true
+                            }
                         }
-                    }
+                    ]
                 },
-                {
-                    "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'AtlassianJira')]", //Replace the last part of the name with your data connector name (if you want to be able to create several connection using this template you need to make this name dynamic (e.g., by concatentanating GUID)
-                    "apiVersion": "2022-12-01-preview",
-                    "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
-                    "location": "[parameters('workspace-location')]",
-                    "kind": "RestApiPoller",
-                    "properties": {
-                        // Enter your data connector properties here. If you want to use UI parameter use them in the following format "[[[paramters('paramName')]" (see example below)
-                        //Use parameters as needed. For example
-                        //For example:	
-                        "dataType": "Atlassian JIRA Audit API",
-                        "response": {
-                           "eventsJsonPaths": [
-                                "$"
-                            ],
-                            "format": "json"
-                        },
-                        "paging": {
-                            "pagingType": "LinkHeader"
-                        },
-                        "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
-                        "auth": {
-                           "apiKeyName": "Authorization",
-                            "ApiKey": "[[parameters('apikey')]",
-                            "apiKeyIdentifier": "SSWS",
-                            "type": "APIKey"
-                        },
-                        "request": {
-                            //   "apiEndpoint": "[[concat('https://',parameters('domainname'),'/api/v1/logs')]",
-                            //    "rateLimitQPS": 10,
-                            //   "queryWindowInMin": 5,
-                            //   "httpMethod": "GET",
-                            //    "retryCount": 3,
-                            //    "timeoutInSeconds": 60,
-                            //    "headers": {
-                            //        "Accept": "application/json",
-                            //        "User-Agent": "Scuba"
-                            //    },
-                            //    "startTimeAttributeName": "since",
-                            //    "endTimeAttributeName": "until"		     
-                            //},
-                            //"dcrConfig": {
-                            //    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
-                            //    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
-                            //    "streamName": "Custom-InputStream_CL" //This input stream should be the same as the inputStream property configured for the DataCollectionRule 
-                            //},
-                            //"isActive": true
+                "packageKind": "Solution",
+                "packageVersion": "[variables('_solutionVersion')]",
+                "packageName": "[variables('_solutionName')]",
+                "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','rdc','-', uniqueString(concat(variables('_solutionId'),'-','ResourcesDataConnector','-',variables('_dataConnectorContentIdConnections'),'-', variables('dataConnectorVersionConnections'))))]",
+                "packageId": "[variables('_solutionId')]",
+                "contentSchemaVersion": "3.0.0",
+                "version": "[variables('_solutionVersion')]"
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/providers/contentPackages",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('_solutionId'))]",
+            "location": "[parameters('workspace-location')]",
+            "apiVersion": "2023-04-01-preview",
+            "properties": {
+                "version": "[variables('_solutionVersion')]",
+                "kind": "Solution",
+                "contentSchemaVersion": "3.0.0",
+                "contentId": "[variables('_solutionId')]",
+                "source": {
+                    "kind": "Solution",
+                    "name": "[variables('_solutionName')]",
+                    "sourceId": "[variables('_solutionId')]"
+                },
+                "author": {
+                    "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                    "name": "[variables('_solutionAuthor')]"
+                },
+                "dependencies": {
+                    "operator": "AND",
+                    "criteria": [
+                        {
+                            "kind": "DataConnector",
+                            "contentId": "[variables('dataConnectorVersionConnectorDefinition')]",
+                            "version": "[variables('_dataConnectorContentIdConnectorDefinition')]"
                         }
-                    }
-            ]
-        },
-        "packageKind": "Solution",
-        "packageVersion": "[variables('_solutionVersion')]",
-        "packageName": "[variables('_solutionName')]",
-        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','rdc','-', uniqueString(concat(variables('_solutionId'),'-','ResourcesDataConnector','-',variables('_dataConnectorContentIdConnections'),'-', variables('dataConnectorVersionConnections'))))]",
-        "packageId": "[variables('_solutionId')]",
-        "contentSchemaVersion": "3.0.0",
-        "version": "[variables('_solutionVersion')]"
-    }
-}, {
-    "type": "Microsoft.OperationalInsights/workspaces/providers/contentPackages",
-    "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('_solutionId'))]",
-    "location": "[parameters('workspace-location')]",
-    "apiVersion": "2023-04-01-preview",
-    "properties": {
-        "version": "[variables('_solutionVersion')]",
-        "kind": "Solution",
-        "contentSchemaVersion": "3.0.0",
-        "contentId": "[variables('_solutionId')]",
-        "source": {
-            "kind": "Solution",
-            "name": "[variables('_solutionName')]",
-            "sourceId": "[variables('_solutionId')]"
-        },
-        "author": {
-            "name": "[variables('_solutionAuthor')]"
-        },
-        "support": {
-            "name": "[variables('_solutionAuthor')]"
-        },
-        "dependencies": {
-            "operator": "AND",
-            "criteria": [
-                {
-                    "kind": "DataConnector",
-                    "contentId": "[variables('dataConnectorVersionConnectorDefinition')]",
-                    "version": "[variables('_dataConnectorContentIdConnectorDefinition')]"
-                }
-            ]
-        },
-        "firstPublishDate": "2022-06-24",
-        "providers": [
-            "[variables('_solutionAuthor')]"
-        ],
-        "contentKind": "Solution",
-        "packageId": "[variables('_solutionId')]",
-        "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]",
-        "displayName": "[variables('_solutionName')]",
-        "publisherDisplayName": "[variables('_solutionId')]",
-        "descriptionHtml": "test",
-        "icon": "[variables('_packageIcon')]"
-    }
-} ] }
+                    ]
+                },
+                "firstPublishDate": "2022-06-24",
+                "providers": [
+                    "[variables('_solutionAuthor')]"
+                ],
+                "contentKind": "Solution",
+                "packageId": "[variables('_solutionId')]",
+                "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]",
+                "displayName": "[variables('_solutionName')]",
+                "publisherDisplayName": "[variables('_solutionId')]",
+                "descriptionHtml": "test",
+                "icon": "[variables('_packageIcon')]"
+            }
+        }
+    ]
+}
