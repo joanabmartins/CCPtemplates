@@ -170,8 +170,12 @@
                                         ],
                                         "customs": [
                                             {
+                                                "name": "Atlassian Jira username",
+                                                "description": "Obtain your login email which would be used as the username. Your username should have permissions to fetch audit logs.Read the instructions on how authentication works in Atlassian Jira [here.](https://developer.okta.com/docs/reference/api/system-log/)."
+                                            },
+                                            {
                                                 "name": "Atlassian Jira API Token",
-                                                "description": "An Atlassian Jira username and API token. [Follow the following instructions to create an API token](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/).[See the documentation to learn more about Authentication in Atlassian Jira](https://developer.okta.com/docs/reference/api/system-log/)."
+                                                "description": "Follow the following instructions to create an API token(https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/)."
                                             }
                                         ]
 
@@ -185,9 +189,18 @@
                                                     "parameters": {
                                                         "mapping": [
                                                             {
-                                                                "columnName": "Atlassian JIRa Organisation URL",
+                                                                "columnName": "Atlassian Jira Organisation URL",
                                                                 "columnValue": "properties.request.apiEndpoint"
+                                                            },
+                                                            {
+                                                                "columnName": "User Name",
+                                                                "columnValue": "properties.request.auth.UserName"
+                                                            },
+                                                            {
+                                                                "columnName": "API Key",
+                                                                "columnValue": "properties.request.auth.Password"
                                                             }
+
                                                         ],
                                                         "menuItems": [
                                                             "DeleteConnector"
@@ -198,9 +211,9 @@
                                                     "type": "ContextPane",
                                                     "parameters": {
                                                         "isPrimary": true,
-                                                        "label": "Add domain",
-                                                        "title": "Add domain",
-                                                        "subtitle": "Add domain",
+                                                        "label": "Add organisation",
+                                                        "title": "Add organisation",
+                                                        "subtitle": "Add Atlassian Jira organisation",
                                                         "contextPaneType": "DataConnectorsContextPane",
                                                         "instructionSteps": [
                                                             {
@@ -208,8 +221,8 @@
                                                                     {
                                                                         "type": "Textbox",
                                                                         "parameters": {
-                                                                            "label": "Atlassian JIRA Organisation URL",
-                                                                            "placeholder": "Atlassian JIRA Organisation URL",
+                                                                            "label": "Atlassian Jira Organisation URL",
+                                                                            "placeholder": "Atlassian Jira Organisation URL",
                                                                             "type": "text",
                                                                             "name": "jiraorganisationurl"
                                                                         }
@@ -217,10 +230,10 @@
                                                                     {
                                                                         "type": "Textbox",
                                                                         "parameters": {
-                                                                            "label": "JIRA user name",
-                                                                            "placeholder": "JIRA user name (e.g., user@example.com)",
+                                                                            "label": "User Name",
+                                                                            "placeholder": "User Name (e.g., user@example.com)",
                                                                             "type": "text",
-                                                                            "name": "jiraemailid"
+                                                                            "name": "userid"
                                                                         }
                                                                     },
                                                                     {
@@ -228,7 +241,7 @@
                                                                         "parameters": {
                                                                             "label": "API Key",
                                                                             "placeholder": "API Key",
-                                                                            "type": "password",
+                                                                            "type": "string",
                                                                             "name": "apikey"
                                                                         }
                                                                     }
@@ -253,52 +266,52 @@
                                 //Enter your DCR properties here
                                 //For example
                                 "streamDeclarations": {
-                                    "Custom-JIRALogs_CL": {
+                                    "Custom-JiraLogs_CL": {
                                         "columns": [
-                                    {
-                                        "name": "id",
-                                        "type": "int"
-                                    },
-                                    {
-                                        "name": "summary",
-                                        "type": "string"
-                                    },
-                                    {
-                                        "name": "created",
-                                        "type": "datetime"
-                                    },
-                                    {
-                                        "name": "category",
-                                        "type": "string"
-                                    },
-                                    {
-                                        "name": "eventSource",
-                                        "type": "string"
-                                    },
-                                    {
-                                        "name": "objectItem",
-                                        "type": "dynamic"
-                                    },
-                                    {
-                                        "name": "changedValues",
-                                        "type": "dynamic"
-                                    },
-                                    {
-                                        "name": "associatedItems",
-                                        "type": "dynamic"
-                                    },
-                                    {
-                                        "name": "remoteAddress",
-                                        "type": "string"
-                                    },
-                                    {
-                                        "name": "authorKey",
-                                        "type": "string"
-                                    },
-                                    {
-                                        "name": "authorAccountId",
-                                        "type": "string"
-                                    }
+                                            {
+                                                "name": "id",
+                                                "type": "int"
+                                            },
+                                            {
+                                                "name": "summary",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "created",
+                                                "type": "datetime"
+                                            },
+                                            {
+                                                "name": "category",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "eventSource",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "objectItem",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "changedValues",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "associatedItems",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "remoteAddress",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "authorKey",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "authorAccountId",
+                                                "type": "string"
+                                            }
                                         ]
                                     }
                                 },
@@ -317,13 +330,13 @@
                                 "dataFlows": [
                                     {
                                         "streams": [
-                                            "Custom-JIRALogs_CL" //Note this should be the same as the streamDeclarations property value
+                                            "Custom-JiraLogs_CL" //Note this should be the same as the streamDeclarations property value
                                         ],
                                         "destinations": [
                                             "clv2ws1"
                                         ],
                                         "transformKql": "source\n| project-rename  TimeGenerated = created, jiraid = id\n\n",
-                                        "outputStream": "Custom-JIRALogs_CL"
+                                        "outputStream": "Custom-AtlassianJiraNativePollerV2_CL"
                                     }
                                 ],
                                 "provisioningState": "Succeeded",
@@ -423,7 +436,8 @@
                 "version": "[variables('_solutionVersion')]"
             }
         },
-        { //This is mandatory
+        //This is Mandatory
+        {
             "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',variables('_dataConnectorContentIdConnectorDefinition'))]",
             "apiVersion": "2022-09-01-preview",
             "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions",
@@ -484,8 +498,12 @@
                         ],
                         "customs": [
                             {
+                                "name": "Atlassian Jira username",
+                                "description": "Obtain your login email which would be used as the username. Your username should have permissions to fetch audit logs. Read the instructions on how authentication works in Atlassian Jira [here](https://developer.okta.com/docs/reference/api/system-log/)."
+                            },
+                            {
                                 "name": "Atlassian Jira API Token",
-                                "description": "An Atlassian Jira username and API token. [Follow the following instructions to create an API token](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/).[See the documentation to learn more about Authentication in Atlassian Jira](https://developer.okta.com/docs/reference/api/system-log/)."
+                                "description": "The instructions to create an API token are available [here](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/)."
                             }
                         ]
 
@@ -499,9 +517,10 @@
                                     "parameters": {
                                         "mapping": [
                                             {
-                                                "columnName": "Atlassian JIRa Organisation URL",
+                                                "columnName": "Atlassian Jira Organisation URL",
                                                 "columnValue": "properties.request.apiEndpoint"
                                             }
+
                                         ],
                                         "menuItems": [
                                             "DeleteConnector"
@@ -512,9 +531,9 @@
                                     "type": "ContextPane",
                                     "parameters": {
                                         "isPrimary": true,
-                                        "label": "Add domain",
-                                        "title": "Add domain",
-                                        "subtitle": "Add domain",
+                                        "label": "Add organisation",
+                                        "title": "Add organisation",
+                                        "subtitle": "Add Atlassian Jira organisation",
                                         "contextPaneType": "DataConnectorsContextPane",
                                         "instructionSteps": [
                                             {
@@ -522,10 +541,19 @@
                                                     {
                                                         "type": "Textbox",
                                                         "parameters": {
-                                                            "label": "JIRA user name",
-                                                            "placeholder": "JIRA user name (e.g., user@example.com)",
+                                                            "label": "Atlassian Jira Organisation URL",
+                                                            "placeholder": "Atlassian Jira Organisation URL",
                                                             "type": "text",
-                                                            "name": "domainname"
+                                                            "name": "jiraorganisationurl"
+                                                        }
+                                                    },
+                                                    {
+                                                        "type": "Textbox",
+                                                        "parameters": {
+                                                            "label": "User Name",
+                                                            "placeholder": "User Name (e.g., user@example.com)",
+                                                            "type": "text",
+                                                            "name": "userid"
                                                         }
                                                     },
                                                     {
@@ -533,7 +561,7 @@
                                                         "parameters": {
                                                             "label": "API Key",
                                                             "placeholder": "API Key",
-                                                            "type": "password",
+                                                            "type": "string",
                                                             "name": "apikey"
                                                         }
                                                     }
@@ -615,7 +643,7 @@
                         },
                         //Enter additional parameters that are used by the data connector (there parameters are mainly properties that the user enters in the UI when configuring the connector
                         //For example:
-                        "domainname": {
+                        "jiraorganisationurl": {
                             "defaultValue": "domain name",
                             "type": "string",
                             "minLength": 1
@@ -627,7 +655,7 @@
                         },
                         "apikey": {
                             "defaultValue": "API Key",
-                            "type": "password",
+                            "type": "string",
                             "minLength": 1
                         }
 
@@ -682,13 +710,13 @@
                                 "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
                                 "auth": {
                                     "type": "Basic",
-                                    "UserName": "[[parameters('username')]",
-                                    "Password": "[[parameters('password')]"
+                                    "UserName": "[[parameters('userid')]",
+                                    "Password": "[[parameters('apikey')]"
                                 },
                                 "request": {
-                                    "apiEndpoint": "[[concat('https://',parameters('domainname'),'/rest/api/3/auditing/record')]",
-                                    "rateLimitQPS": 10,
-                                    "queryWindowInMin": 5,
+                                    "apiEndpoint": "[[concat('https://',parameters('jiraorganisationurl'),'/rest/api/3/auditing/record')]",
+                                 //   "rateLimitQPS": 10,
+                                 //   "queryWindowInMin": 5,
                                     "httpMethod": "GET",
                                     "retryCount": 3,
                                     "timeoutInSeconds": 60,
