@@ -266,7 +266,7 @@
                                 //Enter your DCR properties here
                                 //For example
                                 "streamDeclarations": {
-                                    "Custom-JiraLogs_CL": {
+                                    "[concat('Custom-', variables('_logAnalyticsTableId1'))]": {
                                         "columns": [
                                             {
                                                 "name": "id",
@@ -330,13 +330,13 @@
                                 "dataFlows": [
                                     {
                                         "streams": [
-                                            "Custom-JiraLogs_CL" //Note this should be the same as the streamDeclarations property value
+                                            "[concat('Custom-', variables('_logAnalyticsTableId1'))]" //Note this should be the same as the streamDeclarations property value
                                         ],
                                         "destinations": [
                                             "clv2ws1"
                                         ],
                                         "transformKql": "source\n| project-rename  TimeGenerated = created, jiraid = id\n\n",
-                                        "outputStream": "Custom-AtlassianJiraNativePollerV2_CL"
+                                        "outputStream": "[concat('Custom-', variables('_logAnalyticsTableId1'))]" //Note this should be the same as the streamDeclarations property value
                                     }
                                 ],
                                 "provisioningState": "Succeeded",
@@ -697,15 +697,12 @@
                                 // Enter your data connector properties here. If you want to use UI parameter use them in the following format "[[[paramters('paramName')]" (see example below)
                                 //Use parameters as needed. For example
                                 //For example:	
-                                "dataType": "Atlassian JIRA Audit API",
+                                "dataType": "[variables('_logAnalyticsTableId1')]",
                                 "response": {
                                     "eventsJsonPaths": [
                                         "$.records"
                                     ],
                                     "format": "json"
-                                },
-                                "paging": {
-                                    "pagingType": "LinkHeader"
                                 },
                                 "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
                                 "auth": {
@@ -715,8 +712,8 @@
                                 },
                                 "request": {
                                     "apiEndpoint": "[[concat('https://',parameters('jiraorganisationurl'),'/rest/api/3/auditing/record')]",
-                                 //   "rateLimitQPS": 10,
-                                 //   "queryWindowInMin": 5,
+                                    //   "rateLimitQPS": 10,
+                                    //   "queryWindowInMin": 5,
                                     "httpMethod": "GET",
                                     "retryCount": 3,
                                     "timeoutInSeconds": 60,
@@ -726,13 +723,19 @@
                                         "User-Agent": "Scuba"
                                     },
                                     "startTimeAttributeName": "from",
-                                    "endTimeAttributeName": "to"
+                                    "endTimeAttributeName": "to",
+                                    "paging": {
+                                        "pagingType": "Offset",
+                                        "offsetParaName": "offset",
+                                        "pageSizeParaName": "limit",
+                                        "pageSize": 1000
+                                    }
                                 },
 
                                 "dcrConfig": {
                                     "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
                                     "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
-                                    "streamName": "Custom-JiraLogs_CL" //This input stream should be the same as the inputStream property configured for the DataCollectionRule 
+                                    "streamName": "[concat('Custom-', variables('_logAnalyticsTableId1'))]" //This input stream should be the same as the inputStream property configured for the DataCollectionRule 
                                 },
                                 "isActive": true
                             }
