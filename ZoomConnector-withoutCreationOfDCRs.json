@@ -11,9 +11,9 @@
         }
     },
     "variables": {
-        "DCRName": "SophosEndpointDCR",
+        "DCRName": "ZoomEndpointDCR",
         "workspaceResourceId": "[resourceId('microsoft.OperationalInsights/Workspaces', parameters('workspace'))]",
-        "_solutionName": "Sophos Endpoint Protection solution",
+        "_solutionName": "Zoom Logs solution",
         "_solutionVersion": "1.0.0",
         "_solutionAuthor": "Microsoft",
         "_packageIcon": "icon icon icon icon",
@@ -29,9 +29,9 @@
         "subscriptionId": "[last(split(subscription().id, '/'))]",
         "alertsApiEndpoint": ".central.sophos.com/siem/v1/alerts",
         "eventsApiEndpoint": ".central.sophos.com/siem/v1/events",
-        "sophosEventsTableName": "SophosEPEvents_CL",
+        "zoomEventsTableName": "Zoom_OperationLogs_CL",
         "sophosAlertsTableName": "SophosEPAlerts_CL",
-        "tokenEndpoint": "https://id.sophos.com/api/v2/oauth2/token"
+        "tokenEndpoint": "https://zoom.us/oauth/token"
     },
     "resources": [
         {
@@ -103,14 +103,14 @@
             "kind": "Customizable",
             "properties": {
                 "connectorUiConfig": {
-                    "title": "Sophos Endpoint Protection (using REST API) (Preview)",
+                    "title": "Zoom (using REST API) (Preview)",
                     "publisher": "Microsoft",
-                    "descriptionMarkdown": "The [Sophos Endpoint Protection](https://www.sophos.com/en-us/products/endpoint-antivirus.aspx) data connector provides the capability to ingest [Sophos events](https://developer.sophos.com/docs/siem-v1/1/routes/events/get) and [Sophos alerts](https://developer.sophos.com/docs/siem-v1/1/routes/alerts/get) into Microsoft Sentinel. Refer to [Sophos Central Admin documentation](https://docs.sophos.com/central/Customer/help/en-us/central/Customer/concepts/Logs.html) for more information.",
-                    "graphQueriesTableName": "[variables('sophosEventsTableName')]",
+                    "descriptionMarkdown": "The [Zoom ] for more information.",
+                    "graphQueriesTableName": "[variables('zoomEventsTableName')]",
                     "graphQueries": [
                         {
                             "metricName": "Total events received",
-                            "legend": "Sophos Endpoint Protection Event logs",
+                            "legend": "Zoom Endpoint Protection Event logs",
                             "baseQuery": "{{graphQueriesTableName}}"
                         },
                         {
@@ -135,7 +135,7 @@
                             "lastDataReceivedQuery": "{{graphQueriesTableName}}\n|summarize Time = max  (TimeGenerated)\n|where isnotempty(Time)"
                         },
                         {
-                            "name": "SophosEPAlerts_CL",
+                            "name": "EPAlerts_CL",
                             "lastDataReceivedQuery": "SophosAlerts_CL\n|summarize Time = max  (TimeGenerated)\n|where isnotempty(Time)"
                         }
                     ],
@@ -163,7 +163,7 @@
                         ],
                         "customs": [
                             {
-                                "name": "Sophos Endpoint Protection API access",
+                                "name": "Zoom Endpoint Protection API access",
                                 "description": "Access to the Sophos Endpoint Protection API through a service principal is required."
                             }
                         ]
@@ -409,11 +409,11 @@
                             "kind": "RestApiPoller",
                             "properties": {
                                 "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
-                                "dataType": "[variables('sophosEventsTableName')]",
+                                "dataType": "[variables('zoomEventsTableName')]",
                                 "dcrConfig": {
                                     "dataCollectionEndpoint": "<DCR-INGESTION-URL>",
                                     "dataCollectionRuleImmutableId": "<DCR IMMUTABLE ID>",
-                                    "streamName": "[concat('Custom-',variables('sophosEventsTableName'))]"
+                                    "streamName": "[concat('Custom-',variables('zoomEventsTableName'))]"
                                 },
                                 "auth": {
                                     "type": "OAuth2",
