@@ -335,7 +335,7 @@
                                         "destinations": [
                                             "clv2ws1"
                                         ],
-                                        "transformKql": "source\n| project-rename  TimeGenerated = created, jiraid = id\n\n",
+                                        "transformKql": "source\n| extend\n        TimeGenerated = now(),\n        EventVendor=\"Atlassian\",\n        EventProduct=\"Jira Audit\",\n        EventId=id,\n        EventMessage=summary,\n        SrcIpAddr=remoteAddress,\n        UserName=authorKey,\n        UserSid=authorAccountId,\n        EventCreationTime=created,\n        EventSource=eventSource,\n        ObjectItemId=objectItem.id,\n        ObjectItemName=objectItem.name,\n        ObjectItemTypeName=objectItem.typeName,\n        ChangedValues=changedValues,\n        AssociatedItems=associatedItems,\n        ObjectItemParentId=objectItem.parentId,\n        ObjectItemParentName=objectItem.parentName,\n        EventCategoryType= category\n               \n",
                                         "outputStream": "[concat('Custom-', variables('_logAnalyticsTableId1'))]" //Note this should be the same as the streamDeclarations property value
                                     }
                                 ],
