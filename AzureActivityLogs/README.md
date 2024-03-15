@@ -1,6 +1,6 @@
 I created this template, when I was just starting to study CCP. 
 
-It still uses the old template format with tempalte specs instead of being content template.
+It still uses the old template format with tempalte specs instead of content template.
 
 Azure activity logs are an easy source to get access to, so it was a nice way to start learning CCP without having to subscribe to trials.
 
