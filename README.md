@@ -10,19 +10,19 @@ As you navigate through the connector folders you may find different phases of d
 
 Here is a reference list of the types of authentication, pagination and special considerations that you may find in each connector:
 
-|                        | Authentication           | Pagination | Additional Considerations |
-|------------------------|--------------------------|------------|---------------------------|
-| **Workday**            | Oauth Authorization Code |            |                           |
-| **Sophos Endpoint**    | Oauth Client Credentials |            |                           |
-| **Jira**               | Basic                    |            |                           |
-| **Zoom**               | Oauth Both ways work     |            |                           |
-| **Oracle**             | Basic                    |            |                           |
-| **IBM Maximo**         | Api Key                  |            |                           |
-| **Trend Micro CAS**    | Api Key / token          |            |                           |
-| **Qualys**             | Basic                    |            |                           |
-| **Crowdstrike Falcon** | Oauth Client Credentials |            |                           |
-| **Salesforce**         | Oauth Authorization Code |            |                           |
-| **Google Workspace**   | Oauth Authorization Code |            |                           |
-| **Google IAM**         | Oauth Authorization Code |            |                           |
-| **Snowflake**          | Oauth Authorization Code |            |                           |
-| **Ali Cloud**          | Ali Cloud Signature      |            |                           |
+|                        | Authentication              | Pagination         | Additional Considerations                             |
+|------------------------|-----------------------------|--------------------|-------------------------------------------------------|
+| **Workday**            | Oauth Authorization Code    | Offset             |                                                       |
+| **Sophos Endpoint**    | Oauth Client Credentials    | Next Page Token    | Multiple Endpoints                                    |
+| **Jira**               | Basic                       | Offset             |                                                       |
+| **Zoom**               | Oauth both grant types work | Next Page Token    | Multiple Endpoints                                    |
+| **Oracle**             | Basic                       | Count Based Paging | Multiple Endpoints and environments                   |
+| **IBM Maximo**         | Api Key                     | Count Based Paging | Multiple Endpoints                                    |
+| **Trend Micro CAS**    | Api Key / token             | Link Header        | Multiple Endpoints                                    |
+| **Qualys**             | Basic                       | Link Header        | Response in XML                                       |
+| **Crowdstrike Falcon** | Oauth Client Credentials    |                    | Nested API - **not supported**                        |
+| **Salesforce**         | Oauth Authorization Code    |                    | Response in XML; Nested API - **not supported**        |
+| **Google Workspace**   | Oauth Authorization Code    | Next Page Token    | Complex parser - **not suited for prod**              |
+| **Google IAM**         | Oauth Authorization Code    | Next Page Token    |                                                       |
+| **Snowflake**          | Oauth Authorization Code    |                    |                                                       |
+| **Ali Cloud**          | Ali Cloud Signature         |                    | Proprietary authentication method - **not supported** |
