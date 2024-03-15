@@ -1,0 +1,732 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "defaultValue": "joanapersonallogs",
+            "type": "string",
+            "metadata": {
+                "description": "Workspace name for Log Analytics where Microsoft Sentinel is setup"
+            }
+        },
+        "logAnalyticsTableName": {
+            "defaultValue": "activitylogs2_CL",
+            "type": "string",
+            "metadata": {
+                "description": "Log Analytics table where the logs are going to (it needs to be created in advance)"
+            }
+        },
+        "DCRName": {
+            "defaultValue": "ActivityLogs2DCR",
+            "type": "string",
+            "metadata": {
+                "description": "Data Collection Rule Name"
+            }
+        },
+        "DCEName": {
+            "defaultValue": "customconnecto-DCE",
+            "type": "string",
+            "metadata": {
+                "description": "Data Collection Endpoint Name"
+            }
+        },
+        "dataConnectorTitle": {
+            "defaultValue": "ActivityLogs2",
+            "type": "string",
+            "metadata": {
+                "description": "Title of the data connector to appear in Sentinel"
+            }
+        },
+        "dataConnectorDescription": {
+            "defaultValue": "The activity lgos data connector provides the capability to ingest activity logs from Azure to Sentinel.",
+            "type": "string",
+            "metadata": {
+                "description": "Markdown description of the data connector to appear in Sentinel"
+            }
+        },
+        "dataConnectorPublisher": {
+            "defaultValue": "Joana",
+            "type": "string",
+            "metadata": {
+                "description": "Publisher of the data connector to appear in Sentinel"
+            }
+        },
+        "supportName": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "Name of the support team for this data connector."
+            }
+        },
+        "supportEmail": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "Email of the support team for this data connector."
+            }
+        },
+        "tokenEndpoint": {
+            "defaultValue": "https://login.microsoftonline.com/024be0d8-fb97-4bab-97b5-cb0f8d261c41/oauth2/v2.0/token",
+            "type": "String",
+            "metadata": {
+                "description": "Token endpoint required for AAD authentication through Oauth 2.0 client credentials."
+            }
+        },
+        "redirectUri": {
+            "defaultValue": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights",
+            "type": "String",
+            "metadata": {
+                "description": "Redirect URI  required for AAD authentication through Oauth 2.0 code flow."
+            }
+        },
+        "apiEndpoint": {
+            "defaultValue": "https://management.azure.com/subscriptions/d1ccc636-9d46-4b03-9a7c-61bf2c5a037e/providers/Microsoft.Insights/eventtypes/management/values",
+            "type": "String",
+            "metadata": {
+                "description": "Azure Activity logs Rest Api endpoint."
+            }
+        }
+    },
+    "variables": {
+        "solutionId": "activitylogs2-sentinel-test",
+        "_solutionId": "[variables('solutionId')]",
+        "workspaceResourceId": "[resourceId('microsoft.OperationalInsights/Workspaces', parameters('workspace'))]",
+        "uiConfigId1": "activitylogs2-sentinel-definition-test",
+        "_uiConfigId1": "[variables('uiConfigId1')]",
+        "dataConnectorContentId1": "activitylogs2-sentinel-definition-test",
+        "_dataConnectorContentId1": "[variables('dataConnectorContentId1')]",
+        "dataConnectorId1": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentId1'))]",
+        "_dataConnectorId1": "[variables('dataConnectorId1')]",
+        "dataConnectorTemplateSpecName1": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentId1')))]",
+        "dataConnectorVersion1": "1.0.0",
+        "dataConnectorContentId2": "activitylogs2-sentinel-apipoller-test",
+        "_dataConnectorContentId2": "[variables('dataConnectorContentId2')]",
+        "dataConnectorId2": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectors', variables('_dataConnectorContentId2'))]",
+        "_dataConnectorId2": "[variables('dataConnectorId2')]",
+        "dataConnectorTemplateSpecName2": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentId2')))]",
+        "dataConnectorVersion": "1.0.0",
+        "location": "[resourceGroup().location]",
+        "subscriptionID": "[last(split(subscription().id, '/'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/templateSpecs",
+            "apiVersion": "2021-05-01",
+            "name": "[variables('dataConnectorTemplateSpecName1')]",
+            "location": "[variables('location')]",
+            "tags": {
+                "hidden-sentinelWorkspaceId": "[variables('workspaceResourceId')]",
+                "hidden-sentinelContentType": "DataConnector"
+            },
+            "properties": {
+                "description": "[parameters('dataConnectorDescription')]",
+                "displayName": "[parameters('dataConnectorTitle')]"
+            }
+        },
+        {
+            "type": "Microsoft.Resources/templateSpecs/versions",
+            "apiVersion": "2021-05-01",
+            "name": "[concat(variables('dataConnectorTemplateSpecName1'),'/',variables('dataConnectorVersion1'))]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/templateSpecs', variables('dataConnectorTemplateSpecName1'))]"
+            ],
+            "tags": {
+                "hidden-sentinelWorkspaceId": "[variables('workspaceResourceId')]",
+                "hidden-sentinelContentType": "DataConnector"
+            },
+            "properties": {
+                "description": "Activity Logs data connector with template version 1.0.0",
+                "mainTemplate": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "[variables('dataConnectorVersion')]",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions",
+                            "apiVersion": "2022-09-01-preview",
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',variables('_dataConnectorContentId1'))]",
+                            "location": "[variables('location')]",
+                            "kind": "Customizable",
+                            "properties": {
+                                "connectorUiConfig": {
+                                    "id": "[variables('_uiConfigId1')]",
+                                    "title": "[parameters('dataConnectorTitle')]",
+                                    "publisher": "[parameters('dataConnectorPublisher')]",
+                                    "descriptionMarkdown": "[parameters('dataConnectorDescription')]",
+                                    "graphQueriesTableName": "[parameters('logAnalyticsTableName')]",
+                                    "graphQueries": [
+                                        {
+                                            "metricName": "Total events received",
+                                            "legend": "Activity Logs",
+                                            "baseQuery": "{{graphQueriesTableName}}"
+                                        }
+                                    ],
+                                    "sampleQueries": [
+                                        {
+                                            "description": "Get Sample of Activity Logs",
+                                            "query": "{{graphQueriesTableName}}\n | take 10"
+                                        }
+                                    ],
+                                    "dataTypes": [
+                                        {
+                                            "name": "{{graphQueriesTableName}}",
+                                            "lastDataReceivedQuery": "{{graphQueriesTableName}}\n       | where TimeGenerated > ago(12h)    | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
+                                        }
+                                    ],
+                                    "connectivityCriteria": [
+                                        {
+                                            "type": "HasDataConnectors"
+                                        }
+                                    ],
+                                    "availability": {
+                                        "isPreview": false
+                                    },
+                                    "permissions": {
+                                        "resourceProvider": [
+                                            {
+                                                "provider": "Microsoft.OperationalInsights/workspaces",
+                                                "permissionsDisplayText": "Read and Write permissions are required.",
+                                                "providerDisplayName": "Workspace",
+                                                "scope": "Workspace",
+                                                "requiredPermissions": {
+                                                    "write": true,
+                                                    "read": true,
+                                                    "delete": true
+                                                }
+                                            }
+                                        ],
+                                        "customs": [
+                                            {
+                                                "name": "Activity logs permissions",
+                                                "description": "Permissions to list logs from the azure subscription"
+                                            }
+                                        ]
+                                    },
+                                    "instructionSteps": [
+                                        {
+                                            "description": "Connect using OAuth2, please.",
+                                            "instructions": [
+                                                {
+                                                    "type": "OAuthForm",
+                                                    "parameters": {
+                                                        "clientIdLabel": "Client ID",
+                                                        "clientSecretLabel": "Client Secret",
+                                                        "connectButtonLabel": "Connect",
+                                                        "disconnectButtonLabel": "Disconnect"
+                                                    }
+                                                }
+                                            ],
+                                            "title": "Connect Azure Activity Logs to Microsoft Sentinel"
+                                        }
+                                    ]
+                                },
+                                "connectionsConfig": {
+                                    "templateSpecName": "[concat('/subscriptions/',variables('subscriptionID'),'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Resources/templateSpecs/',variables('dataConnectorTemplateSpecName2'))]",
+                                    "templateSpecVersion": "[variables('dataConnectorVersion')]"
+                                }
+                            }
+                        },
+                        {
+                            "name": "[parameters('logAnalyticsTableName')]",
+                            "type": "Microsoft.OperationalInsights/workspaces",
+                            "apiVersion": "2021-03-01-privatepreview",
+                            "location": "[variables('location')]",
+                            "tags": {},
+                            "properties": {
+                                "schema": {
+                                    "name": "[parameters('logAnalyticsTableName')]",
+                                    "columns": [
+                                        {
+                                            "name": "TimeGenerated",
+                                            "type": "Datetime",
+                                            "isDefaultDisplay": true,
+                                            "description": "The timestamp (UTC) reflecting the time in which the event was generated."
+                                        },
+                                        {
+                                            "name": "caller",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "channels",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "claims",
+                                            "type": "dynamic"
+                                        },
+                                        {
+                                            "name": "correlationId",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "description",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "eventDataId",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "eventName",
+                                            "type": "dynamic"
+                                        },
+                                        {
+                                            "name": "category",
+                                            "type": "dynamic"
+                                        },
+                                        {
+                                            "name": "level",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "resourceGroupName",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "resourceProviderName",
+                                            "type": "dynamic"
+                                        },
+                                        {
+                                            "name": "resourceId",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "resourceType",
+                                            "type": "dynamic"
+                                        },
+                                        {
+                                            "name": "operationId",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "operationName",
+                                            "type": "dynamic"
+                                        },
+                                        {
+                                            "name": "properties",
+                                            "type": "dynamic"
+                                        },
+                                        {
+                                            "name": "status",
+                                            "type": "dynamic"
+                                        },
+                                        {
+                                            "name": "subStatus",
+                                            "type": "dynamic"
+                                        },
+                                        {
+                                            "name": "submissionTimestamp",
+                                            "type": "datetime"
+                                        },
+                                        {
+                                            "name": "subscriptionId",
+                                            "type": "string"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[parameters('DCRName')]",
+                            "apiVersion": "2021-09-01-preview",
+                            "type": "Microsoft.Insights/dataCollectionRules",
+                            "location": "[variables('location')]",
+                            "properties": {
+                                "dataCollectionEndpointId": "[concat('/subscriptions/',variables('subscriptionID'),'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Insights/dataCollectionEndpoints/',parameters('DCEName'))]",
+                                "streamDeclarations": {
+                                    "[concat('Custom-', parameters('logAnalyticsTableName'))]": {
+                                        "columns": [
+                                            {
+                                                "name": "caller",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "channels",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "claims",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "correlationId",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "description",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "eventDataId",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "eventName",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "category",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "id",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "level",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "resourceGroupName",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "resourceProviderName",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "resourceId",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "resourceType",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "operationId",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "operationName",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "properties",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "status",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "subStatus",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "eventTimestamp",
+                                                "type": "datetime"
+                                            },
+                                            {
+                                                "name": "submissionTimestamp",
+                                                "type": "datetime"
+                                            },
+                                            {
+                                                "name": "subscriptionId",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "tenantId",
+                                                "type": "string"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "destinations": {
+                                    "logAnalytics": [
+                                        {
+                                            "workspaceResourceId": "[variables('workspaceResourceId')]",
+                                            "name": "clv2ws1"
+                                        }
+                                    ]
+                                },
+                                "dataFlows": [
+                                    {
+                                        "streams": [
+                                            "[concat('Custom-', parameters('logAnalyticsTableName'))]"
+                                        ],
+                                        "destinations": [
+                                            "clv2ws1"
+                                        ],
+                                        "transformKql": "source\n| extend TimeGenerated = eventTimestamp\n| project-away id,tenantId\n",
+                                        "outputStream": "[concat('Custom-', parameters('logAnalyticsTableName'))]"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+                            "apiVersion": "2022-01-01-preview",
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', last(split(variables('_dataConnectorId1'),'/'))))]",
+                            "properties": {
+                                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentId1'))]",
+                                "contentId": "[variables('_dataConnectorContentId1')]",
+                                "kind": "DataConnector",
+                                "version": "[variables('dataConnectorVersion')]",
+                                "source": {
+                                    "kind": "Solution",
+                                    "name": "[parameters('dataConnectorTitle')]",
+                                    "sourceId": "[variables('_solutionId')]"
+                                },
+                                "author": {
+                                    "name": "[parameters('dataConnectorPublisher')]"
+                                },
+                                "support": {
+                                    "name": "[parameters('supportName')]",
+                                    "email": "[parameters('supportEmail')]"
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions",
+            "apiVersion": "2022-09-01-preview",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',variables('_dataConnectorContentId1'))]",
+            "location": "[variables('location')]",
+            "kind": "Customizable",
+            "properties": {
+                "connectorUiConfig": {
+                    "id": "[variables('_uiConfigId1')]",
+                    "title": "[parameters('dataConnectorTitle')]",
+                    "publisher": "[parameters('dataConnectorPublisher')]",
+                    "descriptionMarkdown": "[parameters('dataConnectorDescription')]",
+                    "graphQueriesTableName": "[parameters('logAnalyticsTableName')]",
+                    "graphQueries": [
+                        {
+                            "metricName": "Total events received",
+                            "legend": "Activity Logs",
+                            "baseQuery": "{{graphQueriesTableName}}"
+                        }
+                    ],
+                    "sampleQueries": [
+                        {
+                            "description": "Get Sample of Activity Logs",
+                            "query": "{{graphQueriesTableName}}\n | take 10"
+                        }
+                    ],
+                    "dataTypes": [
+                        {
+                            "name": "{{graphQueriesTableName}}",
+                            "lastDataReceivedQuery": "{{graphQueriesTableName}}\n       | where TimeGenerated > ago(12h)    | summarize Time = max(TimeGenerated)\n            | where isnotempty(Time)"
+                        }
+                    ],
+                    "connectivityCriteria": [
+                        {
+                            "type": "HasDataConnectors"
+                        }
+                    ],
+                    "availability": {
+                        "isPreview": false
+                    },
+                    "permissions": {
+                        "resourceProvider": [
+                            {
+                                "provider": "Microsoft.OperationalInsights/workspaces",
+                                "permissionsDisplayText": "Read and Write permissions are required.",
+                                "providerDisplayName": "Workspace",
+                                "scope": "Workspace",
+                                "requiredPermissions": {
+                                    "write": true,
+                                    "read": true,
+                                    "delete": true
+                                }
+                            }
+                        ],
+                        "customs": [
+                            {
+                                "name": "Activity logs permissions",
+                                "description": "Permissions to list logs from the azure subscription"
+                            }
+                        ]
+                    },
+                    "instructionSteps": [
+                        {
+                            "description": "Connect using OAuth2, please.",
+                            "instructions": [
+                                {
+                                    "type": "OAuthForm",
+                                    "parameters": {
+                                        "clientIdLabel": "Client ID",
+                                        "clientSecretLabel": "Client Secret",
+                                        "connectButtonLabel": "Connect",
+                                        "disconnectButtonLabel": "Disconnect"
+                                    }
+                                }
+                            ],
+                            "title": "Connect Azure Activity Logs to Microsoft Sentinel"
+                        }
+                    ]
+                },
+                "connectionsConfig": {
+                    "templateSpecName": "[concat('/subscriptions/',variables('subscriptionID'),'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Resources/templateSpecs/',variables('dataConnectorTemplateSpecName2'))]",
+                    "templateSpecVersion": "[variables('dataConnectorVersion')]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/templateSpecs",
+            "apiVersion": "2021-05-01",
+            "name": "[variables('dataConnectorTemplateSpecName2')]",
+            "location": "[variables('location')]",
+            "tags": {
+                "hidden-sentinelWorkspaceId": "[variables('workspaceResourceId')]",
+                "hidden-sentinelContentType": "DataConnector"
+            },
+            "properties": {
+                "description": "[parameters('dataConnectorDescription')]",
+                "displayName": "[parameters('dataConnectorTitle')]"
+            }
+        },
+        {
+            "type": "Microsoft.Resources/templateSpecs/versions",
+            "apiVersion": "2021-05-01",
+            "name": "[concat(variables('dataConnectorTemplateSpecName2'),'/',variables('dataConnectorVersion'))]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/templateSpecs', variables('dataConnectorTemplateSpecName2'))]"
+            ],
+            "tags": {
+                "hidden-sentinelWorkspaceId": "[variables('workspaceResourceId')]",
+                "hidden-sentinelContentType": "DataConnector"
+            },
+            "properties": {
+                "description": "[parameters('dataConnectorDescription')]",
+                "mainTemplate": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "[variables('dataConnectorVersion')]",
+                    "parameters": {
+                        "clientSecret": {
+                            "defaultValue": "-NA-",
+                            "type": "string",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "clientSecret"
+                            }
+                        },
+                        "clientId": {
+                            "defaultValue": "-NA-",
+                            "type": "string",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "ClientId"
+                            }
+                        },
+                        "authorizationCode": {
+                            "defaultValue": "-NA-",
+                            "type": "string",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "authorization code"
+                            }
+                        },
+                        "connectorDefinitionName": {
+                            "defaultValue": "",
+                            "type": "string",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "connectorDefinitionName"
+                            }
+                        },
+                        "workspace": {
+                            "defaultValue": "[parameters('workspace')]",
+                            "type": "string"
+                        },
+                        "dataConnectorTitle": {
+                            "defaultValue": "[parameters('dataConnectorTitle')]",
+                            "type": "string"
+                        },
+                        "tokenEndpoint": {
+                            "defaultValue": "[parameters('tokenEndpoint')]",
+                            "type": "string"
+                        },
+                        "redirectUri": {
+                            "defaultValue": "[parameters('redirectUri')]",
+                            "type": "string"
+                        },
+                        "apiEndpoint": {
+                            "defaultValue": "[parameters('apiEndpoint')]",
+                            "type": "string"
+                        },
+                        "logAnalyticsTableName": {
+                            "defaultValue": "[parameters('logAnalyticsTableName')]",
+                            "type": "string"
+                        },
+                        "dcrConfig": {
+                            "type": "object",
+                            "defaultValue": {
+                                "dataCollectionEndpoint": "data collection Endpoint",
+                                "dataCollectionRuleImmutableId": "data collection rule immutableId"
+                            }
+                        }
+                    },
+                    "variables": {
+                        "location": "[variables('location')]",
+                        "dataConnectorContentId2": "[variables('dataConnectorContentId2')]"
+                    },
+                    "resources": [
+                        {
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "apiVersion": "2021-10-01-preview",
+                            "name": "[[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('dataConnectorContentId2'))]",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[parameters('logAnalyticsTableName')]",
+                                "dcrConfig": {
+                                    "streamName": "[concat('Custom-',parameters('logAnalyticsTableName'))]",
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "GrantType": "client_credentials",
+                                    "TokenEndpoint": "[parameters('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "redirectUri": "[parameters('redirectUri')]",
+                                    "scope": "https://management.azure.com/.default"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[parameters('apiEndpoint')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json",
+                                        "x-ms-version": "2019-07-07",
+                                        "authorization": "bearer"
+                                    },
+                                    "queryParameters": {
+                                        "$filter": "eventTimestamp ge '{_QueryWindowStartTime}' and eventTimestamp le '{_QueryWindowEndTime}'",
+                                        "api-version": "2015-04-01"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "LinkHeader"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.value"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}

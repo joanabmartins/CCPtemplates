@@ -1,0 +1,46 @@
+{
+    "kind": "admin#reports#activity",
+    "id": {
+        "time": "2024-01-12T14:30:57.743Z",
+        "uniqueQualifier": "-5346988607429149851",
+        "applicationName": "admin",
+        "customerId": "C00nt9820"
+    },
+    "etag": "\"sgN-ZL0DA0oYN0h9jOHoX9vGnrwVRenUV-awS03N_Ls/QiRutGPPC_o_jxM-82RkSAsFCUM\"",
+    "actor": {
+        "callerType": "USER",
+        "email": "ccpsentinel@joanaepedro.com",
+        "profileId": "105250110470812218855"
+    },
+    "ipAddress": "2001:818:dc69:4d00:7484:3d43:26f7:b45e",
+    "events": [
+        {
+            "type": "USER_SETTINGS",
+            "name": "CHANGE_PASSWORD",
+            "parameters": [
+                {
+                    "name": "USER_EMAIL",
+                    "value": "miguel@joanaepedro.com"
+                }
+            ]
+        },
+        {
+            "type": "USER_SETTINGS",
+            "name": "CHANGE_PASSWORD_ON_NEXT_LOGIN",
+            "parameters": [
+                {
+                    "name": "USER_EMAIL",
+                    "value": "miguel@joanaepedro.com"
+                },
+                {
+                    "name": "OLD_VALUE",
+                    "value": "false"
+                },
+                {
+                    "name": "NEW_VALUE",
+                    "value": "true"
+                }
+            ]
+        }
+    ]
+}

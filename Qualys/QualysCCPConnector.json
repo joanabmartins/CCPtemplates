@@ -1,0 +1,596 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "Workspace name for Log Analytics where Microsoft Sentinel is setup"
+            }
+        }
+    },
+    "variables": {
+        "DCRName": "QualysVM-DCR",
+        "workspaceResourceId": "[resourceId('microsoft.OperationalInsights/Workspaces', parameters('workspace'))]",
+        "_solutionName": "Qualys Vulnerability Management solution",
+        "_solutionVersion": "1.0.0",
+        "_solutionAuthor": "Microsoft",
+        "_packageIcon": "icon icon icon icon",
+        "_solutionId": "azuresentinel.azure-sentinel-solution-azuresentinel.azure-sentinel-QualysVM",
+        "dataConnectorVersionConnectorDefinition": "1.0.0",
+        "dataConnectorVersionConnections": "1.0.0",
+        "_solutionTier": "Microsoft",
+        "_dataConnectorContentIdConnectorDefinition": "QualysVMTemplateConnectorDefinition",
+        "dataConnectorTemplateNameConnectorDefinition": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnectorDefinition')))]",
+        "_dataConnectorContentIdConnections": "QualysVMTemplateConnections",
+        "dataConnectorTemplateNameConnections": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnections')))]",
+        "laTableName": "QualysVM_CL",
+        "location": "[resourceGroup().location]",
+        "subscriptionId": "[last(split(subscription().id, '/'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+            "apiVersion": "2023-04-01-preview",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('dataConnectorTemplateNameConnectorDefinition'), variables('dataConnectorVersionConnectorDefinition'))]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+            ],
+            "properties": {
+                "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
+                "displayName": "[concat(variables('_solutionName'), variables('dataConnectorTemplateNameConnectorDefinition'))]",
+                "contentKind": "DataConnector",
+                "mainTemplate": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "[variables('dataConnectorVersionConnectorDefinition')]",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnectorDefinition')))]",
+                            "apiVersion": "2022-01-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+                            "properties": {
+                                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentIdConnectorDefinition'))]",
+                                "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
+                                "kind": "DataConnector",
+                                "version": "[variables('dataConnectorVersionConnectorDefinition')]",
+                                "source": {
+                                    "sourceId": "[variables('_solutionId')]",
+                                    "name": "[variables('_solutionName')]",
+                                    "kind": "Solution"
+                                },
+                                "author": {
+                                    "name": "[variables('_solutionAuthor')]"
+                                },
+                                "support": {
+                                    "name": "[variables('_solutionAuthor')]",
+                                    "tier": "[variables('_solutionTier')]"
+                                },
+                                "dependencies": {
+                                    "criteria": [
+                                        {
+                                            "version": "[variables('dataConnectorVersionConnections')]",
+                                            "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                                            "kind": "ResourcesDataConnector"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[variables('DCRName')]",
+                            "apiVersion": "2021-09-01-preview",
+                            "type": "Microsoft.Insights/dataCollectionRules",
+                            "location": "[variables('location')]",
+                            "properties": {
+                                "dataCollectionEndpointId": "[concat('/subscriptions/',variables('subscriptionID'),'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Insights/dataCollectionEndpoints/',parameters('workspace'))]",
+                                "streamDeclarations": {
+                                    "[concat('Custom-', variables('laTableName'))]": {
+                                        "columns": [
+                                            {
+                                                "name": "ID",
+                                                "type": "int"
+                                            },
+                                            {
+                                                "name": "IP",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "TRACKING_METHOD",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "LAST_SCAN_DATETIME",
+                                                "type": "datetime"
+                                            },
+                                            {
+                                                "name": "LAST_VM_SCANNED_DATE",
+                                                "type": "datetime"
+                                            },
+                                            {
+                                                "name": "LAST_VM_SCANNED_DURATION",
+                                                "type": "int"
+                                            },
+                                            {
+                                                "name": "DETECTION_LIST",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "OS",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "DNS",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "NETBIOS",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "QG_HOSTID",
+                                                "type": "dynamic"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "dataSources": {},
+                                "destinations": {
+                                    "logAnalytics": [
+                                        {
+                                            "workspaceResourceId": "[variables('workspaceResourceId')]",
+                                            "name": "clv2ws1"
+                                        }
+                                    ]
+                                },
+                                "dataFlows": [
+                                    {
+                                        "streams": [
+                                            "[concat('Custom-', variables('laTableName'))]"
+                                        ],
+                                        "destinations": [
+                                            "clv2ws1"
+                                        ],
+                                        "transformKql": "source\n| extend TimeGenerated= LAST_SCAN_DATETIME\n| extend Detections= DETECTION_LIST.DETECTION\n| project-rename HostId= ID, IpAddress= IP, TrackingMethod= TRACKING_METHOD, LastScanDateTime= LAST_SCAN_DATETIME, LastVMScannedDateTime= LAST_VM_SCANNED_DATE, LastVMScannedDuration= LAST_VM_SCANNED_DURATION \n | extend OperatingSystem= tostring(OS.['#cdata-section']), DnsName = tostring(DNS.['#cdata-section']), NetBios= tostring(NETBIOS.['#cdata-section']), QGHostId= tostring(QG_HOSTID.['#cdata-section']) \n| project-away DETECTION_LIST, OS, DNS, NETBIOS",
+                                        "outputStream": "[concat('Custom-', variables('laTableName'))]"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "[variables('laTableName')]",
+                            "type": "Microsoft.OperationalInsights/workspaces",
+                            "apiVersion": "2021-03-01-privatepreview",
+                            "location": "[variables('location')]",
+                            "tags": {},
+                            "properties": {
+                                "schema": {
+                                    "name": "[variables('laTableName')]",
+                                    "columns": [
+                                        {
+                                            "name": "HostId",
+                                            "type": "int",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "IpAddress",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "LastScanDateTime",
+                                            "type": "datetime",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "LastVMScannedDateTime",
+                                            "type": "datetime",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "LastVMScannedDuration",
+                                            "type": "int",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "TrackingMethod",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "OperatingSystem",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "DnsName",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "NetBios",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "QGHostId",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "TimeGenerated",
+                                            "type": "datetime",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "Detections",
+                                            "type": "dynamic",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                "packageKind": "Solution",
+                "packageVersion": "[variables('_solutionVersion')]",
+                "packageName": "[variables('_solutionName')]",
+                "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','dc','-', uniqueString(concat(variables('_solutionId'),'-','DataConnector','-',variables('_dataConnectorContentIdConnectorDefinition'),'-', variables('dataConnectorVersionConnectorDefinition'))))]",
+                "packageId": "[variables('_solutionId')]",
+                "contentSchemaVersion": "3.0.0",
+                "version": "[variables('_solutionVersion')]"
+            }
+        },
+        {
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',variables('_dataConnectorContentIdConnectorDefinition'))]",
+            "apiVersion": "2022-09-01-preview",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions",
+            "location": "[variables('location')]",
+            "kind": "Customizable",
+            "properties": {
+                "connectorUiConfig": {
+                    "title": "Qualys Vulnerability Management (using REST API) (Preview)",
+                    "publisher": "Microsoft",
+                    "descriptionMarkdown": "The [Qualys Vulnerability Management](https://www.qualys.com/apps/vulnerability-management-detection-response/) data connector provides the capability to ingest vulnerability host detection data into Microsoft Sentinel through the Qualys API. The connector provides visibility into host detection data from vulerability scans.",
+                    "graphQueriesTableName": "[variables('laTableName')]",
+                    "graphQueries": [
+                        {
+                            "metricName": "Total data received",
+                            "legend": "Qualys Vulnerability Management logs",
+                            "baseQuery": "{{graphQueriesTableName}}\n"
+                        }
+                    ],
+                    "sampleQueries": [
+                        {
+                            "description": "Get a sample of Qualys Vulnerability Management logs",
+                            "query": "{{graphQueriesTableName}}\n | take 10"
+                        }
+                    ],
+                    "dataTypes": [
+                        {
+                            "name": "{{graphQueriesTableName}}",
+                            "lastDataReceivedQuery": "{{graphQueriesTableName}}\n | summarize Time = max  (TimeGenerated)\n|where isnotempty(Time)"
+                        }
+                    ],
+                    "connectivityCriteria": [
+                        {
+                            "type": "HasDataConnectors"
+                        }
+                    ],
+                    "availability": {
+                        "isPreview": false
+                    },
+                    "permissions": {
+                        "resourceProvider": [
+                            {
+                                "provider": "Microsoft.OperationalInsights/workspaces",
+                                "permissionsDisplayText": "Read and Write permissions are required.",
+                                "providerDisplayName": "Workspace",
+                                "scope": "Workspace",
+                                "requiredPermissions": {
+                                    "write": true,
+                                    "read": true,
+                                    "delete": true
+                                }
+                            }
+                        ],
+                        "customs": [
+                            {
+                                "name": "Qualys Vulnerability Management API access",
+                                "description": "Access to the Qualys VM API is required."
+                            }
+                        ]
+                    },
+                    "instructionSteps": [
+                        {
+                            "description": "Access to the Qualys VM API is required. \n1) Log into the Qualys Vulnerability Management console with an administrator account, select the **Users** tab and the **Users** subtab. \n2) Click on the **New** drop-down menu and select **Users**.\n3) Create a username and password for the API account.\n4) In the **User Roles** tab, ensure the account role is set to **Manager** and access is allowed to **GUI** and **API**.\n5) Log out of the administrator account and log into the console with the new API credentials for validation, then log out of the API account.\n6) Log back into the console using an administrator account and modify the API accounts User Roles, removing access to **GUI**.\n7) Save all changes.",
+                            "instructions": [
+                                {
+                                    "type": "Textbox",
+                                    "parameters": {
+                                        "label": "Qualys URL",
+                                        "placeholder": "https://qualysguard.qg2.apps.qualys.eu",
+                                        "type": "text",
+                                        "name": "qualysURL"
+                                    }
+                                },
+                                {
+                                    "type": "Textbox",
+                                    "parameters": {
+                                        "label": "username",
+                                        "placeholder": "mcrsf5am10",
+                                        "type": "text",
+                                        "name": "username"
+                                    }
+                                },
+                                {
+                                    "type": "Textbox",
+                                    "parameters": {
+                                        "label": "password",
+                                        "placeholder": "password",
+                                        "type": "password",
+                                        "name": "password"
+                                    }
+                                },
+                                {
+                                    "parameters": {
+                                        "label": "toggle",
+                                        "name": "toggle"
+                                    },
+                                    "type": "ConnectionToggleButton"
+                                }
+                            ],
+                            "title": "Connect to Qualys Vulnerability Management to start collecting logs in Microsoft Sentinel"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnectorDefinition')))]",
+            "apiVersion": "2022-01-01-preview",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+            "properties": {
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentIdConnectorDefinition'))]",
+                "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
+                "kind": "DataConnector",
+                "version": "[variables('dataConnectorVersionConnectorDefinition')]",
+                "source": {
+                    "sourceId": "[variables('_solutionId')]",
+                    "name": "[variables('_solutionName')]",
+                    "kind": "Solution"
+                },
+                "author": {
+                    "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                    "name": "[variables('_solutionAuthor')]",
+                    "tier": "[variables('_solutionTier')]"
+                },
+                "dependencies": {
+                    "criteria": [
+                        {
+                            "version": "[variables('dataConnectorVersionConnections')]",
+                            "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                            "kind": "ResourcesDataConnector"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+            "apiVersion": "2023-04-01-preview",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('dataConnectorTemplateNameConnections'), variables('dataConnectorVersionConnections'))]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+            ],
+            "properties": {
+                "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                "displayName": "[concat(variables('_solutionName'), variables('dataConnectorTemplateNameConnections'))]",
+                "contentKind": "ResourcesDataConnector",
+                "mainTemplate": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "[variables('dataConnectorVersionConnections')]",
+                    "parameters": {
+                        "username": {
+                            "defaultValue": "-NA-",
+                            "type": "string",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "Qualys Username"
+                            }
+                        },
+                        "password": {
+                            "defaultValue": "-NA-",
+                            "type": "string",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "Qualys Password"
+                            }
+                        },
+                        "qualysURL": {
+                            "defaultValue": "-NA-",
+                            "type": "string",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "Qualys URL"
+                            }
+                        },
+                        "connectorDefinitionName": {
+                            "defaultValue": "",
+                            "type": "string",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "connectorDefinitionName"
+                            }
+                        },
+                        "workspace": {
+                            "defaultValue": "[parameters('workspace')]",
+                            "type": "string"
+                        },
+                        "dcrConfig": {
+                            "type": "object",
+                            "defaultValue": {
+                                "dataCollectionEndpoint": "data collection Endpoint",
+                                "dataCollectionRuleImmutableId": "data collection rule immutableId"
+                            }
+                        }
+                    },
+                    "variables": {
+                        "_dataConnectorContentIdConnections": "[variables('_dataConnectorContentIdConnections')]"
+                    },
+                    "resources": [
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnections')))]",
+                            "apiVersion": "2022-01-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+                            "properties": {
+                                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectors', variables('_dataConnectorContentIdConnections'))]",
+                                "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                                "kind": "ResourcesDataConnector",
+                                "version": "[variables('dataConnectorVersionConnections')]",
+                                "source": {
+                                    "sourceId": "[variables('_solutionId')]",
+                                    "name": "[variables('_solutionName')]",
+                                    "kind": "Solution"
+                                },
+                                "author": {
+                                    "name": "[variables('_solutionAuthor')]"
+                                },
+                                "support": {
+                                    "name": "[variables('_solutionAuthor')]",
+                                    "tier": "[variables('_solutionTier')]"
+                                }
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'Qualys')]",
+                            "apiVersion": "2022-12-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('laTableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('laTableName'))]"
+                                },
+                                "auth": {
+                                    "type": "Basic",
+                                    "userName": "[[parameters('username')]",
+                                    "password": "[[parameters('password')]"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[[concat(parameters('qualysURL'),'/api/2.0/fo/asset/host/vm/detection/')]",
+                                    "queryTimeFormat": "yyyy-MM-ddTHH:mm:ssZ",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json",
+                                        "X-Requested-With": "Microsoft-Sentinel"
+                                    },
+                                    "StartTimeAttributeName": "vm_processed_after",
+                                    "EndTimeAttributeName": "vm_processed_before",
+                                    "queryParameters": {
+                                        "action": "list",
+                                        "vm_processed_after": "{_QueryWindowStartTime}",
+                                        "vm_processed_before": "{_QueryWindowEndTime}",
+                                        "status": "New,Active,Fixed,Re-Opened",
+                                        "show_results": 1,
+                                        "show_igs": 0
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "LinkHeader",
+                                    "pageSizeParameterName": "truncation_limit",
+                                    "pageSize": 1000,
+                                    "linkHeaderTokenJsonPath": "$.HOST_LIST_VM_DETECTION_OUTPUT.RESPONSE.WARNING.URL.__cdata"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.HOST_LIST_VM_DETECTION_OUTPUT.RESPONSE.HOST_LIST.HOST"
+                                    ],
+                                    "format": "xml"
+                                }
+                            }
+                        }
+                    ]
+                },
+                "packageKind": "Solution",
+                "packageVersion": "[variables('_solutionVersion')]",
+                "packageName": "[variables('_solutionName')]",
+                "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','rdc','-', uniqueString(concat(variables('_solutionId'),'-','ResourcesDataConnector','-',variables('_dataConnectorContentIdConnections'),'-', variables('dataConnectorVersionConnections'))))]",
+                "packageId": "[variables('_solutionId')]",
+                "contentSchemaVersion": "3.0.0",
+                "version": "[variables('_solutionVersion')]"
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/providers/contentPackages",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('_solutionId'))]",
+            "location": "[variables('location')]",
+            "apiVersion": "2023-04-01-preview",
+            "properties": {
+                "version": "[variables('_solutionVersion')]",
+                "kind": "Solution",
+                "contentSchemaVersion": "3.0.0",
+                "contentId": "[variables('_solutionId')]",
+                "source": {
+                    "kind": "Solution",
+                    "name": "[variables('_solutionName')]",
+                    "sourceId": "[variables('_solutionId')]"
+                },
+                "author": {
+                    "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                    "name": "[variables('_solutionAuthor')]"
+                },
+                "dependencies": {
+                    "operator": "AND",
+                    "criteria": [
+                        {
+                            "kind": "DataConnector",
+                            "contentId": "[variables('dataConnectorVersionConnectorDefinition')]",
+                            "version": "[variables('_dataConnectorContentIdConnectorDefinition')]"
+                        }
+                    ]
+                },
+                "firstPublishDate": "2022-06-24",
+                "providers": [
+                    "[variables('_solutionAuthor')]"
+                ],
+                "contentKind": "Solution",
+                "packageId": "[variables('_solutionId')]",
+                "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]",
+                "displayName": "[variables('_solutionName')]",
+                "publisherDisplayName": "[variables('_solutionId')]",
+                "descriptionHtml": "test",
+                "icon": "[variables('_packageIcon')]"
+            }
+        }
+    ]
+}

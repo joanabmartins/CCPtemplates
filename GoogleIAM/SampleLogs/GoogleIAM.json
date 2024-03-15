@@ -1,0 +1,32 @@
+[
+    {
+        "systemAccount": "v-araji@microsoft.com",
+        "taskDisplayName": "Start New Session (Web Service)",
+        "ipAddress": "4.246.151.13",
+        "target": {
+            "descriptor": "v-araji@microsoft.com / Adedolapo Raji",
+            "id": "de7845d92e13101df59bbdb84e0f0001"
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0",
+        "sessionId": "994a0c",
+        "taskId": "03f043df676e40cfad46bc576f89b07f",
+        "activityAction": "READ",
+        "requestTime": "2023-11-30T11:52:33.848Z",
+        "deviceType": "Desktop"
+    },
+    {
+        "systemAccount": "v-araji@microsoft.com",
+        "taskDisplayName": "Get OMS Session Data (Web Service)",
+        "ipAddress": "4.246.151.13",
+        "target": {
+            "descriptor": "v-araji@microsoft.com / Adedolapo Raji",
+            "id": "de7845d92e13101df59bbdb84e0f0001"
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0",
+        "sessionId": "994a0c",
+        "taskId": "dc1bea8c446c11de98360015c5e6daf6",
+        "activityAction": "READ",
+        "requestTime": "2023-11-30T11:52:33.942Z",
+        "deviceType": "Desktop"
+    }
+]

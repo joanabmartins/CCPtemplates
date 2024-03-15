@@ -1,0 +1,1918 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "defaultValue": "",
+            "type": "String",
+            "metadata": {
+                "description": "Workspace name for Log Analytics where Microsoft Sentinel is setup"
+            }
+        }
+    },
+    "variables": {
+        "DCRName": "GoogleWorkspaceDCR",
+        "workspaceResourceId": "[resourceId('microsoft.OperationalInsights/Workspaces', parameters('workspace'))]",
+        "_solutionName": "Google Workspace Activities solution",
+        "_solutionVersion": "1.0.0",
+        "_solutionAuthor": "Microsoft",
+        "_packageIcon": "icon icon icon icon",
+        "_solutionId": "azuresentinel.azure-sentinel-solution-azuresentinel.azure-sentinel-googleworkspace",
+        "dataConnectorVersionConnectorDefinition": "1.0.0",
+        "dataConnectorVersionConnections": "1.0.0",
+        "_solutionTier": "Microsoft",
+        "_dataConnectorContentIdConnectorDefinition": "GoogleWorkspaceTemplateConnectorDefinition",
+        "dataConnectorTemplateNameConnectorDefinition": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnectorDefinition')))]",
+        "_dataConnectorContentIdConnections": "GoogleWorkspaceTemplateConnections",
+        "dataConnectorTemplateNameConnections": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnections')))]",
+        "tableName": "GoogleWorkspace_CL",
+        "location": "[resourceGroup().location]",
+        "subscriptionId": "[last(split(subscription().id, '/'))]",
+        "tokenEndpoint": "https://accounts.google.com/o/oauth2/token",
+        "authorizationEndpoint": "https://accounts.google.com/o/oauth2/auth",
+        "apiEndpoint": "https://admin.googleapis.com/admin/reports/v1/activity/users/all/applications/"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+            "apiVersion": "2023-10-01-preview",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('dataConnectorTemplateNameConnectorDefinition'), variables('dataConnectorVersionConnectorDefinition'))]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+            ],
+            "properties": {
+                "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
+                "displayName": "[concat(variables('_solutionName'), variables('dataConnectorTemplateNameConnectorDefinition'))]",
+                "contentKind": "DataConnector",
+                "mainTemplate": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "[variables('dataConnectorVersionConnectorDefinition')]",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnectorDefinition')))]",
+                            "apiVersion": "2022-01-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+                            "properties": {
+                                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentIdConnectorDefinition'))]",
+                                "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
+                                "kind": "DataConnector",
+                                "version": "[variables('dataConnectorVersionConnectorDefinition')]",
+                                "source": {
+                                    "sourceId": "[variables('_solutionId')]",
+                                    "name": "[variables('_solutionName')]",
+                                    "kind": "Solution"
+                                },
+                                "author": {
+                                    "name": "[variables('_solutionAuthor')]"
+                                },
+                                "support": {
+                                    "name": "[variables('_solutionAuthor')]",
+                                    "tier": "[variables('_solutionTier')]"
+                                },
+                                "dependencies": {
+                                    "criteria": [
+                                        {
+                                            "version": "[variables('dataConnectorVersionConnections')]",
+                                            "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                                            "kind": "ResourcesDataConnector"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[variables('tableName')]",
+                            "type": "Microsoft.OperationalInsights/workspaces",
+                            "apiVersion": "2021-03-01-privatepreview",
+                            "location": "[variables('location')]",
+                            "tags": {},
+                            "properties": {
+                                "schema": {
+                                    "name": "[variables('tableName')]",
+                                    "columns": [
+                                        {
+                                            "name": "TimeGenerated",
+                                            "type": "Datetime",
+                                            "isDefaultDisplay": true,
+                                            "description": "The timestamp (UTC) reflecting the time in which the event was generated."
+                                        },
+                                        {
+                                            "name": "eventKind",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "ownerDomain",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "eventId",
+                                            "type": "dynamic"
+                                        },
+                                        {
+                                            "name": "etag",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "actor",
+                                            "type": "dynamic"
+                                        },
+                                        {
+                                            "name": "ipAddress",
+                                            "type": "string"
+                                        },
+                                        {
+                                            "name": "events",
+                                            "type": "dynamic"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[variables('DCRName')]",
+                            "apiVersion": "2021-09-01-preview",
+                            "type": "Microsoft.Insights/dataCollectionRules",
+                            "location": "[variables('location')]",
+                            "properties": {
+                                "dataCollectionEndpointId": "[concat('/subscriptions/',variables('subscriptionID'),'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Insights/dataCollectionEndpoints/',parameters('workspace'))]",
+                                "streamDeclarations": {
+                                    "[concat('Custom-', variables('tableName'))]": {
+                                        "columns": [
+                                            {
+                                                "name": "TimeGenerated",
+                                                "type": "datetime"
+                                            },
+                                            {
+                                                "name": "kind",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "ownerDomain",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "id",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "etag",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "actor",
+                                                "type": "dynamic"
+                                            },
+                                            {
+                                                "name": "ipAddress",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "events",
+                                                "type": "dynamic"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "destinations": {
+                                    "logAnalytics": [
+                                        {
+                                            "workspaceResourceId": "[variables('workspaceResourceId')]",
+                                            "name": "clv2ws1"
+                                        }
+                                    ]
+                                },
+                                "dataFlows": [
+                                    {
+                                        "streams": [
+                                            "[concat('Custom-', variables('tableName'))]"
+                                        ],
+                                        "destinations": [
+                                            "clv2ws1"
+                                        ],
+                                        "transformKql": "source\n| project-rename eventId=id\n| extend TimeGenerated = todatetime(parse_json(eventId).['time']) \n | project-rename eventKind= ['kind']\n\n",
+                                        "outputStream": "[concat('Custom-', variables('tableName'))]"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "packageKind": "Solution",
+                "packageVersion": "[variables('_solutionVersion')]",
+                "packageName": "[variables('_solutionName')]",
+                "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','dc','-', uniqueString(concat(variables('_solutionId'),'-','DataConnector','-',variables('_dataConnectorContentIdConnectorDefinition'),'-', variables('dataConnectorVersionConnectorDefinition'))))]",
+                "packageId": "[variables('_solutionId')]",
+                "contentSchemaVersion": "3.0.0",
+                "version": "[variables('_solutionVersion')]"
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions",
+            "apiVersion": "2022-09-01-preview",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',variables('_dataConnectorContentIdConnectorDefinition'))]",
+            "location": "[variables('location')]",
+            "kind": "Customizable",
+            "properties": {
+                "connectorUiConfig": {
+                    "title": "Google Workspace Activities (Preview)",
+                    "publisher": "Microsoft",
+                    "descriptionMarkdown": "The [Google Workspace](https://workspace.google.com/) Activities data connector provides the capability to ingest Activity Logs from [Google Workspace API](https://developers.google.com/admin-sdk/reports/reference/rest/v1/activities/list) into Microsoft Sentinel.",
+                    "graphQueriesTableName": "[variables('tableName')]",
+                    "graphQueries": [
+                        {
+                            "metricName": "Total data received",
+                            "legend": "Google Workspace Activity logs",
+                            "baseQuery": "{{graphQueriesTableName}}\n"
+                        }
+                    ],
+                    "sampleQueries": [
+                        {
+                            "description": "Get a sample of Google Workspace Activity logs",
+                            "query": "{{graphQueriesTableName}}\n | take 10"
+                        }
+                    ],
+                    "dataTypes": [
+                        {
+                            "name": "{{graphQueriesTableName}}",
+                            "lastDataReceivedQuery": "{{graphQueriesTableName}}\n | summarize Time = max  (TimeGenerated)\n|where isnotempty(Time)"
+                        }
+                    ],
+                    "connectivityCriteria": [
+                        {
+                            "type": "HasDataConnectors"
+                        }
+                    ],
+                    "availability": {
+                        "isPreview": false
+                    },
+                    "permissions": {
+                        "resourceProvider": [
+                            {
+                                "provider": "Microsoft.OperationalInsights/workspaces",
+                                "permissionsDisplayText": "Read and Write permissions are required.",
+                                "providerDisplayName": "Workspace",
+                                "scope": "Workspace",
+                                "requiredPermissions": {
+                                    "write": true,
+                                    "read": true,
+                                    "delete": true
+                                }
+                            }
+                        ],
+                        "customs": [
+                            {
+                                "name": "Google Workspace API access",
+                                "description": "Access to the Google Workspace activities API through Oauth are required."
+                            }
+                        ]
+                    },
+                    "instructionSteps": [
+                        {
+                            "description": "Configure steps for the Google Reports API oauth access. Then, provide the required information below and click on Connect.\n>",
+                            "instructions": [
+                                {
+                                    "type": "ContextPane",
+                                    "parameters": {
+                                        "isPrimary": true,
+                                        "label": "Add workspace",
+                                        "title": "Add Google Workspace",
+                                        "subtitle": "Add Google Workspace",
+                                        "contextPaneType": "DataConnectorsContextPane",
+                                        "instructionSteps": [
+                                            {
+                                                "instructions": [
+                                                    {
+                                                        "type": "Textbox",
+                                                        "parameters": {
+                                                            "label": "Google Workspace Domain Name",
+                                                            "placeholder": "Google Workspace Domain Name (e.g., yourdomain.com)",
+                                                            "type": "text",
+                                                            "name": "domainName"
+                                                        }
+                                                    },
+                                                    {
+                                                        "type": "Textbox",
+                                                        "parameters": {
+                                                            "label": "Client ID",
+                                                            "placeholder": "Client ID",
+                                                            "type": "text",
+                                                            "name": "clientId"
+                                                        }
+                                                    },
+                                                    {
+                                                        "type": "Textbox",
+                                                        "parameters": {
+                                                            "label": "Client Secret",
+                                                            "placeholder": "Client Secret",
+                                                            "type": "text",
+                                                            "name": "clientSecret"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "type": "DataConnectorsGrid",
+                                    "parameters": {
+                                        "mapping": [
+                                            {
+                                                "columnName": "domain Name",
+                                                "columnValue": "properties.domainName"
+                                            },
+                                            {
+                                                "columnValue": "name",
+                                                "columnName": "Name"
+                                            },
+                                            {
+                                                "columnName": "Endpoint",
+                                                "columnValue": "properties.request.apiEndpoint"
+                                            }
+                                        ],
+                                        "menuItems": [
+                                            "DeleteConnector"
+                                        ]
+                                    }
+                                }
+                            ],
+                            "title": "Connect to Google Workspace to start collecting user activity logs in Microsoft Sentinel"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+            "apiVersion": "2022-01-01-preview",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnectorDefinition')))]",
+            "properties": {
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentIdConnectorDefinition'))]",
+                "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
+                "kind": "DataConnector",
+                "version": "[variables('dataConnectorVersionConnectorDefinition')]",
+                "source": {
+                    "sourceId": "[variables('_solutionId')]",
+                    "name": "[variables('_solutionName')]",
+                    "kind": "Solution"
+                },
+                "author": {
+                    "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                    "name": "[variables('_solutionAuthor')]",
+                    "tier": "[variables('_solutionTier')]"
+                },
+                "dependencies": {
+                    "criteria": [
+                        {
+                            "version": "[variables('dataConnectorVersionConnections')]",
+                            "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                            "kind": "ResourcesDataConnector"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+            "apiVersion": "2023-10-01-preview",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('dataConnectorTemplateNameConnections'), variables('dataConnectorVersionConnections'))]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+            ],
+            "properties": {
+                "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                "displayName": "[concat(variables('_solutionName'), variables('dataConnectorTemplateNameConnections'))]",
+                "contentKind": "ResourcesDataConnector",
+                "mainTemplate": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "[variables('dataConnectorVersionConnections')]",
+                    "parameters": {
+                        "clientSecret": {
+                            "defaultValue": "-NA-",
+                            "type": "string",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "clientSecret"
+                            }
+                        },
+                        "clientId": {
+                            "defaultValue": "-NA-",
+                            "type": "string",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "ClientId"
+                            }
+                        },
+                        "authorizationCode": {
+                            "defaultValue": "-NA-",
+                            "type": "string",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "authorization code"
+                            }
+                        },
+                        "connectorDefinitionName": {
+                            "defaultValue": "",
+                            "type": "string",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "connectorDefinitionName"
+                            }
+                        },
+                        "workspace": {
+                            "defaultValue": "[parameters('workspace')]",
+                            "type": "string"
+                        },
+                        "dcrConfig": {
+                            "type": "object",
+                            "defaultValue": {
+                                "dataCollectionEndpoint": "data collection Endpoint",
+                                "dataCollectionRuleImmutableId": "data collection rule immutableId"
+                            }
+                        },
+                        "domainName": {
+                            "defaultValue": "-NA-",
+                            "type": "string",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "domain Name"
+                            }
+                        }
+                    },
+                    "variables": {
+                        "_dataConnectorContentIdConnections": "[variables('_dataConnectorContentIdConnections')]"
+                    },
+                    "resources": [
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnections')))]",
+                            "apiVersion": "2022-01-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+                            "properties": {
+                                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectors', variables('_dataConnectorContentIdConnections'))]",
+                                "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                                "kind": "ResourcesDataConnector",
+                                "version": "[variables('dataConnectorVersionConnections')]",
+                                "source": {
+                                    "sourceId": "[variables('_solutionId')]",
+                                    "name": "[variables('_solutionName')]",
+                                    "kind": "Solution"
+                                },
+                                "author": {
+                                    "name": "[variables('_solutionAuthor')]"
+                                },
+                                "support": {
+                                    "name": "[variables('_solutionAuthor')]",
+                                    "tier": "[variables('_solutionTier')]"
+                                }
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceAccessTransparency')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "domainName": "[[parameters('domainName')]",
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'access_transparency')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceAdmin')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'admin')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceCalendar')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'calendar')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceChat')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'chat')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceDrive')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'drive')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceGCP')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'gcp')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceGPlus')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'gplus')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceGroups')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'groups')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceGroupsEnterprise')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'groups_enterprise')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceJamboard')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'jamboard')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceLogin')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'login')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceMeet')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'meet')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceMobile')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'mobile')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceRules')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'rules')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceSAML')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'saml')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceToken')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'token')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceUserAccounts')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'user_accounts')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceContextAwareAccess')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'context_aware_access')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceChrome')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'chrome')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceDataStudio')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'data_studio')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'GoogleWorkspaceKeep')]",
+                            "apiVersion": "2023-02-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('tableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('tableName'))]"
+                                },
+                                "auth": {
+                                    "type": "OAuth2",
+                                    "IsClientSecretInHeader": "true",
+                                    "IsCredentialsInHeaders": "true",
+                                    "ClientSecret": "[[parameters('clientSecret')]",
+                                    "ClientId": "[[parameters('clientId')]",
+                                    "AuthorizationCode": "[[parameters('authorizationCode')]",
+                                    "GrantType": "authorization_code",
+                                    "TokenEndpoint": "[variables('tokenEndpoint')]",
+                                    "tokenEndpointHeaders": {
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "authorizationEndpoint": "[variables('authorizationEndpoint')]",
+                                    "authorizationEndpointQueryParameters": {
+                                        "prompt": "consent",
+                                        "access_type": "offline"
+                                    },
+                                    "scope": "https://www.googleapis.com/auth/admin.reports.audit.readonly",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[concat(variables('apiEndpoint'),'keep')]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "StartTimeAttributeName": "startTime",
+                                    "EndTimeAttributeName": "endTime",
+                                    "queryParameters": {
+                                        "maxResults": 1000,
+                                        "startTime": "{_QueryWindowStartTime}",
+                                        "endTime": "{_QueryWindowEndTime}"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "NextPageToken",
+                                    "nextPageTokenJsonPath": "$.nextPageToken",
+                                    "nextPageParaName": "pageToken"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.items"
+                                    ]
+                                },
+                                "isActive": true
+                            }
+                        }
+                    ]
+                },
+                "packageKind": "Solution",
+                "packageVersion": "[variables('_solutionVersion')]",
+                "packageName": "[variables('_solutionName')]",
+                "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','rdc','-', uniqueString(concat(variables('_solutionId'),'-','ResourcesDataConnector','-',variables('_dataConnectorContentIdConnections'),'-', variables('dataConnectorVersionConnections'))))]",
+                "packageId": "[variables('_solutionId')]",
+                "contentSchemaVersion": "3.0.0",
+                "version": "[variables('_solutionVersion')]"
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/providers/contentPackages",
+            "apiVersion": "2023-04-01-preview",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('_solutionId'))]",
+            "location": "[variables('location')]",
+            "properties": {
+                "version": "[variables('_solutionVersion')]",
+                "kind": "Solution",
+                "contentSchemaVersion": "3.0.0",
+                "contentId": "[variables('_solutionId')]",
+                "source": {
+                    "kind": "Solution",
+                    "name": "[variables('_solutionName')]",
+                    "sourceId": "[variables('_solutionId')]"
+                },
+                "author": {
+                    "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                    "name": "[variables('_solutionAuthor')]"
+                },
+                "dependencies": {
+                    "operator": "AND",
+                    "criteria": [
+                        {
+                            "kind": "DataConnector",
+                            "contentId": "[variables('dataConnectorVersionConnectorDefinition')]",
+                            "version": "[variables('_dataConnectorContentIdConnectorDefinition')]"
+                        }
+                    ]
+                },
+                "firstPublishDate": "2022-06-24",
+                "providers": [
+                    "[variables('_solutionAuthor')]"
+                ],
+                "contentKind": "Solution",
+                "packageId": "[variables('_solutionId')]",
+                "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]",
+                "displayName": "[variables('_solutionName')]",
+                "publisherDisplayName": "[variables('_solutionId')]",
+                "descriptionHtml": "test",
+                "icon": "[variables('_packageIcon')]"
+            }
+        }
+    ]
+}

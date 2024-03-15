@@ -1,0 +1,89 @@
+{
+    "kind": "admin#reports#activity",
+    "id": {
+        "time": "2023-12-14T10:23:12.345Z",
+        "uniqueQualifier": "-4935902443650881457",
+        "applicationName": "admin",
+        "customerId": "C00nt9820"
+    },
+    "etag": "\"ujgAKP8PpNIK6xX551ohjglegwndHIHKbs3nbDk6bJs/wvOcFp5Z_sQ2FiPSFuHaNYOxttk\"",
+    "actor": {
+        "callerType": "USER",
+        "email": "ccpsentinel@joanaepedro.com",
+        "profileId": "105250110470812218855"
+    },
+    "ipAddress": "167.220.197.118",
+    "events": [
+        {
+            "type": "ALERT_CENTER",
+            "name": "ALERT_CENTER_VIEW",
+            "parameters": [
+                {
+                    "name": "ALERT_ID",
+                    "value": "d77e1482-40b0-41b9-ab79-690ae69e0fcf"
+                }
+            ]
+        }
+    ]
+},
+{
+    "kind": "admin#reports#activity",
+    "id": {
+        "time": "2023-12-14T10:06:35.002Z",
+        "uniqueQualifier": "-6914470485141964434",
+        "applicationName": "admin",
+        "customerId": "C00nt9820"
+    },
+    "etag": "\"ujgAKP8PpNIK6xX551ohjglegwndHIHKbs3nbDk6bJs/qMvPCa16iB-b2hBaAldDlkfR630\"",
+    "actor": {
+        "callerType": "KEY",
+        "key": "SYSTEM"
+    },
+    "events": [
+        {
+            "type": "LICENSES_SETTINGS",
+            "name": "USER_LICENSE_ASSIGNMENT",
+            "parameters": [
+                {
+                    "name": "USER_EMAIL",
+                    "value": "ccpsentinel@joanaepedro.com"
+                },
+                {
+                    "name": "PRODUCT_NAME",
+                    "value": "Google Workspace"
+                },
+                {
+                    "name": "NEW_VALUE",
+                    "value": "Google Workspace Business Plus"
+                }
+            ]
+        }
+    ]
+},
+{
+    "kind": "admin#reports#activity",
+    "id": {
+        "time": "2023-12-14T10:06:03.828Z",
+        "uniqueQualifier": "-1168867486926553050",
+        "applicationName": "admin",
+        "customerId": "C00nt9820"
+    },
+    "etag": "\"ujgAKP8PpNIK6xX551ohjglegwndHIHKbs3nbDk6bJs/DwkiwKT8aamcMYJd3op1-FR3IRM\"",
+    "actor": {
+        "callerType": "KEY",
+        "key": "NoUserLoggedIn"
+    },
+    "ipAddress": "167.220.197.118",
+    "events": [
+        {
+            "type": "USER_SETTINGS",
+            "name": "CREATE_USER",
+            "parameters": [
+                {
+                    "name": "USER_EMAIL",
+                    "value": "ccpsentinel@joanaepedro.com"
+                }
+            ]
+        }
+    ]
+}

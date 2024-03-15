@@ -1,0 +1,24 @@
+{
+    "from": "2023-12-19",
+    "to": "2023-12-20",
+    "page_size": 30,
+    "next_page_token": "",
+    "activity_logs": [
+        {
+            "email": "ccpsentineltest@gmail.com",
+            "time": "2023-12-20T10:07:03Z",
+            "type": "Sign in",
+            "ip_address": "2001:818:dc69:4d00:395e:2a00:e608:5b9",
+            "client_type": "Browser",
+            "version": "-"
+        },
+        {
+            "email": "ccpsentineltest@gmail.com",
+            "time": "2023-12-20T10:05:25Z",
+            "type": "Sign in",
+            "ip_address": "2001:818:dc69:4d00:395e:2a00:e608:5b9",
+            "client_type": "Browser",
+            "version": "-"
+        }
+    ]
+}

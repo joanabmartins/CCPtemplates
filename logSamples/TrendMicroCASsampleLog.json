@@ -1,0 +1,29 @@
+[
+    {
+        "log_item_id": "NdGBDmYBWu4z8GKN0Jhl",
+        "service": "exchange",
+        "event": "security_risk_scan",
+        "message": {
+            "scan_type": "Real-time scan",
+            "affected_user": "username1@example1.onmicrosoft.com",
+            "location": "username1@example1.onmicrosoft.com\\Junk Email",
+            "detection_time": "2018-09-25T02:14:40Z",
+            "triggered_policy_name": "phishing test from jimmy",
+            "triggered_security_filter": "Web Reputation",
+            "action": "Quarantine",
+            "action_result": "success",
+            "mail_message_id": "<0ee59974fb7c48538b3e077f5c40b877@trendmicro.com>",
+            "mail_message_sender": "<username2@example2.com>",
+            "mail_message_recipient": [
+                "\"username1\"<username1@example1.onmicrosoft.com>"
+            ],
+            "mail_message_submit_time": "2018-09-25T02:14:25.818Z",
+            "mail_message_delivery_time": "2018-09-25T02:14:24",
+            "mail_message_subject": "aaaa",
+            "mail_message_file_name": "filename.exe",
+            "security_risk_name": "Spyware: http://wrs21.winshipway.com",
+            "detected_by": "Web Reputation",
+            "risk_level": "Dangerous"
+        }
+    }
+]

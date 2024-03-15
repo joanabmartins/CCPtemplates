@@ -1,0 +1,13 @@
+Function:
+  Title: Parser for Qualys Vulnerability Management
+  Version: '1.0.0'
+  LastUpdated: '2024-02-26'
+Category: Microsoft Sentinel Parser
+FunctionName: QualysVM
+FunctionAlias: QualysVM
+FunctionQuery: |
+    QualysVM_CL 
+    | mv-expand Detections
+    | extend QID= Detections.QID, SSL= Detections.SSL, Type= Detections.TYPE, Status= Detections.STATUS, Ignored= Detections.IS_IGNORED, Severity= Detections.SEVERITY, Disabled= Detections.IS_DISABLED, LastFixed= Detections.LAST_FIXED_DATETIME, LastFound=Detections.LAST_FOUND_DATETIME, TimesFound=Detections.TIMES_FOUND, FirstFound= Detections.FIRST_FOUND_DATETIME, LastUpdate=Detections.LAST_UPDATE_DATETIME, LastProcessed=Detections.LAST_PROCESSED_DATE, Results = Detections.RESULTS.['#cdata-section'], UniqueVulnID=Detections.UNIQUE_VULN_ID, Port= Detections.PORT, Protocol=Detections.PROTOCOL
+    | project-away Detections
+

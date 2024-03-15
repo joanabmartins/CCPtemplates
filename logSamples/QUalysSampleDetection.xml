@@ -1,0 +1,21 @@
+<DETECTION>
+                        <UNIQUE_VULN_ID>1926002298</UNIQUE_VULN_ID>
+                        <QID>38896</QID>
+                        <TYPE>Potential</TYPE>
+                        <SEVERITY>5</SEVERITY>
+                        <PORT>22</PORT>
+                        <PROTOCOL>tcp</PROTOCOL>
+                        <SSL>0</SSL>
+                        <RESULTS>
+                            <![CDATA[Vulnerable OpenSSH version for sshd(8) detected on port 22 over TCP - SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.6]]>
+                        </RESULTS>
+                        <STATUS>Active</STATUS>
+                        <FIRST_FOUND_DATETIME>2024-02-08T10:54:07Z</FIRST_FOUND_DATETIME>
+                        <LAST_FOUND_DATETIME>2024-02-08T16:24:27Z</LAST_FOUND_DATETIME>
+                        <TIMES_FOUND>3</TIMES_FOUND>
+                        <LAST_TEST_DATETIME>2024-02-08T16:24:27Z</LAST_TEST_DATETIME>
+                        <LAST_UPDATE_DATETIME>2024-02-08T16:24:41Z</LAST_UPDATE_DATETIME>
+                        <IS_IGNORED>0</IS_IGNORED>
+                        <IS_DISABLED>0</IS_DISABLED>
+                        <LAST_PROCESSED_DATETIME>2024-02-08T16:24:41Z</LAST_PROCESSED_DATETIME>
+                    </DETECTION>

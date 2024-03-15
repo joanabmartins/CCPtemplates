@@ -1,0 +1,1253 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "Workspace name for Log Analytics where Microsoft Sentinel is setup"
+            }
+        }
+    },
+    "variables": {
+        "DCRName": "TrendMicroCASDCR",
+        "workspaceResourceId": "[resourceId('microsoft.OperationalInsights/Workspaces', parameters('workspace'))]",
+        "_solutionName": "Trend Micro Cloud App Security solution",
+        "_solutionVersion": "1.0.0",
+        "_solutionAuthor": "Microsoft",
+        "_packageIcon": "icon icon icon icon",
+        "_solutionId": "azuresentinel.azure-sentinel-solution-azuresentinel.azure-sentinel-TrendMicroCAS_V2",
+        "dataConnectorVersionConnectorDefinition": "1.0.0",
+        "dataConnectorVersionConnections": "1.0.0",
+        "_solutionTier": "Microsoft",
+        "_dataConnectorContentIdConnectorDefinition": "TrendMicroCASTemplateConnectorDefinition",
+        "dataConnectorTemplateNameConnectorDefinition": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnectorDefinition')))]",
+        "_dataConnectorContentIdConnections": "TrendMicroCASTemplateConnections",
+        "dataConnectorTemplateNameConnections": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnections')))]",
+        "location": "[resourceGroup().location]",
+        "subscriptionId": "[last(split(subscription().id, '/'))]",
+        "apiEndpoint": "/v1/siem/security_events",
+        "TableName": "TrendMicroCASv2_CL"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+            "apiVersion": "2023-04-01-preview",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('dataConnectorTemplateNameConnectorDefinition'), variables('dataConnectorVersionConnectorDefinition'))]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+            ],
+            "properties": {
+                "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
+                "displayName": "[concat(variables('_solutionName'), variables('dataConnectorTemplateNameConnectorDefinition'))]",
+                "contentKind": "DataConnector",
+                "mainTemplate": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "[variables('dataConnectorVersionConnectorDefinition')]",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnectorDefinition')))]",
+                            "apiVersion": "2022-01-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+                            "properties": {
+                                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentIdConnectorDefinition'))]",
+                                "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
+                                "kind": "DataConnector",
+                                "version": "[variables('dataConnectorVersionConnectorDefinition')]",
+                                "source": {
+                                    "sourceId": "[variables('_solutionId')]",
+                                    "name": "[variables('_solutionName')]",
+                                    "kind": "Solution"
+                                },
+                                "author": {
+                                    "name": "[variables('_solutionAuthor')]"
+                                },
+                                "support": {
+                                    "name": "[variables('_solutionAuthor')]",
+                                    "tier": "[variables('_solutionTier')]"
+                                },
+                                "dependencies": {
+                                    "criteria": [
+                                        {
+                                            "version": "[variables('dataConnectorVersionConnections')]",
+                                            "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                                            "kind": "ResourcesDataConnector"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[variables('TableName')]",
+                            "type": "Microsoft.OperationalInsights/workspaces",
+                            "apiVersion": "2021-03-01-privatepreview",
+                            "location": "[variables('location')]",
+                            "tags": {},
+                            "properties": {
+                                "schema": {
+                                    "name": "[variables('TableName')]",
+                                    "columns": [
+                                        {
+                                            "name": "EventType",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "EventOriginalUid",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "message",
+                                            "type": "dynamic",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "EventCategoryType",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "TimeGenerated",
+                                            "type": "datetime",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "EventVendor",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "EventProduct",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "ScanType",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "DstUserName",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "SrcFilePath",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "DetectionTime",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "TriggeredPolicyName",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "TriggeredSecurityFilter",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "EventOriginalResultDetails",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "EventResult",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "MailMessageId",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "MailMessageSender",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "MailMessageRecipient",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "MailMessageSubmitTime",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "MailMessageDeliveryTime",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "MailMessageSubject",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "MailMessageFileName",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "SrcFileName",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "FileUploadTime",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "SecurityRiskName",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "DetectedBy",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "RiskLevel",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "SrcFileSHA1",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "SrcFileSHA256",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "VirusName",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "DetectionType",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "RansomwareName",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        },
+                                        {
+                                            "name": "TriggeredDlpTemplate",
+                                            "type": "string",
+                                            "isDefaultDisplay": false,
+                                            "isHidden": false
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[variables('DCRName')]",
+                            "apiVersion": "2021-09-01-preview",
+                            "type": "Microsoft.Insights/dataCollectionRules",
+                            "location": "[variables('location')]",
+                            "properties": {
+                                "dataCollectionEndpointId": "[concat('/subscriptions/',variables('subscriptionID'),'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Insights/dataCollectionEndpoints/',parameters('workspace'))]",
+                                "streamDeclarations": {
+                                    "[concat('Custom-', variables('TableName'))]": {
+                                        "columns": [
+                                            {
+                                                "name": "TimeGenerated",
+                                                "type": "datetime"
+                                            },
+                                            {
+                                                "name": "log_item_id",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "service",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "event",
+                                                "type": "string"
+                                            },
+                                            {
+                                                "name": "message",
+                                                "type": "dynamic"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "destinations": {
+                                    "logAnalytics": [
+                                        {
+                                            "workspaceResourceId": "[variables('workspaceResourceId')]",
+                                            "name": "clv2ws1"
+                                        }
+                                    ]
+                                },
+                                "dataFlows": [
+                                    {
+                                        "streams": [
+                                            "[concat('Custom-', variables('TableName'))]"
+                                        ],
+                                        "destinations": [
+                                            "clv2ws1"
+                                        ],
+                                        "transformKql": "source\n| extend TimeGenerated = now()\n| extend\n                EventVendor=\"Trend Micro\",\n                EventProduct=\"Cloud App Security \"\n| project-rename \n                EventOriginalUid=log_item_id,\n                EventCategoryType=service,\n                EventType=event\n| extend ScanType=tostring(message.scan_type),\n                DstUserName=tostring(message.affected_user),\n                SrcFilePath=tostring(message.location),\n                DetectionTime=tostring(message.detection_time),\n                TriggeredPolicyName=tostring(message.triggered_policy_name),\n                TriggeredSecurityFilter=tostring(message.triggered_security_filter),\n                EventOriginalResultDetails=tostring(message.action),\n                EventResult=tostring(message.action_result),\n                MailMessageId=tostring(message.mail_message.id),\n                MailMessageSender=tostring(message.mail_message.sender),\n                MailMessageRecipient=tostring(message.mail_message.recipient),\n                MailMessageSubmitTime=tostring(message.mail_message.submit_time),\n                MailMessageDeliveryTime=tostring(message.mail_message.delivery_time),\n                MailMessageSubject=tostring(message.mail_message.subject),\n                MailMessageFileName=tostring(message.mail_message.file_name),\n                SrcFileName=tostring(message.file_name),\n                FileUploadTime=tostring(message.file_upload_time),\n                SecurityRiskName=tostring(message.security_risk_name),\n                DetectedBy=tostring(message.detected_by),\n                RiskLevel=tostring(message.risk_level),\n                SrcFileSHA1=tostring(message.file_sha1),\n                SrcFileSHA256=tostring(message.file_sha256),\n                VirusName=tostring(message.virus_name),\n                DetectionType=tostring(message.detection_type),\n                RansomwareName=tostring(message.ransomware_name),\n                TriggeredDlpTemplate=tostring(message.triggered_dlp_template)\n",
+                                        "outputStream": "[concat('Custom-', variables('TableName'))]"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "packageKind": "Solution",
+                "packageVersion": "[variables('_solutionVersion')]",
+                "packageName": "[variables('_solutionName')]",
+                "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','dc','-', uniqueString(concat(variables('_solutionId'),'-','DataConnector','-',variables('_dataConnectorContentIdConnectorDefinition'),'-', variables('dataConnectorVersionConnectorDefinition'))))]",
+                "packageId": "[variables('_solutionId')]",
+                "contentSchemaVersion": "3.0.0",
+                "version": "[variables('_solutionVersion')]"
+            }
+        },
+        {
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',variables('_dataConnectorContentIdConnectorDefinition'))]",
+            "apiVersion": "2022-09-01-preview",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions",
+            "location": "[variables('location')]",
+            "kind": "Customizable",
+            "properties": {
+                "connectorUiConfig": {
+                    "title": "Trend Micro Cloud App Security (using REST API) (Preview)",
+                    "publisher": "Microsoft",
+                    "descriptionMarkdown": "The [Trend Micro Cloud App Security](https://www.trendmicro.com/en_be/business/products/user-protection/sps/email-and-collaboration/cloud-app-security.html) data connector provides the capability to retrieve security event logs of the services that Cloud App Security protects and more events into Microsoft Sentinel through the Log Retrieval API. Refer to [API documentation](https://docs.trendmicro.com/en-us/documentation/article/cloud-app-security-integration-api-online-help-get-security-logs) for more information.",
+                    "graphQueriesTableName": "[variables('TableName')]",
+                    "graphQueries": [
+                        {
+                            "metricName": "Total events received",
+                            "legend": "Trend Micro Cloud App Security logs",
+                            "baseQuery": "{{graphQueriesTableName}}"
+                        }
+                    ],
+                    "sampleQueries": [
+                        {
+                            "description": "Get a sample of Trend Micro Cloud App Security logs",
+                            "query": "{{graphQueriesTableName}}\n| take 10"
+                        }
+                    ],
+                    "dataTypes": [
+                        {
+                            "name": "{{graphQueriesTableName}}",
+                            "lastDataReceivedQuery": "{{graphQueriesTableName}}\n|summarize Time = max  (TimeGenerated)\n|where isnotempty(Time)"
+                        }
+                    ],
+                    "connectivityCriteria": [
+                        {
+                            "type": "HasDataConnectors"
+                        }
+                    ],
+                    "availability": {
+                        "isPreview": false
+                    },
+                    "permissions": {
+                        "resourceProvider": [
+                            {
+                                "provider": "Microsoft.OperationalInsights/workspaces",
+                                "permissionsDisplayText": "Read and Write permissions are required.",
+                                "providerDisplayName": "Workspace",
+                                "scope": "Workspace",
+                                "requiredPermissions": {
+                                    "write": true,
+                                    "read": true,
+                                    "delete": true
+                                }
+                            }
+                        ],
+                        "customs": [
+                            {
+                                "name": "Trend Micro Cloud App Security API access",
+                                "description": "Access to the Trend Micro Cloud App Security API is required."
+                            }
+                        ]
+                    },
+                    "instructionSteps": [
+                        {
+                            "description": "Follow [Trend Micro CAS instructions](https://docs.trendmicro.com/en-us/documentation/article/cloud-app-security-integration-api-online-help-generating-an-authen) to create an Authentication Token.",
+                            "instructions": [
+                                {
+                                    "type": "Textbox",
+                                    "parameters": {
+                                        "label": "Trend Micro Service URL",
+                                        "placeholder": "api.tmcas.trendmicro.com",
+                                        "type": "text",
+                                        "name": "serviceURL"
+                                    }
+                                },
+                                {
+                                    "type": "Textbox",
+                                    "parameters": {
+                                        "label": "Authentication Token",
+                                        "placeholder": "Authentication Token",
+                                        "type": "password",
+                                        "name": "authenticationToken"
+                                    }
+                                },
+                                {
+                                    "parameters": {
+                                        "label": "toggle",
+                                        "name": "toggle"
+                                    },
+                                    "type": "ConnectionToggleButton"
+                                },
+                                {
+                                    "type": "DataConnectorsGrid",
+                                    "parameters": {
+                                        "mapping": [
+                                            {
+                                                "columnValue": "name",
+                                                "columnName": "Name"
+                                            },
+                                            {
+                                                "columnValue": "id",
+                                                "columnName": "ID"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ],
+                            "title": "Connect to Trend Micro Cloud App Security API to start collecting logs in Microsoft Sentinel"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnectorDefinition')))]",
+            "apiVersion": "2022-01-01-preview",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+            "properties": {
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentIdConnectorDefinition'))]",
+                "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
+                "kind": "DataConnector",
+                "version": "[variables('dataConnectorVersionConnectorDefinition')]",
+                "source": {
+                    "sourceId": "[variables('_solutionId')]",
+                    "name": "[variables('_solutionName')]",
+                    "kind": "Solution"
+                },
+                "author": {
+                    "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                    "name": "[variables('_solutionAuthor')]",
+                    "tier": "[variables('_solutionTier')]"
+                },
+                "dependencies": {
+                    "criteria": [
+                        {
+                            "version": "[variables('dataConnectorVersionConnections')]",
+                            "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                            "kind": "ResourcesDataConnector"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
+            "apiVersion": "2023-04-01-preview",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('dataConnectorTemplateNameConnections'), variables('dataConnectorVersionConnections'))]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/contentPackages', variables('_solutionId'))]"
+            ],
+            "properties": {
+                "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                "displayName": "[concat(variables('_solutionName'), variables('dataConnectorTemplateNameConnections'))]",
+                "contentKind": "ResourcesDataConnector",
+                "mainTemplate": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "[variables('dataConnectorVersionConnections')]",
+                    "parameters": {
+                        "authenticationToken": {
+                            "defaultValue": "-NA-",
+                            "type": "securestring",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "Authentication Token"
+                            }
+                        },
+                        "serviceURL": {
+                            "defaultValue": "-NA-",
+                            "type": "string",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "Trend Micro Service URL"
+                            }
+                        },
+                        "connectorDefinitionName": {
+                            "defaultValue": "",
+                            "type": "string",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "connectorDefinitionName"
+                            }
+                        },
+                        "workspace": {
+                            "defaultValue": "[parameters('workspace')]",
+                            "type": "string"
+                        },
+                        "dcrConfig": {
+                            "type": "object",
+                            "defaultValue": {
+                                "dataCollectionEndpoint": "data collection Endpoint",
+                                "dataCollectionRuleImmutableId": "data collection rule immutableId"
+                            }
+                        }
+                    },
+                    "variables": {
+                        "_dataConnectorContentIdConnections": "[variables('_dataConnectorContentIdConnections')]",
+                        "apiEndpoint": "/v1/siem/security_events"
+                    },
+                    "resources": [
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnections')))]",
+                            "apiVersion": "2022-01-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+                            "properties": {
+                                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectors', variables('_dataConnectorContentIdConnections'))]",
+                                "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                                "kind": "ResourcesDataConnector",
+                                "version": "[variables('dataConnectorVersionConnections')]",
+                                "source": {
+                                    "sourceId": "[variables('_solutionId')]",
+                                    "name": "[variables('_solutionName')]",
+                                    "kind": "Solution"
+                                },
+                                "author": {
+                                    "name": "[variables('_solutionAuthor')]"
+                                },
+                                "support": {
+                                    "name": "[variables('_solutionAuthor')]",
+                                    "tier": "[variables('_solutionTier')]"
+                                }
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'TrendMicroCASExOnSecRisk')]",
+                            "apiVersion": "2022-12-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('TableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('TableName'))]"
+                                },
+                                "auth": {
+                                    "type": "APIKey",
+                                    "ApiKeyName": "Authorization",
+                                    "ApiKeyIdentifier": "Bearer",
+                                    "ApiKey": "[[parameters('authenticationToken')]"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[[concat('https://',parameters('serviceURL'),variables('apiEndpoint'))]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "queryTimeFormat": "yyyy-MM-ddTHH:mm:ss.fffZ",
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "queryParameters": {
+                                        "start": "{_QueryWindowStartTime}",
+                                        "end": "{_QueryWindowEndTime}",
+                                        "service": "exchange",
+                                        "event": "securityrisk"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "LinkHeader",
+                                    "pageSizeParameterName": "limit",
+                                    "pageSize": 500,
+                                    "linkHeaderTokenJsonPath": "$.next_link"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.security_events"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'TrendMicroCASExOnVirtAnalyzer')]",
+                            "apiVersion": "2022-12-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('TableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('TableName'))]"
+                                },
+                                "auth": {
+                                    "type": "APIKey",
+                                    "ApiKeyName": "Authorization",
+                                    "ApiKeyIdentifier": "Bearer",
+                                    "ApiKey": "[[parameters('authenticationToken')]"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[[concat('https://',parameters('serviceURL'),variables('apiEndpoint'))]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "queryTimeFormat": "yyyy-MM-ddTHH:mm:ss.fffZ",
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "queryParameters": {
+                                        "start": "{_QueryWindowStartTime}",
+                                        "end": "{_QueryWindowEndTime}",
+                                        "service": "exchange",
+                                        "event": "virtualanalyzer"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "LinkHeader",
+                                    "pageSizeParameterName": "limit",
+                                    "pageSize": 500,
+                                    "linkHeaderTokenJsonPath": "$.next_link"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.security_events"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'TrendMicroCASExOnRansomware')]",
+                            "apiVersion": "2022-12-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('TableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('TableName'))]"
+                                },
+                                "auth": {
+                                    "type": "APIKey",
+                                    "ApiKeyName": "Authorization",
+                                    "ApiKeyIdentifier": "Bearer",
+                                    "ApiKey": "[[parameters('authenticationToken')]"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[[concat('https://',parameters('serviceURL'),variables('apiEndpoint'))]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "queryTimeFormat": "yyyy-MM-ddTHH:mm:ss.fffZ",
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "queryParameters": {
+                                        "start": "{_QueryWindowStartTime}",
+                                        "end": "{_QueryWindowEndTime}",
+                                        "service": "exchange",
+                                        "event": "ransomware"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "LinkHeader",
+                                    "pageSizeParameterName": "limit",
+                                    "pageSize": 500,
+                                    "linkHeaderTokenJsonPath": "$.next_link"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.security_events"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'TrendMicroCASExOnDlp')]",
+                            "apiVersion": "2022-12-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('TableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('TableName'))]"
+                                },
+                                "auth": {
+                                    "type": "APIKey",
+                                    "ApiKeyName": "Authorization",
+                                    "ApiKeyIdentifier": "Bearer",
+                                    "ApiKey": "[[parameters('authenticationToken')]"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[[concat('https://',parameters('serviceURL'),variables('apiEndpoint'))]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "queryTimeFormat": "yyyy-MM-ddTHH:mm:ss.fffZ",
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "queryParameters": {
+                                        "start": "{_QueryWindowStartTime}",
+                                        "end": "{_QueryWindowEndTime}",
+                                        "service": "exchange",
+                                        "event": "dlp"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "LinkHeader",
+                                    "pageSizeParameterName": "limit",
+                                    "pageSize": 500,
+                                    "linkHeaderTokenJsonPath": "$.next_link"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.security_events"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'TrendMicroCASShareSecRisk')]",
+                            "apiVersion": "2022-12-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('TableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('TableName'))]"
+                                },
+                                "auth": {
+                                    "type": "APIKey",
+                                    "ApiKeyName": "Authorization",
+                                    "ApiKeyIdentifier": "Bearer",
+                                    "ApiKey": "[[parameters('authenticationToken')]"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[[concat('https://',parameters('serviceURL'),variables('apiEndpoint'))]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "queryTimeFormat": "yyyy-MM-ddTHH:mm:ss.fffZ",
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "queryParameters": {
+                                        "start": "{_QueryWindowStartTime}",
+                                        "end": "{_QueryWindowEndTime}",
+                                        "service": "sharepoint",
+                                        "event": "securityrisk"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "LinkHeader",
+                                    "pageSizeParameterName": "limit",
+                                    "pageSize": 500,
+                                    "linkHeaderTokenJsonPath": "$.next_link"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.security_events"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'TrendMicroCASShareVirtAnalyzer')]",
+                            "apiVersion": "2022-12-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('TableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('TableName'))]"
+                                },
+                                "auth": {
+                                    "type": "APIKey",
+                                    "ApiKeyName": "Authorization",
+                                    "ApiKeyIdentifier": "Bearer",
+                                    "ApiKey": "[[parameters('authenticationToken')]"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[[concat('https://',parameters('serviceURL'),variables('apiEndpoint'))]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "queryTimeFormat": "yyyy-MM-ddTHH:mm:ss.fffZ",
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "queryParameters": {
+                                        "start": "{_QueryWindowStartTime}",
+                                        "end": "{_QueryWindowEndTime}",
+                                        "service": "sharepoint",
+                                        "event": "virtualanalyzer"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "LinkHeader",
+                                    "pageSizeParameterName": "limit",
+                                    "pageSize": 500,
+                                    "linkHeaderTokenJsonPath": "$.next_link"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.security_events"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'TrendMicroCASShareRansomware')]",
+                            "apiVersion": "2022-12-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('TableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('TableName'))]"
+                                },
+                                "auth": {
+                                    "type": "APIKey",
+                                    "ApiKeyName": "Authorization",
+                                    "ApiKeyIdentifier": "Bearer",
+                                    "ApiKey": "[[parameters('authenticationToken')]"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[[concat('https://',parameters('serviceURL'),variables('apiEndpoint'))]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "queryTimeFormat": "yyyy-MM-ddTHH:mm:ss.fffZ",
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "queryParameters": {
+                                        "start": "{_QueryWindowStartTime}",
+                                        "end": "{_QueryWindowEndTime}",
+                                        "service": "sharepoint",
+                                        "event": "ransomware"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "LinkHeader",
+                                    "pageSizeParameterName": "limit",
+                                    "pageSize": 500,
+                                    "linkHeaderTokenJsonPath": "$.next_link"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.security_events"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'TrendMicroCASShareDlp')]",
+                            "apiVersion": "2022-12-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('TableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('TableName'))]"
+                                },
+                                "auth": {
+                                    "type": "APIKey",
+                                    "ApiKeyName": "Authorization",
+                                    "ApiKeyIdentifier": "Bearer",
+                                    "ApiKey": "[[parameters('authenticationToken')]"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[[concat('https://',parameters('serviceURL'),variables('apiEndpoint'))]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "queryTimeFormat": "yyyy-MM-ddTHH:mm:ss.fffZ",
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "queryParameters": {
+                                        "start": "{_QueryWindowStartTime}",
+                                        "end": "{_QueryWindowEndTime}",
+                                        "service": "sharepoint",
+                                        "event": "dlp"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "LinkHeader",
+                                    "pageSizeParameterName": "limit",
+                                    "pageSize": 500,
+                                    "linkHeaderTokenJsonPath": "$.next_link"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.security_events"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'TrendMicroCASOneDSecRisk')]",
+                            "apiVersion": "2022-12-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('TableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('TableName'))]"
+                                },
+                                "auth": {
+                                    "type": "APIKey",
+                                    "ApiKeyName": "Authorization",
+                                    "ApiKeyIdentifier": "Bearer",
+                                    "ApiKey": "[[parameters('authenticationToken')]"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[[concat('https://',parameters('serviceURL'),variables('apiEndpoint'))]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "queryTimeFormat": "yyyy-MM-ddTHH:mm:ss.fffZ",
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "queryParameters": {
+                                        "start": "{_QueryWindowStartTime}",
+                                        "end": "{_QueryWindowEndTime}",
+                                        "service": "onedrive",
+                                        "event": "securityrisk"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "LinkHeader",
+                                    "pageSizeParameterName": "limit",
+                                    "pageSize": 500,
+                                    "linkHeaderTokenJsonPath": "$.next_link"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.security_events"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'TrendMicroCASOneDVirtAnalyzer')]",
+                            "apiVersion": "2022-12-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('TableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('TableName'))]"
+                                },
+                                "auth": {
+                                    "type": "APIKey",
+                                    "ApiKeyName": "Authorization",
+                                    "ApiKeyIdentifier": "Bearer",
+                                    "ApiKey": "[[parameters('authenticationToken')]"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[[concat('https://',parameters('serviceURL'),variables('apiEndpoint'))]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "queryTimeFormat": "yyyy-MM-ddTHH:mm:ss.fffZ",
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "queryParameters": {
+                                        "start": "{_QueryWindowStartTime}",
+                                        "end": "{_QueryWindowEndTime}",
+                                        "service": "onedrive",
+                                        "event": "virtualanalyzer"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "LinkHeader",
+                                    "pageSizeParameterName": "limit",
+                                    "pageSize": 500,
+                                    "linkHeaderTokenJsonPath": "$.next_link"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.security_events"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'TrendMicroCASOneDRansomware')]",
+                            "apiVersion": "2022-12-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('TableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('TableName'))]"
+                                },
+                                "auth": {
+                                    "type": "APIKey",
+                                    "ApiKeyName": "Authorization",
+                                    "ApiKeyIdentifier": "Bearer",
+                                    "ApiKey": "[[parameters('authenticationToken')]"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[[concat('https://',parameters('serviceURL'),variables('apiEndpoint'))]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "queryTimeFormat": "yyyy-MM-ddTHH:mm:ss.fffZ",
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "queryParameters": {
+                                        "start": "{_QueryWindowStartTime}",
+                                        "end": "{_QueryWindowEndTime}",
+                                        "service": "onedrive",
+                                        "event": "ransomware"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "LinkHeader",
+                                    "pageSizeParameterName": "limit",
+                                    "pageSize": 500,
+                                    "linkHeaderTokenJsonPath": "$.next_link"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.security_events"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', 'TrendMicroCASOneDDlp')]",
+                            "apiVersion": "2022-12-01-preview",
+                            "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectors",
+                            "location": "[variables('location')]",
+                            "kind": "RestApiPoller",
+                            "properties": {
+                                "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
+                                "dataType": "[variables('TableName')]",
+                                "dcrConfig": {
+                                    "dataCollectionEndpoint": "[[parameters('dcrConfig').dataCollectionEndpoint]",
+                                    "dataCollectionRuleImmutableId": "[[parameters('dcrConfig').dataCollectionRuleImmutableId]",
+                                    "streamName": "[concat('Custom-',variables('TableName'))]"
+                                },
+                                "auth": {
+                                    "type": "APIKey",
+                                    "ApiKeyName": "Authorization",
+                                    "ApiKeyIdentifier": "Bearer",
+                                    "ApiKey": "[[parameters('authenticationToken')]"
+                                },
+                                "request": {
+                                    "apiEndpoint": "[[concat('https://',parameters('serviceURL'),variables('apiEndpoint'))]",
+                                    "rateLimitQPS": 10,
+                                    "queryWindowInMin": 5,
+                                    "httpMethod": "GET",
+                                    "retryCount": 3,
+                                    "timeoutInSeconds": 60,
+                                    "queryTimeFormat": "yyyy-MM-ddTHH:mm:ss.fffZ",
+                                    "headers": {
+                                        "Accept": "application/json"
+                                    },
+                                    "queryParameters": {
+                                        "start": "{_QueryWindowStartTime}",
+                                        "end": "{_QueryWindowEndTime}",
+                                        "service": "onedrive",
+                                        "event": "dlp"
+                                    }
+                                },
+                                "paging": {
+                                    "pagingType": "LinkHeader",
+                                    "pageSizeParameterName": "limit",
+                                    "pageSize": 500,
+                                    "linkHeaderTokenJsonPath": "$.next_link"
+                                },
+                                "response": {
+                                    "eventsJsonPaths": [
+                                        "$.security_events"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                "packageKind": "Solution",
+                "packageVersion": "[variables('_solutionVersion')]",
+                "packageName": "[variables('_solutionName')]",
+                "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','rdc','-', uniqueString(concat(variables('_solutionId'),'-','ResourcesDataConnector','-',variables('_dataConnectorContentIdConnections'),'-', variables('dataConnectorVersionConnections'))))]",
+                "packageId": "[variables('_solutionId')]",
+                "contentSchemaVersion": "3.0.0",
+                "version": "[variables('_solutionVersion')]"
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/providers/contentPackages",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('_solutionId'))]",
+            "location": "[variables('location')]",
+            "apiVersion": "2023-04-01-preview",
+            "properties": {
+                "version": "[variables('_solutionVersion')]",
+                "kind": "Solution",
+                "contentSchemaVersion": "3.0.0",
+                "contentId": "[variables('_solutionId')]",
+                "source": {
+                    "kind": "Solution",
+                    "name": "[variables('_solutionName')]",
+                    "sourceId": "[variables('_solutionId')]"
+                },
+                "author": {
+                    "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                    "name": "[variables('_solutionAuthor')]"
+                },
+                "dependencies": {
+                    "operator": "AND",
+                    "criteria": [
+                        {
+                            "kind": "DataConnector",
+                            "contentId": "[variables('dataConnectorVersionConnectorDefinition')]",
+                            "version": "[variables('_dataConnectorContentIdConnectorDefinition')]"
+                        }
+                    ]
+                },
+                "firstPublishDate": "2022-06-24",
+                "providers": [
+                    "[variables('_solutionAuthor')]"
+                ],
+                "contentKind": "Solution",
+                "packageId": "[variables('_solutionId')]",
+                "contentProductId": "[concat(substring(variables('_solutionId'), 0, 50),'-','sl','-', uniqueString(concat(variables('_solutionId'),'-','Solution','-',variables('_solutionId'),'-', variables('_solutionVersion'))))]",
+                "displayName": "[variables('_solutionName')]",
+                "publisherDisplayName": "[variables('_solutionId')]",
+                "descriptionHtml": "test",
+                "icon": "[variables('_packageIcon')]"
+            }
+        }
+    ]
+}

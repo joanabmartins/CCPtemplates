@@ -1,0 +1,370 @@
+[
+    {
+        "kind": "admin#reports#activity",
+        "ownerDomain": "xyz",
+        "id": {
+            "time": "2023-12-14T10:49:16.634Z",
+            "uniqueQualifier": "6386738757846058488",
+            "applicationName": "login",
+            "customerId": "C00nt9820"
+        },
+        "etag": "\"ujgAKP8PpNIK6xX551ohjglegwndHIHKbs3nbDk6bJs/hKqP7K7wFg0wqEBWkIjqhWbiUIU\"",
+        "actor": {
+            "email": "ccpsentinel@joanaepedro.com",
+            "profileId": "105250110470812218855"
+        },
+        "ipAddress": "2a01:110:8012:1012:6b6:98ea:9598:142e",
+        "events": [
+            {
+                "type": "login",
+                "name": "login_success",
+                "parameters": [
+                    {
+                        "messageValue": {
+                            "parameter": [
+                                {}
+                            ]
+                        },
+                        "name": "login_type",
+                        "value": "reauth"
+                    },
+                    {
+                        "name": "login_challenge_method",
+                        "multiValue": [
+                            "password"
+                        ]
+                    },
+                    {
+                        "name": "is_suspicious",
+                        "boolValue": false
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "kind": "admin#reports#activity",
+        "id": {
+            "time": "2023-12-14T10:47:37.018Z",
+            "uniqueQualifier": "5971455524489811448",
+            "applicationName": "login",
+            "customerId": "C00nt9820"
+        },
+        "etag": "\"ujgAKP8PpNIK6xX551ohjglegwndHIHKbs3nbDk6bJs/9gkvxVgLLTVr3DIMCPY10KzDC6E\"",
+        "actor": {
+            "email": "ccpsentinel@joanaepedro.com",
+            "profileId": "105250110470812218855",
+            "callerType": "xyz",
+            "key": "Wxy"
+        },
+        "ipAddress": "2a01:110:8012:1012:6b6:98ea:9598:142e",
+        "events": [
+            {
+                "type": "login",
+                "name": "login_success",
+                "parameters": [
+                    {
+                        "name": "login_type",
+                        "value": "reauth"
+                    },
+                    {
+                        "name": "login_challenge_method",
+                        "multiValue": [
+                            "password"
+                        ]
+                    },
+                    {
+                        "name": "is_suspicious",
+                        "boolValue": false
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "kind": "admin#reports#activity",
+        "id": {
+            "time": "2023-12-14T10:23:09.411Z",
+            "uniqueQualifier": "3151084483210266445",
+            "applicationName": "login",
+            "customerId": "C00nt9820"
+        },
+        "etag": "\"ujgAKP8PpNIK6xX551ohjglegwndHIHKbs3nbDk6bJs/22rlglz53QjgAEJlZ8IyiKbigGM\"",
+        "actor": {
+            "email": "ccpsentinel@joanaepedro.com",
+            "profileId": "105250110470812218855"
+        },
+        "ipAddress": "167.220.197.246",
+        "events": [
+            {
+                "type": "login",
+                "name": "login_success",
+                "parameters": [
+                    {
+                        "name": "login_type",
+                        "value": "reauth"
+                    },
+                    {
+                        "name": "login_challenge_method",
+                        "multiValue": [
+                            "none"
+                        ]
+                    },
+                    {
+                        "name": "is_suspicious",
+                        "boolValue": false
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "kind": "admin#reports#activity",
+        "id": {
+            "time": "2023-12-14T10:07:53.342Z",
+            "uniqueQualifier": "-1692921260365310255",
+            "applicationName": "login",
+            "customerId": "C00nt9820"
+        },
+        "etag": "\"ujgAKP8PpNIK6xX551ohjglegwndHIHKbs3nbDk6bJs/Zg7UyDZo9hftij4UMAywDQiPiDE\"",
+        "actor": {
+            "email": "ccpsentinel@joanaepedro.com",
+            "profileId": "105250110470812218855"
+        },
+        "ipAddress": "167.220.197.246",
+        "events": [
+            {
+                "type": "login",
+                "name": "login_success",
+                "parameters": [
+                    {
+                        "name": "login_type",
+                        "value": "reauth"
+                    },
+                    {
+                        "name": "login_challenge_method",
+                        "multiValue": [
+                            "none"
+                        ]
+                    },
+                    {
+                        "name": "is_suspicious",
+                        "boolValue": false
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "kind": "admin#reports#activity",
+        "id": {
+            "time": "2023-12-14T10:07:24.120Z",
+            "uniqueQualifier": "-7182791666717466848",
+            "applicationName": "login",
+            "customerId": "C00nt9820"
+        },
+        "etag": "\"ujgAKP8PpNIK6xX551ohjglegwndHIHKbs3nbDk6bJs/we3zAdCTGP95t6AMpmTQlIXDsWo\"",
+        "actor": {
+            "email": "ccpsentinel@joanaepedro.com",
+            "profileId": "105250110470812218855"
+        },
+        "ipAddress": "167.220.197.246",
+        "events": [
+            {
+                "type": "login",
+                "name": "login_success",
+                "parameters": [
+                    {
+                        "name": "login_type",
+                        "value": "google_password"
+                    },
+                    {
+                        "name": "login_challenge_method",
+                        "multiValue": [
+                            "password"
+                        ]
+                    },
+                    {
+                        "name": "is_suspicious",
+                        "boolValue": false
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "kind": "admin#reports#activity",
+        "id": {
+            "time": "2023-12-14T10:06:03.144Z",
+            "uniqueQualifier": "3770710144128850694",
+            "applicationName": "login",
+            "customerId": "C00nt9820"
+        },
+        "etag": "\"ujgAKP8PpNIK6xX551ohjglegwndHIHKbs3nbDk6bJs/RaqoAMON3RWSVR-XeGjGDX7jZ1o\"",
+        "actor": {
+            "callerType": "KEY",
+            "key": "Google"
+        },
+        "ipAddress": "167.220.197.118",
+        "events": [
+            {
+                "type": "account_warning",
+                "name": "account_disabled_generic",
+                "parameters": [
+                    {
+                        "name": "affected_email_address",
+                        "value": "ccpsentinel@joanaepedro.com"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "kind": "admin#reports#activity",
+        "id": {
+            "time": "2023-12-14T10:23:12.345Z",
+            "uniqueQualifier": "-4935902443650881457",
+            "applicationName": "admin",
+            "customerId": "C00nt9820"
+        },
+        "etag": "\"ujgAKP8PpNIK6xX551ohjglegwndHIHKbs3nbDk6bJs/wvOcFp5Z_sQ2FiPSFuHaNYOxttk\"",
+        "actor": {
+            "callerType": "USER",
+            "email": "ccpsentinel@joanaepedro.com",
+            "profileId": "105250110470812218855"
+        },
+        "ipAddress": "167.220.197.118",
+        "events": [
+            {
+                "type": "ALERT_CENTER",
+                "name": "ALERT_CENTER_VIEW",
+                "parameters": [
+                    {
+                        "name": "ALERT_ID",
+                        "value": "d77e1482-40b0-41b9-ab79-690ae69e0fcf"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "kind": "admin#reports#activity",
+        "id": {
+            "time": "2023-12-14T10:06:35.002Z",
+            "uniqueQualifier": "-6914470485141964434",
+            "applicationName": "admin",
+            "customerId": "C00nt9820"
+        },
+        "etag": "\"ujgAKP8PpNIK6xX551ohjglegwndHIHKbs3nbDk6bJs/qMvPCa16iB-b2hBaAldDlkfR630\"",
+        "actor": {
+            "callerType": "KEY",
+            "key": "SYSTEM"
+        },
+        "events": [
+            {
+                "type": "LICENSES_SETTINGS",
+                "name": "USER_LICENSE_ASSIGNMENT",
+                "parameters": [
+                    {
+                        "name": "USER_EMAIL",
+                        "value": "ccpsentinel@joanaepedro.com"
+                    },
+                    {
+                        "name": "PRODUCT_NAME",
+                        "value": "Google Workspace"
+                    },
+                    {
+                        "name": "NEW_VALUE",
+                        "value": "Google Workspace Business Plus"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "kind": "admin#reports#activity",
+        "id": {
+            "time": "2023-12-14T10:06:03.828Z",
+            "uniqueQualifier": "-1168867486926553050",
+            "applicationName": "admin",
+            "customerId": "C00nt9820"
+        },
+        "etag": "\"ujgAKP8PpNIK6xX551ohjglegwndHIHKbs3nbDk6bJs/DwkiwKT8aamcMYJd3op1-FR3IRM\"",
+        "actor": {
+            "callerType": "KEY",
+            "key": "NoUserLoggedIn"
+        },
+        "ipAddress": "167.220.197.118",
+        "events": [
+            {
+                "type": "USER_SETTINGS",
+                "name": "CREATE_USER",
+                "parameters": [
+                    {
+                        "name": "USER_EMAIL",
+                        "value": "ccpsentinel@joanaepedro.com"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "kind": "admin#reports#activity",
+        "id": {
+            "time": "2023-12-14T10:49:23.197Z",
+            "uniqueQualifier": "-8817479456535962169",
+            "applicationName": "token",
+            "customerId": "C00nt9820"
+        },
+        "etag": "\"ujgAKP8PpNIK6xX551ohjglegwndHIHKbs3nbDk6bJs/p7CC_BjzSzCD3HN0wC4YXPXxF8s\"",
+        "actor": {
+            "email": "ccpsentinel@joanaepedro.com",
+            "profileId": "105250110470812218855"
+        },
+        "ipAddress": "167.220.196.79",
+        "events": [
+            {
+                "name": "authorize",
+                "parameters": [
+                    {
+                        "name": "client_id",
+                        "value": "469173999925-2vpqar08cqbqjrlfdf3mq0mta123v22v.apps.googleusercontent.com"
+                    },
+                    {
+                        "name": "app_name",
+                        "value": "CCPSentineltest"
+                    },
+                    {
+                        "name": "client_type",
+                        "value": "WEB"
+                    },
+                    {
+                        "name": "scope_data",
+                        "multiMessageValue": [
+                            {
+                                "parameter": [
+                                    {
+                                        "name": "scope_name",
+                                        "value": "https://www.googleapis.com/auth/admin.reports.audit.readonly"
+                                    },
+                                    {
+                                        "name": "product_bucket",
+                                        "multiValue": [
+                                            "GSUITE_ADMIN"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "scope",
+                        "multiValue": [
+                            "https://www.googleapis.com/auth/admin.reports.audit.readonly"
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,88 @@
+{
+  "eventData" : [ {
+    "eventID" : 114904,
+    "userID" : {
+      "loginID" : "rats_monitor",
+      "userDN" : "cn=rats_monitor,cn=Users,dc=us,dc=oracle,dc=com"
+    },
+    "type" : "Logout",
+    "ipAddress" : "129.148.208.222",
+    "status" : "success",
+    "accessTime" : "2024-02-21T10:06:30.786Z",
+    "oracleECID" : "0064U5v5zf17y0K6yVrY6G0000lC0001SZ",
+    "attributeMap" : {
+      "attribute" : {
+        "key" : "User-Agent",
+        "value" : "Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) CasperJS/1.1.3+PhantomJS/2.1.1 Safari/538.1"
+      }
+    }
+  }, {
+    "eventID" : 114903,
+    "userID" : {
+      "loginID" : "rats_monitor",
+      "userDN" : "cn=rats_monitor,cn=Users,dc=us,dc=oracle,dc=com"
+    },
+    "type" : "CredentialValidation",
+    "ipAddress" : "129.148.208.222",
+    "status" : "success",
+    "accessTime" : "2024-02-21T10:06:27.057Z",
+    "oracleECID" : "0064U5uo3lK7y0K6yVrY6G0000lC0001RX",
+    "attributeMap" : {
+      "attribute" : {
+        "key" : "User-Agent",
+        "value" : "Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) CasperJS/1.1.3+PhantomJS/2.1.1 Safari/538.1"
+      }
+    }
+  }, {
+    "eventID" : 114900,
+    "userID" : {
+      "loginID" : "rats_monitor",
+      "userDN" : "cn=rats_monitor,cn=Users,dc=us,dc=oracle,dc=com"
+    },
+    "type" : "Logout",
+    "ipAddress" : "129.148.208.222",
+    "status" : "success",
+    "accessTime" : "2024-02-21T10:02:32.444Z",
+    "oracleECID" : "0064U5gsm727y0K6yVrY6G0000lC0001OR",
+    "attributeMap" : {
+      "attribute" : {
+        "key" : "User-Agent",
+        "value" : "Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) CasperJS/1.1.3+PhantomJS/2.1.1 Safari/538.1"
+      }
+    }
+  }, {
+    "eventID" : 114898,
+    "userID" : {
+      "loginID" : "rats_monitor",
+      "userDN" : "cn=rats_monitor,cn=Users,dc=us,dc=oracle,dc=com"
+    },
+    "type" : "Logout",
+    "ipAddress" : "129.148.208.222",
+    "status" : "success",
+    "accessTime" : "2024-02-21T10:00:51.122Z",
+    "oracleECID" : "0064U5aqH3b7y0K6yVrY6G0000lC0001MP",
+    "attributeMap" : {
+      "attribute" : {
+        "key" : "User-Agent",
+        "value" : "Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) CasperJS/1.1.3+PhantomJS/2.1.1 Safari/538.1"
+      }
+    }
+  }, {
+    "eventID" : 114895,
+    "userID" : {
+      "loginID" : "rats_monitor",
+      "userDN" : "cn=rats_monitor,cn=Users,dc=us,dc=oracle,dc=com"
+    },
+    "type" : "CredentialValidation",
+    "ipAddress" : "129.148.208.222",
+    "status" : "success",
+    "accessTime" : "2024-02-21T10:00:35.260Z",
+    "oracleECID" : "0064U5_s5i77y0K6yVrY6G0000lC0001IA",
+    "attributeMap" : {
+      "attribute" : {
+        "key" : "User-Agent",
+        "value" : "Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) CasperJS/1.1.3+PhantomJS/2.1.1 Safari/538.1"
+      }
+    }
+  } ]
+}

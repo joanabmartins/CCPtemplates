@@ -1,0 +1,228 @@
+[
+    {
+        "HOST": [
+            {
+                "ID": 88562472,
+                "IP": "20.108.240.38",
+                "TRACKING_METHOD": "IP",
+                "LAST_SCAN_DATETIME": "2024-02-21T23:16:59Z",
+                "LAST_VM_SCANNED_DATE": "2024-02-21T23:16:41Z",
+                "LAST_VM_SCANNED_DURATION": 625,
+                "DETECTION_LIST": {
+                    "DETECTION": [
+                        {
+                            "UNIQUE_VULN_ID": 1926002298,
+                            "QID": 38896,
+                            "TYPE": "Potential",
+                            "SEVERITY": 5,
+                            "PORT": 22,
+                            "PROTOCOL": "tcp",
+                            "SSL": 0,
+                            "RESULTS": {
+                                "__cdata": "Vulnerable OpenSSH version for sshd(8) detected on port 22 over TCP - SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.6"
+                            },
+                            "STATUS": "Active",
+                            "FIRST_FOUND_DATETIME": "2024-02-08T10:54:07Z",
+                            "LAST_FOUND_DATETIME": "2024-02-21T23:16:41Z",
+                            "TIMES_FOUND": 20,
+                            "LAST_TEST_DATETIME": "2024-02-21T23:16:41Z",
+                            "LAST_UPDATE_DATETIME": "2024-02-21T23:16:59Z",
+                            "IS_IGNORED": 0,
+                            "IS_DISABLED": 0,
+                            "LAST_PROCESSED_DATETIME": "2024-02-21T23:16:59Z"
+                        },
+                        {
+                            "UNIQUE_VULN_ID": 1926002299,
+                            "QID": 38904,
+                            "TYPE": "Potential",
+                            "SEVERITY": 3,
+                            "SSL": 0,
+                            "RESULTS": {
+                                "__cdata": "Vulnerable SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.6 detected on port 22 over TCP."
+                            },
+                            "STATUS": "Active",
+                            "FIRST_FOUND_DATETIME": "2024-02-08T10:54:07Z",
+                            "LAST_FOUND_DATETIME": "2024-02-21T23:16:41Z",
+                            "TIMES_FOUND": 20,
+                            "LAST_TEST_DATETIME": "2024-02-21T23:16:41Z",
+                            "LAST_UPDATE_DATETIME": "2024-02-21T23:16:59Z",
+                            "IS_IGNORED": 0,
+                            "IS_DISABLED": 0,
+                            "LAST_PROCESSED_DATETIME": "2024-02-21T23:16:59Z"
+                        },
+                        {
+                            "UNIQUE_VULN_ID": 1926002297,
+                            "QID": 38909,
+                            "TYPE": "Confirmed",
+                            "SEVERITY": 2,
+                            "PORT": 22,
+                            "PROTOCOL": "tcp",
+                            "SSL": 0,
+                            "RESULTS": {
+                                "__cdata": "Type\tName\nMAC\thmac-sha1-etm@openssh.com\nMAC\thmac-sha1"
+                            },
+                            "STATUS": "Active",
+                            "FIRST_FOUND_DATETIME": "2024-02-08T10:54:07Z",
+                            "LAST_FOUND_DATETIME": "2024-02-21T23:16:41Z",
+                            "TIMES_FOUND": 20,
+                            "LAST_TEST_DATETIME": "2024-02-21T23:16:41Z",
+                            "LAST_UPDATE_DATETIME": "2024-02-21T23:16:59Z",
+                            "IS_IGNORED": 0,
+                            "IS_DISABLED": 0,
+                            "LAST_PROCESSED_DATETIME": "2024-02-21T23:16:59Z"
+                        },
+                        {
+                            "UNIQUE_VULN_ID": 1926002300,
+                            "QID": 38915,
+                            "TYPE": "Potential",
+                            "SEVERITY": 5,
+                            "SSL": 0,
+                            "RESULTS": {
+                                "__cdata": "Vulnerable SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.6 detected on port 22 over TCP."
+                            },
+                            "STATUS": "Active",
+                            "FIRST_FOUND_DATETIME": "2024-02-08T10:54:07Z",
+                            "LAST_FOUND_DATETIME": "2024-02-21T23:16:41Z",
+                            "TIMES_FOUND": 20,
+                            "LAST_TEST_DATETIME": "2024-02-21T23:16:41Z",
+                            "LAST_UPDATE_DATETIME": "2024-02-21T23:16:59Z",
+                            "IS_IGNORED": 0,
+                            "IS_DISABLED": 0,
+                            "LAST_PROCESSED_DATETIME": "2024-02-21T23:16:59Z"
+                        },
+                        {
+                            "UNIQUE_VULN_ID": 1947465732,
+                            "QID": 38919,
+                            "TYPE": "Potential",
+                            "SEVERITY": 4,
+                            "SSL": 0,
+                            "RESULTS": {
+                                "__cdata": "Vulnerable SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.6 detected on port 22 over TCP."
+                            },
+                            "STATUS": "Active",
+                            "FIRST_FOUND_DATETIME": "2024-02-16T10:57:07Z",
+                            "LAST_FOUND_DATETIME": "2024-02-21T23:16:41Z",
+                            "TIMES_FOUND": 8,
+                            "LAST_TEST_DATETIME": "2024-02-21T23:16:41Z",
+                            "LAST_UPDATE_DATETIME": "2024-02-21T23:16:59Z",
+                            "IS_IGNORED": 0,
+                            "IS_DISABLED": 0,
+                            "LAST_PROCESSED_DATETIME": "2024-02-21T23:16:59Z"
+                        }
+                    ]
+                }
+            },
+            {
+                "ID": 88562472,
+                "IP": "20.108.240.38",
+                "TRACKING_METHOD": "IP",
+                "LAST_SCAN_DATETIME": "2024-02-21T23:16:59Z",
+                "LAST_VM_SCANNED_DATE": "2024-02-21T23:16:41Z",
+                "LAST_VM_SCANNED_DURATION": 625,
+                "DETECTION_LIST": {
+                    "DETECTION": [
+                        {
+                            "UNIQUE_VULN_ID": 1926002298,
+                            "QID": 38896,
+                            "TYPE": "Potential",
+                            "SEVERITY": 5,
+                            "PORT": 22,
+                            "PROTOCOL": "tcp",
+                            "SSL": 0,
+                            "RESULTS": {
+                                "__cdata": "Vulnerable OpenSSH version for sshd(8) detected on port 22 over TCP - SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.6"
+                            },
+                            "STATUS": "Active",
+                            "FIRST_FOUND_DATETIME": "2024-02-08T10:54:07Z",
+                            "LAST_FOUND_DATETIME": "2024-02-21T23:16:41Z",
+                            "TIMES_FOUND": 20,
+                            "LAST_TEST_DATETIME": "2024-02-21T23:16:41Z",
+                            "LAST_UPDATE_DATETIME": "2024-02-21T23:16:59Z",
+                            "IS_IGNORED": 0,
+                            "IS_DISABLED": 0,
+                            "LAST_PROCESSED_DATETIME": "2024-02-21T23:16:59Z"
+                        },
+                        {
+                            "UNIQUE_VULN_ID": 1926002299,
+                            "QID": 38904,
+                            "TYPE": "Potential",
+                            "SEVERITY": 3,
+                            "SSL": 0,
+                            "RESULTS": {
+                                "__cdata": "Vulnerable SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.6 detected on port 22 over TCP."
+                            },
+                            "STATUS": "Active",
+                            "FIRST_FOUND_DATETIME": "2024-02-08T10:54:07Z",
+                            "LAST_FOUND_DATETIME": "2024-02-21T23:16:41Z",
+                            "TIMES_FOUND": 20,
+                            "LAST_TEST_DATETIME": "2024-02-21T23:16:41Z",
+                            "LAST_UPDATE_DATETIME": "2024-02-21T23:16:59Z",
+                            "IS_IGNORED": 0,
+                            "IS_DISABLED": 0,
+                            "LAST_PROCESSED_DATETIME": "2024-02-21T23:16:59Z"
+                        },
+                        {
+                            "UNIQUE_VULN_ID": 1926002297,
+                            "QID": 38909,
+                            "TYPE": "Confirmed",
+                            "SEVERITY": 2,
+                            "PORT": 22,
+                            "PROTOCOL": "tcp",
+                            "SSL": 0,
+                            "RESULTS": {
+                                "__cdata": "Type\tName\nMAC\thmac-sha1-etm@openssh.com\nMAC\thmac-sha1"
+                            },
+                            "STATUS": "Active",
+                            "FIRST_FOUND_DATETIME": "2024-02-08T10:54:07Z",
+                            "LAST_FOUND_DATETIME": "2024-02-21T23:16:41Z",
+                            "TIMES_FOUND": 20,
+                            "LAST_TEST_DATETIME": "2024-02-21T23:16:41Z",
+                            "LAST_UPDATE_DATETIME": "2024-02-21T23:16:59Z",
+                            "IS_IGNORED": 0,
+                            "IS_DISABLED": 0,
+                            "LAST_PROCESSED_DATETIME": "2024-02-21T23:16:59Z"
+                        },
+                        {
+                            "UNIQUE_VULN_ID": 1926002300,
+                            "QID": 38915,
+                            "TYPE": "Potential",
+                            "SEVERITY": 5,
+                            "SSL": 0,
+                            "RESULTS": {
+                                "__cdata": "Vulnerable SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.6 detected on port 22 over TCP."
+                            },
+                            "STATUS": "Active",
+                            "FIRST_FOUND_DATETIME": "2024-02-08T10:54:07Z",
+                            "LAST_FOUND_DATETIME": "2024-02-21T23:16:41Z",
+                            "TIMES_FOUND": 20,
+                            "LAST_TEST_DATETIME": "2024-02-21T23:16:41Z",
+                            "LAST_UPDATE_DATETIME": "2024-02-21T23:16:59Z",
+                            "IS_IGNORED": 0,
+                            "IS_DISABLED": 0,
+                            "LAST_PROCESSED_DATETIME": "2024-02-21T23:16:59Z"
+                        },
+                        {
+                            "UNIQUE_VULN_ID": 1947465732,
+                            "QID": 38919,
+                            "TYPE": "Potential",
+                            "SEVERITY": 4,
+                            "SSL": 0,
+                            "RESULTS": {
+                                "__cdata": "Vulnerable SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.6 detected on port 22 over TCP."
+                            },
+                            "STATUS": "Active",
+                            "FIRST_FOUND_DATETIME": "2024-02-16T10:57:07Z",
+                            "LAST_FOUND_DATETIME": "2024-02-21T23:16:41Z",
+                            "TIMES_FOUND": 8,
+                            "LAST_TEST_DATETIME": "2024-02-21T23:16:41Z",
+                            "LAST_UPDATE_DATETIME": "2024-02-21T23:16:59Z",
+                            "IS_IGNORED": 0,
+                            "IS_DISABLED": 0,
+                            "LAST_PROCESSED_DATETIME": "2024-02-21T23:16:59Z"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

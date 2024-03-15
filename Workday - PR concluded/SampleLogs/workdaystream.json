@@ -1,0 +1,33 @@
+[
+        {
+            "taskDisplayName": "View Condition Rule",
+            "requestTime": "2023-07-17T10:31:23.307Z",
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+            "sessionId": "5a8c6a",
+            "taskId": "dc39d326446c11de98360015c5e6daf6",
+            "systemAccount": "Praveen.Raj@maersk.com",
+            "deviceType": "Desktop",
+            "activityAction": "READ",
+            "target": {
+                "descriptor": "CRCM - GBL - Bonus Plan Profile - 15%",
+                "id": "99d7334ba33710018f3079c804960000"
+            },
+            "ipAddress": "165.225.194.119"
+        },
+        {
+            "taskDisplayName": "Edit Compensation Eligibility Rule",
+            "requestTime": "2023-07-17T10:31:26.571Z",
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+            "sessionId": "5a8c6a",
+            "taskId": "dc3269a6446c11de98360015c5e6daf6",
+            "systemAccount": "Praveen.Raj@maersk.com",
+            "deviceType": "Desktop",
+            "activityAction": "READ",
+            "target": {
+                "descriptor": "CRCM - GBL - Bonus Plan Profile - 15%",
+                "id": "99d7334ba33710018f3079c804960000"
+            },
+            "ipAddress": "165.225.194.119"
+        }
+    ]
+
