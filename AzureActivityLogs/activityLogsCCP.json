@@ -72,13 +72,6 @@
                 "description": "Token endpoint required for AAD authentication through Oauth 2.0 client credentials."
             }
         },
-        "redirectUri": {
-            "defaultValue": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights",
-            "type": "String",
-            "metadata": {
-                "description": "Redirect URI  required for AAD authentication through Oauth 2.0 code flow."
-            }
-        },
         "apiEndpoint": {
             "defaultValue": "https://management.azure.com/subscriptions/d1ccc636-9d46-4b03-9a7c-61bf2c5a037e/providers/Microsoft.Insights/eventtypes/management/values",
             "type": "String",
@@ -615,14 +608,6 @@
                                 "description": "ClientId"
                             }
                         },
-                        "authorizationCode": {
-                            "defaultValue": "-NA-",
-                            "type": "string",
-                            "minLength": 1,
-                            "metadata": {
-                                "description": "authorization code"
-                            }
-                        },
                         "connectorDefinitionName": {
                             "defaultValue": "",
                             "type": "string",
@@ -641,10 +626,6 @@
                         },
                         "tokenEndpoint": {
                             "defaultValue": "[parameters('tokenEndpoint')]",
-                            "type": "string"
-                        },
-                        "redirectUri": {
-                            "defaultValue": "[parameters('redirectUri')]",
                             "type": "string"
                         },
                         "apiEndpoint": {
@@ -692,7 +673,6 @@
                                         "Accept": "application/json",
                                         "Content-Type": "application/x-www-form-urlencoded"
                                     },
-                                    "redirectUri": "[parameters('redirectUri')]",
                                     "scope": "https://management.azure.com/.default"
                                 },
                                 "request": {
