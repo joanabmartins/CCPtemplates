@@ -8,6 +8,7 @@ I believe there is a way around this which is to use an ali cloud service called
 We can send the logs from the Simple Log Service to Event Bridge, and collect them from Event Bridge through an API call. **Event Bridge API supports Oauth**.
 
 https://www.alibabacloud.com/help/en/eventbridge/user-guide/log-service
+
 https://www.alibabacloud.com/help/en/eventbridge/user-guide/manage-api-destinations
 
 Our customer didn't want to explore the Event Bridge option as it involved extra work and costs in Ali Cloud.  
