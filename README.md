@@ -10,19 +10,19 @@ As you navigate through the connector folders you may find different phases of d
 
 Here is a reference list of the types of authentication, pagination and special considerations that you may find in each connector:
 
-|                    | Authentication           | Pagination | Additional Considerations |
-|--------------------|--------------------------|------------|---------------------------|
-| Workday            | Oauth Authorization Code |            |                           |
-| Sophos Endpoint    | Oauth Client Credentials |            |                           |
-| Jira               | Basic                    |            |                           |
-| Zoom               | Oauth Both ways work     |            |                           |
-| Oracle             | Basic                    |            |                           |
-| IBM Maximo         | Api Key                  |            |                           |
-| Trend Micro CAS    | Api Key / token          |            |                           |
-| Qualys             | Basic                    |            |                           |
-| Crowdstrike Falcon | Oauth Client Credentials |            |                           |
-| Salesforce         | Oauth Authorization Code |            |                           |
-| Google Workspace   | Oauth Authorization Code |            |                           |
-| Google IAM         | Oauth Authorization Code |            |                           |
-| Snowflake          | Oauth Authorization Code |            |                           |
-| Ali Cloud          | Ali Cloud Signature      |            |                           |
+|                        | Authentication           | Pagination | Additional Considerations |
+|------------------------|--------------------------|------------|---------------------------|
+| **Workday**            | Oauth Authorization Code |            |                           |
+| **Sophos Endpoint**    | Oauth Client Credentials |            |                           |
+| **Jira**               | Basic                    |            |                           |
+| **Zoom**               | Oauth Both ways work     |            |                           |
+| **Oracle**             | Basic                    |            |                           |
+| **IBM Maximo**         | Api Key                  |            |                           |
+| **Trend Micro CAS**    | Api Key / token          |            |                           |
+| **Qualys**             | Basic                    |            |                           |
+| **Crowdstrike Falcon** | Oauth Client Credentials |            |                           |
+| **Salesforce**         | Oauth Authorization Code |            |                           |
+| **Google Workspace**   | Oauth Authorization Code |            |                           |
+| **Google IAM**         | Oauth Authorization Code |            |                           |
+| **Snowflake**          | Oauth Authorization Code |            |                           |
+| **Ali Cloud**          | Ali Cloud Signature      |            |                           |
