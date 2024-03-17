@@ -1,3 +1,6 @@
+<h2>CCP NOT SUPPORTED</h2>
+
+
 We have been hearing from customers that don't want to use a data collection solution based on AWS S3s, nor on AMA. So, we tried to use CCP just directly reach the Crowdstrike API and get the logs. 
 
 As we investigated the Crowdstrike APIs with the customer we discovered that we couldn't actually just call one API to get the logs. The way the API works is by calling one API to get some IDs, and then call the logs API with those IDs.
