@@ -22,7 +22,7 @@ Here is a reference list of the types of authentication, pagination and special 
 | **Qualys**             | Basic                       | Link Header        | Response in XML                                       |
 | **Crowdstrike Falcon** | Oauth Client Credentials    |                    | Nested API - **not supported**                        |
 | **Salesforce**         | Oauth Authorization Code    |                    | Response in XML Nested API - **not supported**        |
-| **Google Workspace**   | Oauth Authorization Code    | Next Page Token    | Complex parser - **not suited for prod**              |
+| **Google Workspace**   | Oauth Authorization Code    | Next Page Token    | Multiple Endpoints and environments. Complex parser - **not suited for prod**              |
 | **Google IAM**         | Oauth Authorization Code    | Next Page Token    |                                                       |
 | **Snowflake**          | Oauth Authorization Code    |                    |                                                       |
 | **Azure Activity**     | Oauth Client Credentials    |                    |                                                       |
