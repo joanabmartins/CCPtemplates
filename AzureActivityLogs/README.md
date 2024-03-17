@@ -1,3 +1,5 @@
+<h2>Status: CREATED JUST FOR FUN</h2>
+
 I created this template, when I was just starting to study CCP. 
 
 It still uses the old template format with tempalte specs instead of content template.
