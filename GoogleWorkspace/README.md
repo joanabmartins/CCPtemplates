@@ -14,6 +14,8 @@ When comparing with the function based connector, we realised the function conne
 
 * GoogleWorkspaceConnectorwithCopy.json - it doesn't work. Here we tried to use an ARM propery to make the template easier to read, that would iterate through an array with all the application names, and create a CCP rule for each, instead of us manually having to add 22 CCP rules for each of the endpoint. This arm function doesn't seem to work with CCP templates.
 
+* GWorkspaceParser.yaml - Rough function on how to parse Google workspace logs. We need to create a separate log per event (mv-expand), and create different fields based on the event parameters. It needs development, as I didn't really change any field names, and it will then need to be combined with the existing parser used for the az function connector.
+   
 <h3>Documentation</h3>
 
 **Autehtnication:** https://pnatraj.medium.com/google-cloud-api-with-postman-f4cf070e665f
