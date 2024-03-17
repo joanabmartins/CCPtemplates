@@ -1,3 +1,5 @@
+<h2>Status: CCP NOT SUPPORTED</h2>
+
 We have studied the alibaba environment and arrived to the conclusion that it was not supported because the Simple Log Service API has its own way of authenticating. It doesn't support Oauth, Baisc or API key.
 **We couldn't make any call through Postman**. We checked with Ali Cloud support and they confirmed it. 
 The authentication is based on signatures, and you need to use their SDKs to generate these signatures.
