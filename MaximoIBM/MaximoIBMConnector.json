@@ -11,24 +11,24 @@
         }
     },
     "variables": {
-        "DCRName": "maximo-appauth-audit-dcr",
+        "DCRName": "MaximoIBMDCR",
         "workspaceResourceId": "[resourceId('microsoft.OperationalInsights/Workspaces', parameters('workspace'))]",
         "_solutionName": "IBM Maximo Audit events solution",
-        "_solutionVersion": "1.0.0", // Apparently must be 3.0 or above?
-        "_solutionAuthor": "Zackary C - Transgrid",
+        "_solutionVersion": "1.0.0", 
+        "_solutionAuthor": "Microsoft",
         "_packageIcon": "icon icon icon icon",
         "_solutionId": "azuresentinel.azure-sentinel-solution-azuresentinel.azure-sentinel-MaximoAuditEvents",
         "dataConnectorVersionConnectorDefinition": "1.0.0",
         "dataConnectorVersionConnections": "1.0.0",
-        "_solutionTier": "Community", // All custom data connectors are 'Community'
-        "_dataConnectorContentIdConnectorDefinition": "MaximoAppAuthAuditTemplateConnectorDefinition",
+        "_solutionTier": "Microsoft",
+        "_dataConnectorContentIdConnectorDefinition": "MaximoIBMAuditTemplateConnectorDefinition",
         "dataConnectorTemplateNameConnectorDefinition": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnectorDefinition')))]",
-        "_dataConnectorContentIdConnections": "MaximoAppAuthAuditTemplateConnections",
+        "_dataConnectorContentIdConnections": "MaximoIBMAuditTemplateConnections",
         "dataConnectorTemplateNameConnections": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnections')))]",
         "location": "[resourceGroup().location]",
         "subscriptionId": "[last(split(subscription().id, '/'))]",
-        "AppAuthApiEndpoint": "https://redacted.maximo.com/maximo/api/os/appauth_audit/",
-        "GroupUserApiEndpoint": "https://redacted.maximo.com/maximo/api/os/groupuser_audit",
+        "AppAuthApiEndpoint": "https://< domain >.maximo.com/maximo/api/os/appauth_audit/",
+        "GroupUserApiEndpoint": "https://< domain >.maximo.com/maximo/api/os/groupuser_audit",
         "AppAuthTableName": "Maximo_AppAuth_Audit_CL",
         "GroupUserTableName": "Maximo_GroupUser_Audit_CL"
     },
