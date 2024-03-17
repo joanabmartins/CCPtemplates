@@ -274,12 +274,39 @@
                             "description": "Configure steps for the Google Reports API oauth access. Then, provide the required information below and click on Connect.\n>",
                             "instructions": [
                                 {
-                                    "type": "OAuthForm",
+                                    "type": "ContextPane",
                                     "parameters": {
-                                        "clientIdLabel": "Client ID",
-                                        "clientSecretLabel": "Client Secret",
-                                        "connectButtonLabel": "Connect",
-                                        "disconnectButtonLabel": "Disconnect"
+                                        "isPrimary": true,
+                                        "label": "Add workspace",
+                                        "title": "Add Google Workspace",
+                                        "subtitle": "Add Google Workspace",
+                                        "contextPaneType": "DataConnectorsContextPane",
+                                        "hideConnectButton": true,
+                                        "instructionSteps": [
+                                            {
+                                                "instructions": [
+                                                    {
+                                                        "type": "Textbox",
+                                                        "parameters": {
+                                                            "label": "Google Workspace Domain Name",
+                                                            "placeholder": "Google Workspace Domain Name (e.g., yourdomain.com)",
+                                                            "type": "text",
+                                                            "name": "domainName"
+                                                        }
+                                                    },
+                                                    {
+                                                        "type": "OAuthForm",
+                                                        "parameters": {
+                                                            "clientIdLabel": "Client ID",
+                                                            "clientSecretLabel": "Client Secret",
+                                                            "connectButtonLabel": "Connect",
+                                                            "disconnectButtonLabel": "Disconnect",
+                                                            "isMultiRule": true
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 },
                                 {
@@ -287,14 +314,29 @@
                                     "parameters": {
                                         "mapping": [
                                             {
+                                                "columnName": "domain Name",
+                                                "columnValue": "properties.domainName"
+                                            },
+                                            {
                                                 "columnValue": "name",
                                                 "columnName": "Name"
                                             },
                                             {
-                                                "columnValue": "id",
-                                                "columnName": "ID"
+                                                "columnName": "Endpoint",
+                                                "columnValue": "properties.request.apiEndpoint"
                                             }
+                                        ],
+                                        "menuItems": [
+                                            "DeleteConnector"
                                         ]
+                                    }
+                                },
+                                {
+                                    "type": "DisconnectButton",
+                                    "parameters": {
+                                        "label": "Disconnect All",
+                                        "name": "disconnect",
+                                        "hideOnInactive": true
                                     }
                                 }
                             ],
