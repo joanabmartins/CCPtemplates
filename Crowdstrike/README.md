@@ -1,4 +1,4 @@
-<h2>CCP NOT SUPPORTED</h2>
+<h2>Status: CCP NOT SUPPORTED</h2>
 
 
 We have been hearing from customers that don't want to use a data collection solution based on AWS S3s, nor on AMA. So, we tried to use CCP just directly reach the Crowdstrike API and get the logs. 
