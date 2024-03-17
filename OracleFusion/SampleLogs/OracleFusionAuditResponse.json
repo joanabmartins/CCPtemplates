@@ -1,0 +1,308 @@
+{
+   "actionName": "getAuditHistory",
+   "status": "SUCCESS",
+   "pageSize": "7",
+   "auditData":    [
+            {
+         "userInternalName": "assomasundaram",
+         "userName": "Ashwin Somasundaram",
+         "eventType": "RoleMembershipAdd",
+         "eventCategory": "RoleManagement",
+         "description": "Add principal(s) to app role EUAE_PER_CWK_ABSTRACT_CUSTOM successful in APPLICATION scope",
+         "attributeInternalName": "CodeSource",
+         "attribute": "Code Source",
+         "newValue": "file:/u01/APPLTOP/fusionapps/applications/fa/deploy/oracle.apps.fa.model.ear/20220101000020.01000020/APP-INF/lib/AdfHcmAseSecuredModelMerged.jar",
+         "attributeDetails":          [
+                        {
+               "attributeInternalName": "CodeSource",
+               "attribute": "Code Source",
+               "newValue": "file:/u01/APPLTOP/fusionapps/applications/fa/deploy/oracle.apps.fa.model.ear/20220101000020.01000020/APP-INF/lib/AdfHcmAseSecuredModelMerged.jar"
+            },
+                        {
+               "attributeInternalName": "Principals",
+               "attribute": "Principals",
+               "newValue": "[]"
+            },
+                        {
+               "attributeInternalName": "ManagedApplication",
+               "attribute": "Managed Application",
+               "newValue": "IDCCS"
+            },
+                        {
+               "attributeInternalName": "ApplicationRole",
+               "attribute": "Application Role",
+               "newValue": "EUAE_PER_CWK_ABSTRACT_CUSTOM"
+            },
+                        {
+               "attributeInternalName": "EnterpriseRoles",
+               "attribute": "Enterprise Roles",
+               "newValue": "([(Name:assomasundaram) (GUID:null) (Unique name:null) (Class name:weblogic.security.principal.WLSUserImpl) (AppID:null) (Type:weblogic.security.principal.WLSUserImpl)] )"
+            },
+                        {
+               "attributeInternalName": "PermissionScope",
+               "attribute": "Permission Scope",
+               "newValue": "APPLICATION"
+            }
+         ],
+         "date": "2024-01-25 10:54:46"
+      },
+            {
+         "userInternalName": "assomasundaram",
+         "userName": "Ashwin Somasundaram",
+         "eventType": "RoleMembershipAdd",
+         "eventCategory": "RoleManagement",
+         "description": "Add principal(s) to app role EUAE_PER_CWK_ABSTRACT_CUSTOM successful in APPLICATION scope",
+         "attributeInternalName": "CodeSource",
+         "attribute": "Code Source",
+         "newValue": "file:/u01/APPLTOP/fusionapps/applications/fa/deploy/oracle.apps.fa.model.ear/20220101000020.01000020/APP-INF/lib/AdfHcmAseSecuredModelMerged.jar",
+         "attributeDetails":          [
+                        {
+               "attributeInternalName": "CodeSource",
+               "attribute": "Code Source",
+               "newValue": "file:/u01/APPLTOP/fusionapps/applications/fa/deploy/oracle.apps.fa.model.ear/20220101000020.01000020/APP-INF/lib/AdfHcmAseSecuredModelMerged.jar"
+            },
+                        {
+               "attributeInternalName": "Principals",
+               "attribute": "Principals",
+               "newValue": "[]"
+            },
+                        {
+               "attributeInternalName": "ManagedApplication",
+               "attribute": "Managed Application",
+               "newValue": "obi"
+            },
+                        {
+               "attributeInternalName": "ApplicationRole",
+               "attribute": "Application Role",
+               "newValue": "EUAE_PER_CWK_ABSTRACT_CUSTOM"
+            },
+                        {
+               "attributeInternalName": "EnterpriseRoles",
+               "attribute": "Enterprise Roles",
+               "newValue": "([(Name:assomasundaram) (GUID:null) (Unique name:null) (Class name:weblogic.security.principal.WLSUserImpl) (AppID:null) (Type:weblogic.security.principal.WLSUserImpl)] )"
+            },
+                        {
+               "attributeInternalName": "PermissionScope",
+               "attribute": "Permission Scope",
+               "newValue": "APPLICATION"
+            }
+         ],
+         "date": "2024-01-25 10:54:46"
+      },
+            {
+         "userInternalName": "assomasundaram",
+         "userName": "Ashwin Somasundaram",
+         "eventType": "RoleMembershipAdd",
+         "eventCategory": "RoleManagement",
+         "description": "Add principal(s) to app role EUAE_PER_CWK_ABSTRACT_CUSTOM successful in APPLICATION scope",
+         "attributeInternalName": "CodeSource",
+         "attribute": "Code Source",
+         "newValue": "file:/u01/APPLTOP/fusionapps/applications/fa/deploy/oracle.apps.fa.model.ear/20220101000020.01000020/APP-INF/lib/AdfHcmAseSecuredModelMerged.jar",
+         "attributeDetails":          [
+                        {
+               "attributeInternalName": "CodeSource",
+               "attribute": "Code Source",
+               "newValue": "file:/u01/APPLTOP/fusionapps/applications/fa/deploy/oracle.apps.fa.model.ear/20220101000020.01000020/APP-INF/lib/AdfHcmAseSecuredModelMerged.jar"
+            },
+                        {
+               "attributeInternalName": "Principals",
+               "attribute": "Principals",
+               "newValue": "[]"
+            },
+                        {
+               "attributeInternalName": "ManagedApplication",
+               "attribute": "Managed Application",
+               "newValue": "imaging"
+            },
+                        {
+               "attributeInternalName": "ApplicationRole",
+               "attribute": "Application Role",
+               "newValue": "EUAE_PER_CWK_ABSTRACT_CUSTOM"
+            },
+                        {
+               "attributeInternalName": "EnterpriseRoles",
+               "attribute": "Enterprise Roles",
+               "newValue": "([(Name:assomasundaram) (GUID:null) (Unique name:null) (Class name:weblogic.security.principal.WLSUserImpl) (AppID:null) (Type:weblogic.security.principal.WLSUserImpl)] )"
+            },
+                        {
+               "attributeInternalName": "PermissionScope",
+               "attribute": "Permission Scope",
+               "newValue": "APPLICATION"
+            }
+         ],
+         "date": "2024-01-25 10:54:46"
+      },
+            {
+         "userInternalName": "assomasundaram",
+         "userName": "Ashwin Somasundaram",
+         "eventType": "RoleMembershipAdd",
+         "eventCategory": "RoleManagement",
+         "description": "Add principal(s) to app role EUAE_PER_CWK_ABSTRACT_CUSTOM successful in APPLICATION scope",
+         "attributeInternalName": "CodeSource",
+         "attribute": "Code Source",
+         "newValue": "file:/u01/APPLTOP/fusionapps/applications/fa/deploy/oracle.apps.fa.model.ear/20220101000020.01000020/APP-INF/lib/AdfHcmAseSecuredModelMerged.jar",
+         "attributeDetails":          [
+                        {
+               "attributeInternalName": "CodeSource",
+               "attribute": "Code Source",
+               "newValue": "file:/u01/APPLTOP/fusionapps/applications/fa/deploy/oracle.apps.fa.model.ear/20220101000020.01000020/APP-INF/lib/AdfHcmAseSecuredModelMerged.jar"
+            },
+                        {
+               "attributeInternalName": "Principals",
+               "attribute": "Principals",
+               "newValue": "[]"
+            },
+                        {
+               "attributeInternalName": "ManagedApplication",
+               "attribute": "Managed Application",
+               "newValue": "soa-infra"
+            },
+                        {
+               "attributeInternalName": "ApplicationRole",
+               "attribute": "Application Role",
+               "newValue": "EUAE_PER_CWK_ABSTRACT_CUSTOM"
+            },
+                        {
+               "attributeInternalName": "EnterpriseRoles",
+               "attribute": "Enterprise Roles",
+               "newValue": "([(Name:assomasundaram) (GUID:null) (Unique name:null) (Class name:weblogic.security.principal.WLSUserImpl) (AppID:null) (Type:weblogic.security.principal.WLSUserImpl)] )"
+            },
+                        {
+               "attributeInternalName": "PermissionScope",
+               "attribute": "Permission Scope",
+               "newValue": "APPLICATION"
+            }
+         ],
+         "date": "2024-01-25 10:54:46"
+      },
+            {
+         "userInternalName": "assomasundaram",
+         "userName": "Ashwin Somasundaram",
+         "eventType": "RoleMembershipAdd",
+         "eventCategory": "RoleManagement",
+         "description": "Add principal(s) to app role EUAE_PER_CWK_ABSTRACT_CUSTOM successful in APPLICATION scope",
+         "attributeInternalName": "CodeSource",
+         "attribute": "Code Source",
+         "newValue": "file:/u01/APPLTOP/fusionapps/applications/fa/deploy/oracle.apps.fa.model.ear/20220101000020.01000020/APP-INF/lib/AdfHcmAseSecuredModelMerged.jar",
+         "attributeDetails":          [
+                        {
+               "attributeInternalName": "CodeSource",
+               "attribute": "Code Source",
+               "newValue": "file:/u01/APPLTOP/fusionapps/applications/fa/deploy/oracle.apps.fa.model.ear/20220101000020.01000020/APP-INF/lib/AdfHcmAseSecuredModelMerged.jar"
+            },
+                        {
+               "attributeInternalName": "Principals",
+               "attribute": "Principals",
+               "newValue": "[]"
+            },
+                        {
+               "attributeInternalName": "ManagedApplication",
+               "attribute": "Managed Application",
+               "newValue": "crm"
+            },
+                        {
+               "attributeInternalName": "ApplicationRole",
+               "attribute": "Application Role",
+               "newValue": "EUAE_PER_CWK_ABSTRACT_CUSTOM"
+            },
+                        {
+               "attributeInternalName": "EnterpriseRoles",
+               "attribute": "Enterprise Roles",
+               "newValue": "([(Name:assomasundaram) (GUID:null) (Unique name:null) (Class name:weblogic.security.principal.WLSUserImpl) (AppID:null) (Type:weblogic.security.principal.WLSUserImpl)] )"
+            },
+                        {
+               "attributeInternalName": "PermissionScope",
+               "attribute": "Permission Scope",
+               "newValue": "APPLICATION"
+            }
+         ],
+         "date": "2024-01-25 10:54:46"
+      },
+            {
+         "userInternalName": "assomasundaram",
+         "userName": "Ashwin Somasundaram",
+         "eventType": "RoleMembershipAdd",
+         "eventCategory": "RoleManagement",
+         "description": "Add principal(s) to app role EUAE_PER_CWK_ABSTRACT_CUSTOM successful in APPLICATION scope",
+         "attributeInternalName": "CodeSource",
+         "attribute": "Code Source",
+         "newValue": "file:/u01/APPLTOP/fusionapps/applications/fa/deploy/oracle.apps.fa.model.ear/20220101000020.01000020/APP-INF/lib/AdfHcmAseSecuredModelMerged.jar",
+         "attributeDetails":          [
+                        {
+               "attributeInternalName": "CodeSource",
+               "attribute": "Code Source",
+               "newValue": "file:/u01/APPLTOP/fusionapps/applications/fa/deploy/oracle.apps.fa.model.ear/20220101000020.01000020/APP-INF/lib/AdfHcmAseSecuredModelMerged.jar"
+            },
+                        {
+               "attributeInternalName": "Principals",
+               "attribute": "Principals",
+               "newValue": "[]"
+            },
+                        {
+               "attributeInternalName": "ManagedApplication",
+               "attribute": "Managed Application",
+               "newValue": "fscm"
+            },
+                        {
+               "attributeInternalName": "ApplicationRole",
+               "attribute": "Application Role",
+               "newValue": "EUAE_PER_CWK_ABSTRACT_CUSTOM"
+            },
+                        {
+               "attributeInternalName": "EnterpriseRoles",
+               "attribute": "Enterprise Roles",
+               "newValue": "([(Name:assomasundaram) (GUID:null) (Unique name:null) (Class name:weblogic.security.principal.WLSUserImpl) (AppID:null) (Type:weblogic.security.principal.WLSUserImpl)] )"
+            },
+                        {
+               "attributeInternalName": "PermissionScope",
+               "attribute": "Permission Scope",
+               "newValue": "APPLICATION"
+            }
+         ],
+         "date": "2024-01-25 10:54:46"
+      },
+            {
+         "userInternalName": "assomasundaram",
+         "userName": "Ashwin Somasundaram",
+         "eventType": "RoleMembershipAdd",
+         "eventCategory": "RoleManagement",
+         "description": "Add principal(s) to app role EUAE_PER_CWK_ABSTRACT_CUSTOM successful in APPLICATION scope",
+         "attributeInternalName": "CodeSource",
+         "attribute": "Code Source",
+         "newValue": "file:/u01/APPLTOP/fusionapps/applications/fa/deploy/oracle.apps.fa.model.ear/20220101000020.01000020/APP-INF/lib/AdfHcmAseSecuredModelMerged.jar",
+         "attributeDetails":          [
+                        {
+               "attributeInternalName": "CodeSource",
+               "attribute": "Code Source",
+               "newValue": "file:/u01/APPLTOP/fusionapps/applications/fa/deploy/oracle.apps.fa.model.ear/20220101000020.01000020/APP-INF/lib/AdfHcmAseSecuredModelMerged.jar"
+            },
+                        {
+               "attributeInternalName": "Principals",
+               "attribute": "Principals",
+               "newValue": "[]"
+            },
+                        {
+               "attributeInternalName": "ManagedApplication",
+               "attribute": "Managed Application",
+               "newValue": "hcm"
+            },
+                        {
+               "attributeInternalName": "ApplicationRole",
+               "attribute": "Application Role",
+               "newValue": "EUAE_PER_CWK_ABSTRACT_CUSTOM"
+            },
+                        {
+               "attributeInternalName": "EnterpriseRoles",
+               "attribute": "Enterprise Roles",
+               "newValue": "([(Name:assomasundaram) (GUID:null) (Unique name:null) (Class name:weblogic.security.principal.WLSUserImpl) (AppID:null) (Type:weblogic.security.principal.WLSUserImpl)] )"
+            },
+                        {
+               "attributeInternalName": "PermissionScope",
+               "attribute": "Permission Scope",
+               "newValue": "APPLICATION"
+            }
+         ],
+         "date": "2024-01-25 10:54:46"
+      }
+   ]
+}
