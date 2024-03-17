@@ -9,3 +9,9 @@ We couldn't really find any documentation about this API, nor the customer. He s
 I've asked at least to send us some sample logs, I'm waiting for their response.
 
 We didn't do anything to normalize the logs.
+
+**API Endpoints:** 
+
+            https://< domain >.maximo.com/maximo/api/os/appauth_audit
+            
+            https://< domain >.maximo.com/maximo/api/os/groupuser_audit
