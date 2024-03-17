@@ -1,0 +1,16 @@
+Function:
+  Title: Parser for Google Workspace with CCP
+  Version: '1.0.0'
+  LastUpdated: '2024-03-17'
+Category: Microsoft Sentinel Parser
+FunctionName: GWorkspaceActivities
+FunctionAlias: GWorkspaceActivities
+FunctionQuery: |
+    GoogleWorkspace_CL 
+    | mv-expand events
+    | extend eventParameters = events.parameters
+    | mv-apply param = eventParameters on (
+    project bag = bag_pack(tostring(param.name), coalesce(param.value, param.boolValue, param.multiValue, param.multiMessageValue, param.multiIntValue, param.messageValue, param.intValue  ))
+    | summarize bag = make_bag(bag)
+    )
+    | evaluate bag_unpack(bag)
