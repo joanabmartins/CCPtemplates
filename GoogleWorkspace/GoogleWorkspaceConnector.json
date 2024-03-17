@@ -394,14 +394,6 @@
                                 "dataCollectionEndpoint": "data collection Endpoint",
                                 "dataCollectionRuleImmutableId": "data collection rule immutableId"
                             }
-                        },
-                        "domainName": {
-                            "defaultValue": "-NA-",
-                            "type": "string",
-                            "minLength": 1,
-                            "metadata": {
-                                "description": "domain Name"
-                            }
                         }
                     },
                     "variables": {
@@ -438,7 +430,6 @@
                             "location": "[variables('location')]",
                             "kind": "RestApiPoller",
                             "properties": {
-                                "domainName": "[[parameters('domainName')]",
                                 "connectorDefinitionName": "[[parameters('connectorDefinitionName')]",
                                 "dataType": "[variables('tableName')]",
                                 "dcrConfig": {
