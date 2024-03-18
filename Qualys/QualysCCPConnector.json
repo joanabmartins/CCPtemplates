@@ -507,7 +507,7 @@
                                     "queryWindowInMin": 5,
                                     "httpMethod": "GET",
                                     "retryCount": 3,
-                                    "timeoutInSeconds": 60,
+                                    "timeoutInSeconds": 180,
                                     "headers": {
                                         "Accept": "application/json",
                                         "X-Requested-With": "Microsoft-Sentinel"
