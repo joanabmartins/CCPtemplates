@@ -1,0 +1,49 @@
+{
+    "member": [
+        {
+            "_rowstamp": "59112268",
+            "eaudittype": "I",
+            "href": "https://redacted.maximo.com/maximo/api/os/TESTgroupuser_audit/_",
+            "eaudittransid": "1840468",
+            "eauditusername": "TESTUSER",
+            "groupname": "TEST_ADMIN1",
+            "userid": "TEST_USER",
+            "eaudittimestamp": "2023-12-15T02:36:08+00:00"
+        },
+        {
+            "_rowstamp": "59112271",
+            "eaudittype": "D",
+            "href": "https://redacted.maximo.com/maximo/api/os/TESTgroupuser_audit/_",
+            "eaudittransid": "1840469",
+            "eauditusername": "TESTUSER",
+            "groupname": "TEST_ADMIN2",
+            "userid": "TEST_USER",
+            "eaudittimestamp": "2023-12-15T02:36:36+00:00"
+        },
+        {
+            "_rowstamp": "59112355",
+            "eaudittype": "D",
+            "href": "https://redacted.maximo.com/maximo/api/os/TESTgroupuser_audit/_",
+            "eaudittransid": "1840470",
+            "eauditusername": "TESTUSER",
+            "groupname": "TEST_ADMIN3",
+            "userid": "TEST_USER",
+            "eaudittimestamp": "2023-12-15T02:37:12+00:00"
+        },
+        {
+            "_rowstamp": "59122754",
+            "eaudittype": "I",
+            "href": "https://redacted.maximo.com/maximo/api/os/TESTgroupuser_audit/_",
+            "eaudittransid": "1840472",
+            "eauditusername": "TESTUSER",
+            "groupname": "TEST_ASSETMANAGER",
+            "userid": "TEST_USER",
+            "eaudittimestamp": "2023-12-15T03:38:30+00:00"
+        },
+    ],
+    "href": "https://redacted.maximo.com/maximo/api/os/TESTgroupuser_audit",
+    "responseInfo": {
+        "href": "http://redacted.maximo.com/maximo/api/os/TESTgroupuser_audit?lean=1&oslc.select=*&oslc.where=EAUDITTIMESTAMP%3E%222023-12-01T04:00:00%22%20and%20EAUDITTIMESTAMP%3C%222024-03-11T05:00:00%22",
+        "totalCount": 72
+    }
+}
