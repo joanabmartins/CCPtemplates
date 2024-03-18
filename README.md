@@ -12,7 +12,7 @@ Here is a reference list of the types of authentication, pagination and special 
 
 |                        | Authentication              | Pagination         | Additional Considerations                             |
 |------------------------|-----------------------------|--------------------|-------------------------------------------------------|
-| **Workday**            | Oauth Authorization Code    | Offset             |                                                       |
+| **Workday**            | Oauth Authorization Code    | Offset             | Uses ASIM audit table                                 |
 | **Sophos Endpoint**    | Oauth Client Credentials    | Next Page Token    | Multiple Endpoints                                    |
 | **Jira**               | Basic                       | Offset             |                                                       |
 | **Zoom**               | Oauth both grant types      | Next Page Token    | Multiple Endpoints                                    |
