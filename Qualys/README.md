@@ -20,4 +20,4 @@ https://cdn2.qualys.com/docs/qualys-api-vmpc-user-guide.pdf
 
 <h3>Testing Considerations</h3>
 
-There is a free trial available, relatively easy to generate logs and test this connector.
+There is a free trial available. In the first trial I got I was able to easily connect and generate logs. However when I used another email to get access to a new trial, I discovered that trial accounts aren't supposed to have access to the Qualys API. I don't understand how I was able to get access to the API with my first trial.
