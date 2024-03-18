@@ -1,9 +1,12 @@
 <h2>Qualys Connector Status: Testing with customer, it uses a complex parser</h2>
 
-Relatively straighforward connector to deveop. The main issue we were facing is with the parser. 
-The existing connector was relying on the Azure Function to parse each detection from each host in a separate log. 
+Two things came up with this connector:
+
+* Qualys API have some strict [rate limits](https://cdn2.qualys.com/docs/qualys-api-limits.pdf). If the response takes too long, we may face timeout, which will prompt to call the API again, and face those limits. We had to increase the timeout window to make it work for the customers, as during scanning time the API was taking more than 2 minutes to respond.
+
+* Parser is a bit complex. The existing connector was relying on the Azure Function to parse each detection from each host in a separate log. 
 When we use CCP we have one log per host, with all the detections. To split them we cannot use an ingestion time trasnforamtion (mv-expand is not supported). 
-We need to use a query time function, though mv-expand is not recommended on them.
+We need to use a query time function, though mv-expand is not recommended to use on parsers.
 
 <h3>Template</h3>
 
