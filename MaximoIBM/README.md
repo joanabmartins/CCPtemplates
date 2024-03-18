@@ -6,9 +6,7 @@ The customer showed us how he was reaching out to the APIs through postman, we t
 
 We couldn't really find any documentation about this API, nor the customer. He said that IBM just informed them how to make it work. 
 
-I've asked at least to send us some sample logs, I'm waiting for their response.
-
-We didn't do anything to normalize the logs.
+We didn't do anything to normalize the logs. The CCP UI definition may also need extra care, with better api access instructions, etc. 
 
 **API Endpoints:** 
 
