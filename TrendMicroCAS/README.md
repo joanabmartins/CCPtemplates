@@ -9,12 +9,16 @@ When adding 48 endpoints (instead of the 16 that we created for the customers), 
     Error Code 429: The user has made more than 20 requests over the past 1 minute and has been throttled. 
     The user can start new requests in the next minute from the first request.
 
-I've escalated this to Scuba to see if they have a suggestion on how to handle this. 
+Solution suggestions:
 
-One suggestion I have is to allow the customers to select which endpoints they want to connect, before connecting. 
-Not all customers have salesforce, dropbox, etc. So, they may not want to connect to those endpint, which makes things simpler for CCP and for the customer. 
-Even if the customer doesn't use those services the API will give a valid response, so CCP will succesfully connect, even though there are no logs which may be confusing, and will comply CCP to make unnecessary calls. 
-If we give the customer the option to select which endpoint they want to connect it may fix the issue above and prevent unnecessary calls to unnecessary endpoints.
+* Allow customer to select which endpoints they want to connect to. Trust they won't want to connect to more that 20 - this is not possible today but it is on the roadmap
+
+* Split the connector into 2-3 different ones (each one with 15-20 rules), and make sure we connect them at different times, to avoid querying the API all at once.
+
+* Develop the possibility to randomize rule start time within a range of query window for example (instead of the default 1 second.
+
+* Contact Trens Micro to understand if there is a possibility to increase rate time
+
 
 <h3>Template</h3>
 
