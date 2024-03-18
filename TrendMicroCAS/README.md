@@ -1,10 +1,10 @@
 <h2>Trend Micro Cloud App Security Status: Working for one customer, issue when trying to connect 48 endpoints</h2>
 
 Trend Micro security events API has a different endpoint of each service (12) and each event (4) (exchange/securityrisk, exchange/virtualanalyzer, exchange/ransomware, exchange/dlp, sharepoint/securityrisk, ...). 
-My customer just wanted to connect to 4 of these services. We developed the template and it works fine, better than the azure function. 
-With the azure function connector they were getting errors and indeed we were able to observer that the CCP connector was ingesting more logs than the function one.
+My customer just wanted to connect to 4 of these services, with 4 events (16 endpoints). We developed the template and it works fine, better than the one based on azure function. 
+With the azure function connector they were getting errors and we were able to observe that the CCP connector is ingesting more logs than the one based on az function.
 
-When adding the 48 endpoints (instead of the 12 that we created for the customers), **we can't connect all of them**. The Trend Micro API has this limitations:
+When adding 48 endpoints (instead of the 16 that we created for the customers), **we can't connect all of them**. The Trend Micro API has this limitations:
 
     Error Code 429: The user has made more than 20 requests over the past 1 minute and has been throttled. 
     The user can start new requests in the next minute from the first request.
