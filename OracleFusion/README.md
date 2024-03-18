@@ -1,10 +1,10 @@
-<h2>Status: It is working for a customer</h2>
+<h2>Oracle Fusion Status: It is working for a customer</h2>
 
 We created this connector when Sergio Vallejo (CSA) told us about his customer's need. 
 
 The customer showed us how he was doing the API calls through postman and we translated that to CCP. 
 
-We didn't do anything to normalize the logs. 
+We didn't do anything to normalize the logs. The CCP UI definition may also need extra care, with better api access instructions, etc. 
 
 <h3>Documentations:</h3> 
 
