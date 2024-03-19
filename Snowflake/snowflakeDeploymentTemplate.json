@@ -58,7 +58,8 @@
         "subscriptionId": "[last(split(subscription().id, '/'))]",
         "tokenEndpoint": "snowflakecomputing.com/oauth/token-request",
         "authorizationEndpoint": "snowflakecomputing.com/oauth/authorize",
-        "_logAnalyticsTableId1": "Snowflakev2_CL"
+        "_logAnalyticsTableId1": "Snowflakev2_CL",
+        "snowflakeApiEndpoint": "snowflakecomputing.com/api/v2/statements"
     },
     "resources": [
             {
@@ -782,7 +783,7 @@
                     },
                     "instructionSteps": [
                         {
-                            "description": "Follow the [Snowflake instructions here](https://community.snowflake.com/s/article/How-To-Configure-Postman-for-testing-SQL-API-with-OAuth).\n Through those instructions, you should get the Client ID, Client Secret, Account URL.\n Fill out the form below with that information.",
+                            "description": "Follow the [Snowflake instructions here](https://docs.snowflake.com/en/user-guide/oauth-custom) to create a Security Integration for Azure. You will need to set the Redirect URL for it as the Azure portal.\n Through those instructions, you should get the Client ID, Client Secret, Account URL.\n Fill out the form below with that information.",
                             "instructions": [
                                 {
                                     "type": "Textbox",
@@ -922,12 +923,12 @@
                                     "GrantType": "authorization_code",
                                     "TokenEndpoint": "[[concat('https://',parameters('snowflakeAccountUrl'),variables('tokenEndpoint'))]",
                                     "AuthorizationEndpoint": "[[concat('https://',parameters('snowflakeAccountUrl'),variables('authorizationEndpoint'))]",
-                                    "redirectUri": "https://portal.azure.com/TokenAuthorize",
+                                    "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights",
                                     "tokenEndpointHeaders": {
                                         "Accept": "application/json",
                                         "Content-Type": "application/x-www-form-urlencoded"
                                     },
-                                    "scope": "token"
+                                    "scope": "session:role:SYSADMIN"
                                 },
                                 "request": {
                                     "apiEndpoint": "[[concat('https://',parameters('snowflakeAccountUrl'), variables('snowflakeApiEndpoint'))]",
