@@ -56,10 +56,10 @@
         "dataConnectorTemplateNameConnections": "[concat(parameters('workspace'),'-dc-',uniquestring(variables('_dataConnectorContentIdConnections')))]",
         "location": "[resourceGroup().location]",
         "subscriptionId": "[last(split(subscription().id, '/'))]",
-        "tokenEndpoint": "snowflakecomputing.com/oauth/token-request",
-        "authorizationEndpoint": "snowflakecomputing.com/oauth/authorize",
+        "tokenEndpoint": ".snowflakecomputing.com/oauth/token-request",
+        "authorizationEndpoint": ".snowflakecomputing.com/oauth/authorize",
         "_logAnalyticsTableId1": "Snowflakev2_CL",
-        "snowflakeApiEndpoint": "snowflakecomputing.com/api/v2/statements"
+        "snowflakeApiEndpoint": ".snowflakecomputing.com/api/v2/statements"
     },
     "resources": [
         {
@@ -843,6 +843,38 @@
             }
         },
         {
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnectorDefinition')))]",
+            "apiVersion": "2022-01-01-preview",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+            "properties": {
+                "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentIdConnectorDefinition'))]",
+                "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
+                "kind": "DataConnector",
+                "version": "[variables('dataConnectorVersionConnectorDefinition')]",
+                "source": {
+                    "sourceId": "[variables('_solutionId')]",
+                    "name": "[variables('_solutionName')]",
+                    "kind": "Solution"
+                },
+                "author": {
+                    "name": "[variables('_solutionAuthor')]"
+                },
+                "support": {
+                    "name": "[variables('_solutionAuthor')]",
+                    "tier": "[variables('_solutionTier')]"
+                },
+                "dependencies": {
+                    "criteria": [
+                        {
+                            "version": "[variables('dataConnectorVersionConnections')]",
+                            "contentId": "[variables('_dataConnectorContentIdConnections')]",
+                            "kind": "ResourcesDataConnector"
+                        }
+                    ]
+                }
+            }
+        },
+        {
             "type": "Microsoft.OperationalInsights/workspaces/providers/contentTemplates",
             "apiVersion": "2023-04-01-preview",
             "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('dataConnectorTemplateNameConnections'), variables('dataConnectorVersionConnections'))]",
@@ -874,15 +906,21 @@
                             },
                             "type": "object"
                         },
-                        "clientID": {
-                            "defaultValue": "",
-                            "type": "securestring",
-                            "minLength": 1
-                        },
                         "clientSecret": {
-                            "defaultValue": "",
-                            "type": "securestring",
-                            "minLength": 1
+                            "defaultValue": "-NA-",
+                            "type": "string",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "clientSecret"
+                            }
+                        },
+                        "clientId": {
+                            "defaultValue": "-NA-",
+                            "type": "string",
+                            "minLength": 1,
+                            "metadata": {
+                                "description": "ClientId"
+                            }
                         },
                         "snowflakeAccountUrl": {
                             "defaultValue": "",
