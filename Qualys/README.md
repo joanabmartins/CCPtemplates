@@ -17,7 +17,7 @@ We need to include the old table in this parser (with union), and update all the
 
 <h3>Documentation</h3>
 
-https://cdn2.qualys.com/docs/qualys-api-vmpc-user-guide.pdf
+https://cdn2.qualys.com/docs/qualys-api-vmpc-user-guide.pdf (page 522)
 
         API Endpoint: /api/2.0/fo/asset/host/vm/detection/
 
