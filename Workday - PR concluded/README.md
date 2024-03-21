@@ -14,4 +14,4 @@ Customer sent me the document Workday Integration.pdf that I included in this di
 
 <h3>Testing Considerations</h3>
 
-Microsoft has a Workday environment that we have been using for testing. 
+Microsoft has a Workday environment that we have been using for testing. The credentials for it have also been shared with Oded, Prateek and Cheetan.
