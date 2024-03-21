@@ -947,7 +947,8 @@
                         }
                     },
                     "variables": {
-                        "_dataConnectorContentIdConnections": "[variables('_dataConnectorContentIdConnections')]"
+                        "_dataConnectorContentIdConnections": "[variables('_dataConnectorContentIdConnections')]",
+                        "fullAuthorizionEndpoint":"[[concat('https://',parameters('snowflakeAccountUrl'),variables('authorizationEndpoint'))]"
                     },
                     "resources": [
                         {
@@ -994,14 +995,11 @@
                                     "GrantType": "authorization_code",
                                     "AuthorizationCode": "[[parameters('authorizationCode')]",
                                     "TokenEndpoint": "[[concat('https://',parameters('snowflakeAccountUrl'),variables('tokenEndpoint'))]",
-                                    "AuthorizationEndpoint": "[[concat('https://',parameters('snowflakeAccountUrl'),variables('authorizationEndpoint'))]",
+                                    "AuthorizationEndpoint": "[[parameters('fullAuthorizionEndpoint')]",
                                     "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights",
                                     "tokenEndpointHeaders": {
                                         "Accept": "application/json",
                                         "Content-Type": "application/x-www-form-urlencoded"
-                                    },
-                                    "authorizationEndpointQueryParameters": {
-                                        "prompt": "consent"
                                     },
                                     "scope": "session:role:SYSADMIN"
                                 },
