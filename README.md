@@ -1,11 +1,12 @@
 In this repository we have all the data sources that FastTrack for Azure team has been working on. 
 
 As you navigate through the connector folders you may find different phases of development:
-  * PR accepted in Azure Sentinel repo - **Sophos Endpoint** and **Workday**
-  * PR about to be submited or under review in the Azure Sentinel repo - **Jira**, **Zoom** and **Snowflake**
+  * Published - **Sophos Endpoint** and **Workday**
+  * PR under review - **Jira**
+  * Developed to work equally to previous connector, but we may want to change how it works - **Zoom**
   * Template developed and in use by the customers; needs additional attention to make it ready for publishment - **Oracle**, **IBM Maximo**, **Trend Micro CAS**
   * Issues with supportability - **Qualys**, **Google Workspace**, **Crowdstrike**, **Salesforce**, **Ali Cloud**
-  * Under development - 
+  * Under development - **Snowflake**
   * Irrelevant connectors that work - **Azure Activity** and **Google IAM**
 
 Here is a reference list of the types of authentication, pagination and special considerations that you may find in each connector:
@@ -14,7 +15,7 @@ Here is a reference list of the types of authentication, pagination and special 
 |------------------------|-----------------------------|--------------------|-------------------------------------------------------|
 | **Workday**            | Oauth Authorization Code    | Offset             | Uses ASIM audit table                                 |
 | **Sophos Endpoint**    | Oauth Client Credentials    | Next Page Token    | Multiple Endpoints                                    |
-| **Jira**               | Basic                       | Offset             |                                                       |
+| **Jira**               | Basic                       | Offset             | Multiple environments                                 |
 | **Zoom**               | Oauth both grant types      | Next Page Token    | Multiple Endpoints                                    |
 | **Oracle**             | Basic                       | Count Based Paging | Multiple Endpoints and environments.                  |
 | **IBM Maximo**         | Api Key                     | Count Based Paging | Multiple Endpoints                                    |
