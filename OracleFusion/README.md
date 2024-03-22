@@ -27,3 +27,6 @@ I believe it is fixed now, so it should be working fine, but as I haven't tested
 * The Get Sign-in paging is more complexed. Even though in the online docs it says it works like the previous endpoint, with Postman we tested and realized it actually doesn't. 
 The page number is included directly in the API url, not as a parameter. As the customer was fine with not using pagination for this, we didn't explore this further. 
 This type of paging is documented in the PDF that is added to this folder ("Fusion Security Using Sign In - Sign Out Audit REST API.pdf" page 3).
+
+<h3>Testing Considerations</h3>
+It doesn't seem to be possible to have a trial for Oracle Fusion cloud applications: https://docs.oracle.com/en/cloud/get-started/subscriptions-cloud/csgsg/order-oracle-cloud-applications.html#GUID-40A60901-7D84-44BE-92C3-CC11279657A2 you need to order those services through oracle sales.
