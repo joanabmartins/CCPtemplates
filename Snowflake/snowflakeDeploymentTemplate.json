@@ -3,37 +3,37 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location": {
-            "type": "string",
-            "minLength": 1,
             "defaultValue": "[resourceGroup().location]",
+            "minLength": 1,
+            "type": "String",
             "metadata": {
                 "description": "Not used, but needed to pass the arm-ttk test, 'Location-Should-Not-Be-Hardcoded'. Instead the `workspace-location` derived from the log analytics workspace is used."
             }
         },
         "workspace-location": {
-            "type": "string",
             "defaultValue": "",
+            "type": "String",
             "metadata": {
                 "description": "[concat('Region to deploy solution resources -- separate from location selection',parameters('location'))]"
             }
         },
         "subscription": {
             "defaultValue": "[last(split(subscription().id, '/'))]",
-            "type": "string",
+            "type": "String",
             "metadata": {
                 "description": "subscription id where Microsoft Sentinel is configured"
             }
         },
         "resourceGroupName": {
             "defaultValue": "[resourceGroup().name]",
-            "type": "string",
+            "type": "String",
             "metadata": {
                 "description": "resource group name where Microsoft Sentinel is configured"
             }
         },
         "workspace": {
             "defaultValue": "",
-            "type": "string",
+            "type": "String",
             "metadata": {
                 "description": "the log analytics workspace enabled for Microsoft Sentinel"
             }
@@ -721,9 +721,9 @@
             }
         },
         {
-            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',variables('_dataConnectorContentIdConnectorDefinition'))]",
-            "apiVersion": "2022-09-01-preview",
             "type": "Microsoft.OperationalInsights/workspaces/providers/dataConnectorDefinitions",
+            "apiVersion": "2022-09-01-preview",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',variables('_dataConnectorContentIdConnectorDefinition'))]",
             "location": "[parameters('workspace-location')]",
             "kind": "Customizable",
             "properties": {
@@ -796,9 +796,18 @@
                                 {
                                     "type": "Textbox",
                                     "parameters": {
+                                        "label": "Snowflake auth end",
+                                        "placeholder": "https://JDLZOAG-SLA38345.snowflakecomputing.com/oauth/authorize",
+                                        "type": "text",
+                                        "name": "authorizationEndpoint"
+                                    }
+                                },
+                                {
+                                    "type": "Textbox",
+                                    "parameters": {
                                         "label": "Snowflake Database",
                                         "placeholder": "database name",
-                                        "type": "text",
+                                        "type": "string",
                                         "name": "snowflakeDatabase"
                                     }
                                 },
@@ -807,7 +816,7 @@
                                     "parameters": {
                                         "label": "Snowflake Warehouse",
                                         "placeholder": "warehouse name",
-                                        "type": "text",
+                                        "type": "string",
                                         "name": "snowflakeWarehouse"
                                     }
                                 },
@@ -843,9 +852,9 @@
             }
         },
         {
-            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnectorDefinition')))]",
-            "apiVersion": "2022-01-01-preview",
             "type": "Microsoft.OperationalInsights/workspaces/providers/metadata",
+            "apiVersion": "2022-01-01-preview",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/',concat('DataConnector-', variables('_dataConnectorContentIdConnectorDefinition')))]",
             "properties": {
                 "parentId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspace')), 'Microsoft.SecurityInsights/dataConnectorDefinitions', variables('_dataConnectorContentIdConnectorDefinition'))]",
                 "contentId": "[variables('_dataConnectorContentIdConnectorDefinition')]",
@@ -914,7 +923,7 @@
                                 "description": "clientSecret"
                             }
                         },
-                        "clientId": {
+                        "clientID": {
                             "defaultValue": "-NA-",
                             "type": "string",
                             "minLength": 1,
@@ -922,20 +931,21 @@
                                 "description": "ClientId"
                             }
                         },
-                        "snowflakeAccountUrl": {
+                        "authorizationEndpoint": {
                             "defaultValue": "",
-                            "type": "securestring",
-                            "minLength": 1
+                            "type": "string"
+                        },
+                        "snowflakeAccountURL": {
+                            "defaultValue": "",
+                            "type": "string"
                         },
                         "snowflakeDatabase": {
                             "defaultValue": "SNOWFLAKE",
-                            "type": "securestring",
-                            "minLength": 1
+                            "type": "string"
                         },
                         "snowflakeWarehouse": {
                             "defaultValue": "",
-                            "type": "securestring",
-                            "minLength": 1
+                            "type": "string"
                         },
                         "authorizationCode": {
                             "defaultValue": "-NA-",
@@ -947,8 +957,7 @@
                         }
                     },
                     "variables": {
-                        "_dataConnectorContentIdConnections": "[variables('_dataConnectorContentIdConnections')]",
-                        "fullAuthorizionEndpoint":"[[concat('https://',parameters('snowflakeAccountUrl'),variables('authorizationEndpoint'))]"
+                        "_dataConnectorContentIdConnections": "[variables('_dataConnectorContentIdConnections')]"
                     },
                     "resources": [
                         {
@@ -990,12 +999,13 @@
                                 },
                                 "auth": {
                                     "type": "OAuth2",
+                                    "IsCredentialsInHeaders": true,
                                     "ClientSecret": "[[parameters('clientSecret')]",
                                     "ClientId": "[[parameters('clientID')]",
                                     "GrantType": "authorization_code",
                                     "AuthorizationCode": "[[parameters('authorizationCode')]",
-                                    "TokenEndpoint": "[[concat('https://',parameters('snowflakeAccountUrl'),variables('tokenEndpoint'))]",
-                                    "AuthorizationEndpoint": "[[parameters('fullAuthorizionEndpoint')]",
+                                    "TokenEndpoint": "[[concat('https://',parameters('snowflakeAccountURL'),variables('tokenEndpoint'))]",
+                                    "authorizationEndpoint": "[[parameters('authorizationEndpoint')]",
                                     "redirectUri": "https://portal.azure.com/TokenAuthorize/ExtensionName/Microsoft_Azure_Security_Insights",
                                     "tokenEndpointHeaders": {
                                         "Accept": "application/json",
@@ -1004,7 +1014,7 @@
                                     "scope": "session:role:SYSADMIN"
                                 },
                                 "request": {
-                                    "apiEndpoint": "[[concat('https://',parameters('snowflakeAccountUrl'), variables('snowflakeApiEndpoint'))]",
+                                    "apiEndpoint": "[[concat('https://',parameters('snowflakeAccountURL'), variables('snowflakeApiEndpoint'))]",
                                     "rateLimitQPS": 10,
                                     "queryWindowInMin": 5,
                                     "httpMethod": "POST",
@@ -1045,9 +1055,9 @@
         },
         {
             "type": "Microsoft.OperationalInsights/workspaces/providers/contentPackages",
+            "apiVersion": "2023-04-01-preview",
             "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/', variables('_solutionId'))]",
             "location": "[parameters('workspace-location')]",
-            "apiVersion": "2023-04-01-preview",
             "properties": {
                 "version": "[variables('_solutionVersion')]",
                 "kind": "Solution",
