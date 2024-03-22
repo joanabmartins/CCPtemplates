@@ -1,4 +1,4 @@
-<h2>Oracle Fusion Status: It is working for a customer</h2>
+<h2>Oracle Fusion Cloud Applications Status: It is working for a customer</h2>
 
 We created this connector when Sergio Vallejo (CSA) told us about his customer's need. 
 
