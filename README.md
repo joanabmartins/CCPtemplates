@@ -4,7 +4,7 @@ As you navigate through the connector folders you may find different phases of d
   * Published - **Sophos Endpoint** and **Workday**
   * PR under review - **Jira**
   * Developed to work equally to previous connector, but we may want to change how it works - **Zoom**
-  * Template developed and in use by the customers; needs additional attention to make it ready for publishment - **Oracle**, **IBM Maximo**, **Trend Micro CAS**
+  * Template developed and in use by the customers; needs additional attention to make it ready for publishment - **Oracle Cloud Apps**, **IBM Maximo**, **Trend Micro CAS**
   * Issues with supportability - **Qualys**, **Google Workspace**, **Crowdstrike**, **Salesforce**, **Ali Cloud**
   * Under development - **Snowflake**
   * Irrelevant connectors that work - **Azure Activity** and **Google IAM**
@@ -17,7 +17,7 @@ Here is a reference list of the types of authentication, pagination and special 
 | **Sophos Endpoint**    | Oauth Client Credentials    | Next Page Token    | Multiple Endpoints                                    |
 | **Jira**               | Basic                       | Offset             | Multiple environments                                 |
 | **Zoom**               | Oauth both grant types      | Next Page Token    | Multiple Endpoints                                    |
-| **Oracle**             | Basic                       | Count Based Paging | Multiple Endpoints and environments.                  |
+| **Oracle Cloud Apps**  | Basic                       | Count Based Paging | Multiple Endpoints and environments.                  |
 | **IBM Maximo**         | Api Key                     | Count Based Paging | Multiple Endpoints                                    |
 | **Trend Micro CAS**    | Api Key / token             | Link Header        | Multiple Endpoints                                    |
 | **Qualys**             | Basic                       | Link Header        | Response in XML                                       |
