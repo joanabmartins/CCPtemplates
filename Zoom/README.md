@@ -1,4 +1,4 @@
-<h2>Zoom Resport Status: Developed like the old connector, which rose addition questions </h2>
+<h2>Zoom Resport Status: Developed like the old connector, with some platform issues and structural issues</h2>
 
 There is already a function connector supporting Zoom integration. 
 It connects to 6 different endpoints: Daily Usage Reports, Active/Inactive Host Reports, Telephone Report, Cloud Recording Usage Reports, Operation Logs Report, Sign In/Sign Out Activity Report.
@@ -11,7 +11,15 @@ Right now, this CCP connector is also created to pull every 1 hour, ingesting re
 
 It is still missing a parser to connect the old table with the new table. The old parser is not the most well constructed one (it uses a feel called Dates, which is not recommended), and as I think this connector is general should get a second thought, I didn't really go ahead to develop the parser, following the old schema.
 
+<h3>Platform Issues</h3>
+
+* Time query windows seems not to be working. I put it to 60, but it is still polling every 5 mins.
+
+* Filtering by YYYY-MM-dd , also doesn't seem to be working, from what we can see in Sentinel, it is getting the date **YYYY**-03-25 . Zoom api doesn't seem to mind, but in any case this should be looked into, we should get the year, not YYYY.
+
+  
 <h3>Authentication details</h3>
+
 Zoom supports 2 types of Oatuh authentication. 
 
 * Generic zoom oauth application by **code authorization** - After some research that included contacting Zoom support, we realised that the authentication token and refresh tokens got revoked every time a new authentication token got issued. 
