@@ -1,12 +1,15 @@
-<h2>Zoom Resport Status: Under Development</h2>
+<h2>Zoom Resport Status: Developed like the old connector, which rose addition questions </h2>
 
 There is already a function connector supporting Zoom integration. 
 It connects to 6 different endpoints: Daily Usage Reports, Active/Inactive Host Reports, Telephone Report, Cloud Recording Usage Reports, Operation Logs Report, Sign In/Sign Out Activity Report.
 
-These APIs have different response schemas, so we don't agree with having all of them sending logs to the same table. We separated them into different tables. 
+These APIs have different response schemas, so we don't agree with having all of them sending logs to the same table like the previous connector. We separated them into 6 different tables. 
 
-These APIs cannot be filtered by hour or minutes, the maximum we can filter is by day, so we don't agree with the existing connector that is querying every hour, it just keeps giving repeated logs.
-Our connector works daily.
+These APIs cannot be filtered by hour or minutes, the maximum we can filter is by day (in some of them), so we don't agree with the existing connector that is querying every hour, it generated a loooot of repeated logs. In some cases we could query every 5 minutes and then do a transformation to don't ingested repeated data. In other cases, maybe doesn't make sense to get call that api endpoint. **It needs to be further dicussed**. 
+
+Right now, this CCP connector is also created to pull every 1 hour, ingesting repeated data.
+
+It is still missing a parser to connect the old table with the new table. The old parser is not the most well constructed one (it uses a feel called Dates, which is not recommended), and as I think this connector is general should get a second thought, I didn't really go ahead to develop the parser, following the old schema.
 
 <h3>Authentication details</h3>
 Zoom supports 2 types of Oatuh authentication. 
@@ -29,6 +32,12 @@ So, we ended up adding them directly in the token endpoint url, instead on the b
 As discussed above the template includes 6 rules. Each one sending logs to its own table.
 
 We modified the parser to include all new 6 tables. 
+
+It pulls every 1 hours which raises concern for repeated logs, but it was how the old connector was working.
+
+<h3>Parser and transformations</h3>
+
+I just did basic transformations to avoid using forbidden fields. I didn't transform fields to accomodate old schema and I didn't develop the old parser to include the new tables. As I think this whole connector should be double checked, I thought this should be left to be developed after that.
 
 <h3>Documentations </h3>
 
