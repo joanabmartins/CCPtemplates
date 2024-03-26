@@ -13,10 +13,7 @@ It is still missing a parser to connect the old table with the new table. The ol
 
 <h3>Platform Issues</h3>
 
-* Time query windows seems not to be working. I put it to 60, but it is still polling every 5 mins.
-
-* Filtering by YYYY-MM-dd , also doesn't seem to be working, from what we can see in Sentinel, it is getting the date **YYYY**-03-25 . Zoom api doesn't seem to mind, but in any case this should be looked into, we should get the year, not YYYY.
-
+* Time query windows seems not to be working. I put it to 60, but it is still polling every 5 mins. Sara and Yonggang are investigating it.
   
 <h3>Authentication details</h3>
 
