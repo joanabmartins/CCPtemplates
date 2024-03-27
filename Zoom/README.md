@@ -1,19 +1,16 @@
-<h2>Zoom Resport Status: Developed like the old connector, with some platform issues and structural issues</h2>
+<h2>Zoom Resport Status: Developed like the old connector, which raises a few questions</h2>
 
 There is already a function connector supporting Zoom integration. 
 It connects to 6 different endpoints: Daily Usage Reports, Active/Inactive Host Reports, Telephone Report, Cloud Recording Usage Reports, Operation Logs Report, Sign In/Sign Out Activity Report.
 
 These APIs have different response schemas, so we don't agree with having all of them sending logs to the same table like the previous connector. We separated them into 6 different tables. 
 
-These APIs cannot be filtered by hour or minutes, the maximum we can filter is by day (in some of them), so we don't agree with the existing connector that is querying every hour, it generated a loooot of repeated logs. In some cases we could query every 5 minutes and then do a transformation to don't ingested repeated data. In other cases, maybe doesn't make sense to get call that api endpoint. **It needs to be further dicussed**. 
+These APIs cannot be filtered by hour or minutes, the maximum we can filter is by day (in some of them), so we don't agree with the existing connector that is querying every hour, it generated a loooot of repeated logs. In some cases we could query every 5 minutes and then do a transformation to don't ingested repeated data. In other cases, maybe doesn't make sense to call that api endpoint at all, we should check with existing customers using the connector. **It needs to be further dicussed**. 
 
 Right now, this CCP connector is also created to pull every 1 hour, ingesting repeated data.
 
 It is still missing a parser to connect the old table with the new table. The old parser is not the most well constructed one (it uses a feel called Dates, which is not recommended), and as I think this connector is general should get a second thought, I didn't really go ahead to develop the parser, following the old schema.
 
-<h3>Platform Issues</h3>
-
-* Time query windows seems not to be working. I put it to 60, but it is still polling every 5 mins. Sara and Yonggang are investigating it.
   
 <h3>Authentication details</h3>
 
