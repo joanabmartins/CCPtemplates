@@ -33,8 +33,6 @@ So, we ended up adding them directly in the token endpoint url, instead on the b
 
 As discussed above the template includes 6 rules. Each one sending logs to its own table.
 
-We modified the parser to include all new 6 tables. 
-
 It pulls every 1 hours which raises concern for repeated logs, but it was how the old connector was working.
 
 <h3>Parser and transformations</h3>
@@ -45,7 +43,7 @@ I just did basic transformations to avoid using forbidden fields. I didn't trans
 
 About Server 2 Server authentication: https://developers.zoom.us/docs/internal-apps/s2s-oauth/
 
-About API Endpoint: https://developers.zoom.us/docs/api/rest/reference/zoom-api/methods/#tag/Reports
+About API Endpoints: https://developers.zoom.us/docs/api/rest/reference/zoom-api/methods/#tag/Reports
 
 
   
